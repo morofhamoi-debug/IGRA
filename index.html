@@ -1077,21 +1077,38 @@ for (let i = 0; i < 3; i++) {
 }
 
 let doorAngle = 0;
-const DOOR_OPEN_ANGLE = -Math.PI * 0.58;
+const DOOR_OPEN_ANGLE = Math.PI * 0.58;
 
 let doorTouchOpen = false;
+// ИСПРАВЛЕНО: раньше дверь всегда открывалась в одну и ту же сторону
+// (в коридор), независимо от того, куда шёл игрок. Теперь направление
+// открытия определяется направлением движения игрока в момент подхода
+// к двери: если игрок возвращается в подвал (Z уменьшается) — дверь
+// открывается внутрь подвала, в ту сторону, куда он идёт; если выходит
+// из подвала в коридор (Z увеличивается) — дверь открывается в коридор.
+let doorSwingSign = -1;
 
 function updateDoorAuto(dt) {
   const dz = Math.abs(player.pos.z - ROOM_D / 2);
   const dx = Math.abs(player.pos.x - DOOR_CENTER_X);
 
   if (!doorTouchOpen) {
-    if (dz < 0.40 && dx < 0.60) doorTouchOpen = true;
+    if (dz < 0.40 && dx < 0.60) {
+      doorTouchOpen = true;
+      // Направление задаём один раз, в момент срабатывания триггера,
+      // по знаку скорости движения игрока вдоль Z. Если скорость почти
+      // нулевая, сохраняем предыдущее направление, чтобы дверь не дёргалась.
+      if (player.vel.z < -0.05) {
+        doorSwingSign = 1;   // игрок идёт в сторону подвала — открыть туда же
+      } else if (player.vel.z > 0.05) {
+        doorSwingSign = -1;  // игрок идёт в сторону коридора — открыть туда же
+      }
+    }
   } else {
     if (dz > 0.75 || dx > 0.85) doorTouchOpen = false;
   }
 
-  const targetAngle = doorTouchOpen ? DOOR_OPEN_ANGLE : 0;
+  const targetAngle = doorTouchOpen ? DOOR_OPEN_ANGLE * doorSwingSign : 0;
   const lerpSpeed = doorTouchOpen ? 7.0 : 3.0;
   doorAngle += (targetAngle - doorAngle) * Math.min(1, dt * lerpSpeed);
   doorGroup.rotation.y = doorAngle;
@@ -1484,7 +1501,7 @@ scene.add(upperFrontTop);
 const upperAmbient = new THREE.AmbientLight(0xfff0d0, 0.0);
 scene.add(upperAmbient);
 
-const upperMainLight = new THREE.PointLight(0xfff0d0, 0, 22, 2);
+const upperMainLight = new THREE.PointLight(0xfff0d0, 0, 42, 1.4);
 upperMainLight.position.set(0, UPPER_Y + UPPER_H - 0.6, UPPER_Z0 + UPPER_D / 2);
 upperMainLight.castShadow = true;
 upperMainLight.shadow.mapSize.set(2048, 2048);
@@ -1516,7 +1533,7 @@ sunLight.target.position.set(0, UPPER_Y, UPPER_Z0 + UPPER_D / 2);
 scene.add(sunLight);
 scene.add(sunLight.target);
 
-const upperFillLight = new THREE.PointLight(0xc8d8f0, 0, 20, 2);
+const upperFillLight = new THREE.PointLight(0xc8d8f0, 0, 34, 1.6);
 upperFillLight.position.set(-6, UPPER_Y + 3.5, UPPER_Z1 - 4);
 scene.add(upperFillLight);
 
@@ -1556,11 +1573,13 @@ let upperLightOn = false;
 function toggleUpperLight() {
   upperLightOn = !upperLightOn;
   if (upperLightOn) {
-    upperMainLight.intensity = 18;
-    upperAmbient.intensity = 0.55;
-    upperFillLight.intensity = 3.5;
+    // ИСПРАВЛЕНО: свет в верхней комнате сделан значительно сильнее
+    // (интенсивность и радиус действия ламп увеличены), как и просили.
+    upperMainLight.intensity = 70;
+    upperAmbient.intensity = 1.5;
+    upperFillLight.intensity = 12;
     upperLightMesh.material.color.setHex(0xffeec0);
-    upperLightGlow.material.opacity = 0.16;
+    upperLightGlow.material.opacity = 0.6;
     upIndicatorMat.color.setHex(0x66ff88);
     upLever.position.y = UP_LEVER_ON_Y;
   } else {
@@ -1794,11 +1813,19 @@ function clampPosition(prevX, prevZ, currX, currZ) {
     if (!inDoorX && currZ < ROOM_D / 2 + R) {
       currZ = ROOM_D / 2 + R;
     }
-    if (currZ > STAIR_Z1 - R) currZ = STAIR_Z1 - R;
+    // ИСПРАВЛЕНО: раньше здесь стоял currZ = STAIR_Z1 - R, а верхний этаж
+    // (ветка ниже) клампил currZ снизу значением STAIR_Z1 + R. Между
+    // STAIR_Z1 - R и STAIR_Z1 + R получалась "мёртвая зона" шириной 2*R,
+    // в которую игрок физически не мог попасть — граница ощущалась как
+    // невидимая стена, через которую нельзя было пройти в верхнюю комнату.
+    // Проём в верхней стене (UP_OPEN_HALF) шире коридора (HALL_W/2), так
+    // что X игрока здесь всегда попадает в проём — дополнительный запас
+    // по Z на этой границе не нужен, обе ветки теперь сходятся в STAIR_Z1.
+    if (currZ > STAIR_Z1) currZ = STAIR_Z1;
   } else {
     // ===== ВЕРХНИЙ ЭТАЖ =====
     currX = Math.max(UPPER_X0 + R, Math.min(UPPER_X1 - R, currX));
-    currZ = Math.max(STAIR_Z1 + R, Math.min(UPPER_Z1 - R, currZ));
+    currZ = Math.max(STAIR_Z1, Math.min(UPPER_Z1 - R, currZ));
   }
 
   return { x: currX, z: currZ };
