@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Огромная комната</title>
+<style>
+  html, body { margin: 0; padding: 0; overflow: hidden; background: #000; }
+  canvas { display: block; }
+  #info {
+    position: fixed; top: 15px; left: 15px; color: #fff;
+    font-family: Arial, sans-serif; font-size: 14px;
+    background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px;
+    pointer-events: none; z-index: 10;
+  }
+  #lock {
+    position: fixed; inset: 0; display: flex; align-items: center;
+    justify-content: center; color: #fff; font-family: Arial, sans-serif;
+    font-size: 24px; background: rgba(0,0,0,0.7); cursor: pointer; z-index: 20;
+  }
+</style>
+</head>
+<body>
+<div id="info">WASD — движение · Мышь — обзор · Shift — бег · Space — прыжок</div>
+<div id="lock">Нажмите, чтобы войти в комнату</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// --- Сцена, камера, рендер ---
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05050a);
+scene.fog = new THREE.Fog(0x05050a, 30, 90);
+
+const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 500);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+// --- Освещение ---
+const ambient = new THREE.AmbientLight(0x404060, 1.2);
+scene.add(ambient);
+
+const mainLight = new THREE.PointLight(0xfff2cc, 150, 100, 2);
+mainLight.position.set(0, 18, 0);
+mainLight.castShadow = true;
+mainLight.shadow.mapSize.set(2048, 2048);
+scene.add(mainLight);
+
+// Дополнительные источники света по углам
+const lightPositions = [
+  [-25, 15, -25], [25, 15, -25],
+  [-25, 15,  25], [25, 15,  25]
+];
+lightPositions.forEach(([x, y, z]) => {
+  const l = new THREE.PointLight(0x88aaff, 40, 60, 2);
+  l.position.set(x, y, z);
+  scene.add(l);
+});
+
+// --- Размеры комнаты ---
+const ROOM = 100; // ширина/длина
+const HEIGHT = 30; // высота потолка
+
+// --- Пол ---
+const floorMat = new THREE.MeshStandardMaterial({
+  color: 0x2a2a35, roughness: 0.8, metalness: 0.2
+});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(ROOM, ROOM), floorMat);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// Сетка на полу для ощущения масштаба
+const grid = new THREE.GridHelper(ROOM, 100, 0x4455aa, 0x223355);
+grid.position.y = 0.01;
+scene.add(grid);
+
+// --- Потолок ---
+const ceilMat = new THREE.MeshStandardMaterial({ color: 0x15151c, roughness: 1 });
+const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(ROOM, ROOM), ceilMat);
+ceiling.rotation.x = Math.PI / 2;
+ceiling.position.y = HEIGHT;
+scene.add(ceiling);
+
+// --- Стены ---
+const wallMat = new THREE.MeshStandardMaterial({
+  color: 0x3a3a48, roughness: 0.9, metalness: 0.1, side: THREE.DoubleSide
+});
+
+function makeWall(w, h, x, y, z, ry = 0) {
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(w, h), wallMat);
+  wall.position.set(x, y, z);
+  wall.rotation.y = ry;
+  wall.receiveShadow = true;
+  scene.add(wall);
+  return wall;
+}
+
+makeWall(ROOM, HEIGHT, 0, HEIGHT / 2, -ROOM / 2, 0);            // север
+makeWall(ROOM, HEIGHT, 0, HEIGHT / 2,  ROOM / 2, Math.PI);      // юг
+makeWall(ROOM, HEIGHT, -ROOM / 2, HEIGHT / 2, 0, Math.PI / 2);  // запад
+makeWall(ROOM, HEIGHT,  ROOM / 2, HEIGHT / 2, 0, -Math.PI / 2); // восток
+
+// --- Колонны для ощущения огромного пространства ---
+const pillarMat = new THREE.MeshStandardMaterial({
+  color: 0x555566, roughness: 0.6, metalness: 0.4
+});
+const pillarGeo = new THREE.CylinderGeometry(1, 1, HEIGHT, 16);
+const pillarPositions = [];
+for (let x = -30; x <= 30; x += 20) {
+  for (let z = -30; z <= 30; z += 20) {
+    if (x === 0 && z === 0) continue;
+    pillarPositions.push([x, z]);
+  }
+}
+pillarPositions.forEach(([x, z]) => {
+  const p = new THREE.Mesh(pillarGeo, pillarMat);
+  p.position.set(x, HEIGHT / 2, z);
+  p.castShadow = true;
+  p.receiveShadow = true;
+  scene.add(p);
+});
+
+// --- Светящиеся сферы в воздухе (декор) ---
+const sphereGeo = new THREE.SphereGeometry(0.4, 16, 16);
+const sphereMats = [
+  new THREE.MeshBasicMaterial({ color: 0x66ddff }),
+  new THREE.MeshBasicMaterial({ color: 0xff66aa }),
+  new THREE.MeshBasicMaterial({ color: 0xffee66 })
+];
+for (let i = 0; i < 40; i++) {
+  const s = new THREE.Mesh(sphereGeo, sphereMats[i % 3]);
+  s.position.set(
+    (Math.random() - 0.5) * (ROOM - 10),
+    2 + Math.random() * (HEIGHT - 5),
+    (Math.random() - 0.5) * (ROOM - 10)
+  );
+  scene.add(s);
+}
+
+// --- Управление от первого лица ---
+const keys = {};
+const player = {
+  pos: new THREE.Vector3(0, 1.7, 0),
+  vel: new THREE.Vector3(),
+  yaw: 0,
+  pitch: 0,
+  onGround: true
+};
+
+addEventListener('keydown', e => keys[e.code] = true);
+addEventListener('keyup',   e => keys[e.code] = false);
+
+// Захват мыши
+const lockEl = document.getElementById('lock');
+lockEl.addEventListener('click', () => renderer.domElement.requestPointerLock());
+
+document.addEventListener('pointerlockchange', () => {
+  if (document.pointerLockElement === renderer.domElement) {
+    lockEl.style.display = 'none';
+  } else {
+    lockEl.style.display = 'flex';
+  }
+});
+
+document.addEventListener('mousemove', e => {
+  if (document.pointerLockElement !== renderer.domElement) return;
+  player.yaw   -= e.movementX * 0.0022;
+  player.pitch -= e.movementY * 0.0022;
+  player.pitch = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, player.pitch));
+});
+
+// --- Игровой цикл ---
+const clock = new THREE.Clock();
+
+function update(dt) {
+  const speed = keys['ShiftLeft'] || keys['ShiftRight'] ? 18 : 8;
+  const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+  const right   = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+
+  const move = new THREE.Vector3();
+  if (keys['KeyW'] || keys['ArrowUp'])    move.add(forward);
+  if (keys['KeyS'] || keys['ArrowDown'])  move.sub(forward);
+  if (keys['KeyD'] || keys['ArrowRight']) move.add(right);
+  if (keys['KeyA'] || keys['ArrowLeft'])  move.sub(right);
+
+  if (move.lengthSq() > 0) move.normalize().multiplyScalar(speed);
+
+  player.vel.x = move.x;
+  player.vel.z = move.z;
+
+  // Прыжок / гравитация
+  if (keys['Space'] && player.onGround) {
+    player.vel.y = 8;
+    player.onGround = false;
+  }
+  player.vel.y -= 25 * dt;
+
+  player.pos.addScaledVector(player.vel, dt);
+
+  // Ограничение по полу
+  if (player.pos.y < 1.7) {
+    player.pos.y = 1.7;
+    player.vel.y = 0;
+    player.onGround = true;
+  }
+
+  // Стены
+  const limit = ROOM / 2 - 1;
+  player.pos.x = Math.max(-limit, Math.min(limit, player.pos.x));
+  player.pos.z = Math.max(-limit, Math.min(limit, player.pos.z));
+
+  // Камера
+  camera.position.copy(player.pos);
+  camera.rotation.order = 'YXZ';
+  camera.rotation.y = player.yaw;
+  camera.rotation.x = player.pitch;
+}
+
+function animate() {
+  const dt = Math.min(clock.getDelta(), 0.1);
+  update(dt);
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
