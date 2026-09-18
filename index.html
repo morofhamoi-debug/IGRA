@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Хоррор</title>
+<title>Маленькая бетонная комната</title>
 <style>
   html, body { margin: 0; padding: 0; overflow: hidden; background: #000; }
   canvas { display: block; }
@@ -18,10 +18,121 @@
     font-size: 22px; background: rgba(0,0,0,0.75); cursor: pointer; z-index: 20;
     text-align: center; padding: 20px;
   }
+
+  /* ===== НОВОЕ: Кнопка переключения света ===== */
+  #lightSwitch {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 30;
+    padding: 10px 18px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+    background: #ffe07a;
+    border: 2px solid #8a6b2f;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.5), 0 0 20px rgba(255, 220, 100, 0.4);
+    transition: all 0.2s;
+    user-select: none;
+  }
+  #lightSwitch:hover { transform: translateY(-1px); }
+  #lightSwitch:active { transform: translateY(0); }
+  #lightSwitch.off {
+    color: #cceeff;
+    background: #1a3a5a;
+    border-color: #4a8ab0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.5), 0 0 20px rgba(100, 200, 255, 0.5);
+  }
+
+  /* ===== НОВОЕ: Руки ===== */
+  #hands {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+  }
+  .hand {
+    position: absolute;
+    bottom: -60px;
+    width: 240px;
+    height: 340px;
+    pointer-events: none;
+    filter: drop-shadow(0 0 14px rgba(0,0,0,0.75));
+    will-change: transform;
+    transform-origin: bottom center;
+  }
+  .hand-left  { left: 2%; }
+  .hand-right { right: 2%; }
+  .hand-right svg { transform: scaleX(-1); }
+  .hand svg { width: 100%; height: 100%; display: block; }
 </style>
 </head>
 <body>
-<div id="info">WASD — ходить · Мышь — смотреть · Shift — быстрее · ESC — выйти</div>
+
+<div id="info">WASD — ходить · Мышь — смотреть · Shift — быстрее · F — свет · ESC — выйти</div>
+
+<!-- ===== НОВОЕ: Кнопка переключения света ===== -->
+<button id="lightSwitch">💡 Свет ВКЛ</button>
+
+<!-- ===== НОВОЕ: SVG-руки ===== -->
+<div id="hands">
+  <div class="hand hand-left" id="handLeft">
+    <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skinGradL" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ecc39a"/>
+          <stop offset="100%" stop-color="#c9a07a"/>
+        </linearGradient>
+        <linearGradient id="sleeveGradL" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5a5a68"/>
+          <stop offset="100%" stop-color="#2a2a35"/>
+        </linearGradient>
+      </defs>
+      <!-- рукав -->
+      <path d="M 35 300 L 35 210 Q 35 180 75 175 L 135 175 Q 175 180 175 210 L 175 300 Z"
+            fill="url(#sleeveGradL)" stroke="#15151c" stroke-width="3" stroke-linejoin="round"/>
+      <!-- кулак -->
+      <path d="M 45 180 Q 30 130 70 95 Q 115 65 160 100 Q 190 140 175 185 Q 130 205 45 180 Z"
+            fill="url(#skinGradL)" stroke="#7a5c40" stroke-width="3" stroke-linejoin="round"/>
+      <!-- костяшки -->
+      <ellipse cx="80"  cy="100" rx="12" ry="10" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <ellipse cx="110" cy="88"  rx="13" ry="11" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <ellipse cx="140" cy="92"  rx="13" ry="11" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <ellipse cx="165" cy="110" rx="11" ry="10" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <!-- большой палец -->
+      <path d="M 55 165 Q 35 145 50 120 Q 65 105 82 125 Q 92 145 78 168 Z"
+            fill="#e0b48c" stroke="#7a5c40" stroke-width="3"/>
+    </svg>
+  </div>
+  <div class="hand hand-right" id="handRight">
+    <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skinGradR" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ecc39a"/>
+          <stop offset="100%" stop-color="#c9a07a"/>
+        </linearGradient>
+        <linearGradient id="sleeveGradR" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5a5a68"/>
+          <stop offset="100%" stop-color="#2a2a35"/>
+        </linearGradient>
+      </defs>
+      <path d="M 35 300 L 35 210 Q 35 180 75 175 L 135 175 Q 175 180 175 210 L 175 300 Z"
+            fill="url(#sleeveGradR)" stroke="#15151c" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M 45 180 Q 30 130 70 95 Q 115 65 160 100 Q 190 140 175 185 Q 130 205 45 180 Z"
+            fill="url(#skinGradR)" stroke="#7a5c40" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="80"  cy="100" rx="12" ry="10" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <ellipse cx="110" cy="88"  rx="13" ry="11" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <ellipse cx="140" cy="92"  rx="13" ry="11" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <ellipse cx="165" cy="110" rx="11" ry="10" fill="#e0b48c" stroke="#7a5c40" stroke-width="2"/>
+      <path d="M 55 165 Q 35 145 50 120 Q 65 105 82 125 Q 92 145 78 168 Z"
+            fill="#e0b48c" stroke="#7a5c40" stroke-width="3"/>
+    </svg>
+  </div>
+</div>
+
 <div id="lock">Нажмите, чтобы войти в комнату</div>
 
 <script type="importmap">
@@ -48,9 +159,9 @@ renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
 // --- Размеры комнаты (маленькая!) ---
-const ROOM_W = 6;   // ширина
-const ROOM_D = 6;   // длина
-const HEIGHT = 2.6; // потолок низкий, давит
+const ROOM_W = 6;
+const ROOM_D = 6;
+const HEIGHT = 2.6;
 
 // --- Текстура бетона (процедурная, через canvas) ---
 function makeConcreteTexture(size = 512, base = '#6a6a6a', spots = 4000) {
@@ -58,11 +169,9 @@ function makeConcreteTexture(size = 512, base = '#6a6a6a', spots = 4000) {
   c.width = c.height = size;
   const ctx = c.getContext('2d');
 
-  // базовый цвет
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, size, size);
 
-  // пятна
   for (let i = 0; i < spots; i++) {
     const x = Math.random() * size;
     const y = Math.random() * size;
@@ -74,7 +183,6 @@ function makeConcreteTexture(size = 512, base = '#6a6a6a', spots = 4000) {
     ctx.fill();
   }
 
-  // крупные разводы
   for (let i = 0; i < 40; i++) {
     const x = Math.random() * size;
     const y = Math.random() * size;
@@ -99,10 +207,7 @@ function makeConcreteTexture(size = 512, base = '#6a6a6a', spots = 4000) {
 const floorTex = makeConcreteTexture(512, '#7a7a7a', 6000);
 floorTex.repeat.set(3, 3);
 const floorMat = new THREE.MeshStandardMaterial({
-  map: floorTex,
-  color: 0x8a8a8a,
-  roughness: 0.95,
-  metalness: 0.0,
+  map: floorTex, color: 0x8a8a8a, roughness: 0.95, metalness: 0.0,
 });
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_W, ROOM_D), floorMat);
 floor.rotation.x = -Math.PI / 2;
@@ -140,7 +245,7 @@ makeWall(ROOM_W, HEIGHT, 0, HEIGHT / 2,  ROOM_D / 2, Math.PI);
 makeWall(ROOM_D, HEIGHT, -ROOM_W / 2, HEIGHT / 2, 0, Math.PI / 2);
 makeWall(ROOM_D, HEIGHT,  ROOM_W / 2, HEIGHT / 2, 0, -Math.PI / 2);
 
-// Плинтус по низу стен (тонкая тёмная полоса — добавляет мрачности)
+// Плинтус
 const skirtMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 1 });
 const skirtGeo = new THREE.BoxGeometry(ROOM_W, 0.12, 0.02);
 [
@@ -163,11 +268,10 @@ const skirtGeoZ = new THREE.BoxGeometry(ROOM_D, 0.12, 0.02);
   scene.add(s);
 });
 
-// --- Освещение: одна тусклая лампочка ---
+// --- Освещение ---
 const ambient = new THREE.AmbientLight(0x555566, 0.35);
 scene.add(ambient);
 
-// Лампочка на потолке
 const bulb = new THREE.PointLight(0xffddaa, 6, 12, 2);
 bulb.position.set(0, HEIGHT - 0.15, 0);
 bulb.castShadow = true;
@@ -175,7 +279,6 @@ bulb.shadow.mapSize.set(1024, 1024);
 bulb.shadow.bias = -0.0005;
 scene.add(bulb);
 
-// Видимая лампочка
 const bulbMesh = new THREE.Mesh(
   new THREE.SphereGeometry(0.06, 16, 16),
   new THREE.MeshBasicMaterial({ color: 0xffeec0 })
@@ -183,7 +286,6 @@ const bulbMesh = new THREE.Mesh(
 bulbMesh.position.copy(bulb.position);
 scene.add(bulbMesh);
 
-// Патрон/провод
 const cordMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
 const cord = new THREE.Mesh(
   new THREE.CylinderGeometry(0.006, 0.006, 0.12, 6),
@@ -192,7 +294,7 @@ const cord = new THREE.Mesh(
 cord.position.set(0, HEIGHT - 0.06, 0);
 scene.add(cord);
 
-// --- Деталь: труба под потолком ---
+// --- Труба ---
 const pipeMat = new THREE.MeshStandardMaterial({
   color: 0x4a4a4a, roughness: 0.7, metalness: 0.6
 });
@@ -205,9 +307,10 @@ pipe.position.set(0, HEIGHT - 0.35, -ROOM_D / 2 + 0.4);
 pipe.castShadow = true;
 scene.add(pipe);
 
-// --- Деталь: решётка вентиляции в стене ---
+// --- Решётка вентиляции ---
 const ventMat = new THREE.MeshStandardMaterial({
-  color: 0x1a1a1a, roughness: 0.9, metalness: 0.4
+  color: 0x1a1a1a, roughness: 0.9, metalness: 0.4,
+  emissive: 0x000000, emissiveIntensity: 0
 });
 const vent = new THREE.Mesh(
   new THREE.BoxGeometry(0.5, 0.35, 0.03),
@@ -218,6 +321,7 @@ vent.rotation.y = -Math.PI / 2;
 scene.add(vent);
 
 // Прутья решётки
+const ventBars = [];
 for (let i = -3; i <= 3; i++) {
   const bar = new THREE.Mesh(
     new THREE.BoxGeometry(0.5, 0.02, 0.05),
@@ -226,15 +330,136 @@ for (let i = -3; i <= 3; i++) {
   bar.position.set(ROOM_W / 2 - 0.015, HEIGHT - 0.6 + i * 0.045, -1.5);
   bar.rotation.y = -Math.PI / 2;
   scene.add(bar);
+  ventBars.push(bar);
 }
 
-// --- Деталь: трещина на полу (плоская чёрная полоска) ---
+// --- Трещина на полу ---
 const crackMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
 const crack = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.03), crackMat);
 crack.rotation.x = -Math.PI / 2;
 crack.rotation.z = Math.PI / 5;
 crack.position.set(0.8, 0.011, 0.9);
 scene.add(crack);
+
+
+/* =========================================================
+   ===== НОВОЕ #1: СВЕТ И ЛУЧИ ИЗ ВЕНТИЛЯЦИИ =====
+   ========================================================= */
+
+// Точечный свет из вентиляции (направленный прожектор вглубь комнаты)
+const ventLight = new THREE.SpotLight(0x9fd8ff, 0, 18, Math.PI / 3.5, 0.55, 1.5);
+ventLight.position.set(ROOM_W / 2 - 0.1, HEIGHT - 0.6, -1.5);
+ventLight.target.position.set(-ROOM_W / 2, HEIGHT - 1.0, -1.5);
+ventLight.castShadow = true;
+ventLight.shadow.mapSize.set(1024, 1024);
+ventLight.shadow.bias = -0.0005;
+scene.add(ventLight);
+scene.add(ventLight.target);
+
+// Группа видимых лучей
+const beamGroup = new THREE.Group();
+beamGroup.visible = false;
+scene.add(beamGroup);
+
+// Мягкое общее свечение (конус)
+const softBeamMat = new THREE.MeshBasicMaterial({
+  color: 0xbbddff, transparent: true, opacity: 0.07,
+  blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
+});
+const softBeamGeo = new THREE.ConeGeometry(1.5, ROOM_W - 0.15, 24, 1, true);
+const softBeam = new THREE.Mesh(softBeamGeo, softBeamMat);
+softBeam.rotation.z = -Math.PI / 2; // конус направлен по -X
+softBeam.position.set(-0.02, HEIGHT - 0.6, -1.5);
+beamGroup.add(softBeam);
+
+// Тонкие лучи из вентиляции до противоположной стены
+const ventOrigin = new THREE.Vector3(ROOM_W / 2 - 0.1, HEIGHT - 0.6, -1.5);
+const rayMat = new THREE.MeshBasicMaterial({
+  color: 0xddeeff, transparent: true, opacity: 0.22,
+  blending: THREE.AdditiveBlending, depthWrite: false
+});
+
+const NUM_RAYS = 9;
+for (let i = 0; i < NUM_RAYS; i++) {
+  const a = (i / NUM_RAYS) * Math.PI * 2;
+  const spreadY = Math.cos(a) * 0.85;
+  const spreadZ = Math.sin(a) * 0.85;
+
+  const start = ventOrigin.clone();
+  const end = new THREE.Vector3(
+    -ROOM_W / 2 + 0.15,
+    HEIGHT - 0.6 + spreadY,
+    -1.5 + spreadZ
+  );
+
+  const dir = end.clone().sub(start);
+  const len = dir.length();
+
+  const rayGeo = new THREE.CylinderGeometry(0.028, 0.008, len, 6, 1, true);
+  const ray = new THREE.Mesh(rayGeo, rayMat);
+
+  const mid = start.clone().add(end).multiplyScalar(0.5);
+  ray.position.copy(mid);
+
+  const up = new THREE.Vector3(0, 1, 0);
+  ray.quaternion.setFromUnitVectors(up, dir.clone().normalize());
+
+  beamGroup.add(ray);
+}
+
+
+/* =========================================================
+   ===== НОВОЕ #2: ПЕРЕКЛЮЧАТЕЛЬ СВЕТА =====
+   ========================================================= */
+
+let lightOn = true;
+const lightBtn = document.getElementById('lightSwitch');
+
+function toggleLight() {
+  lightOn = !lightOn;
+
+  if (lightOn) {
+    // Свет включён — горит лампа, вентиляция тусклая
+    bulb.intensity = 6;
+    bulbMesh.material.color.setHex(0xffeec0);
+    ambient.intensity = 0.35;
+    ventLight.intensity = 0;
+    beamGroup.visible = false;
+    ventMat.emissive.setHex(0x000000);
+    ventMat.emissiveIntensity = 0;
+    lightBtn.textContent = '💡 Свет ВКЛ';
+    lightBtn.classList.remove('off');
+  } else {
+    // Свет выключен — темнота, свет идёт из вентиляции
+    bulb.intensity = 0;
+    bulbMesh.material.color.setHex(0x222222);
+    ambient.intensity = 0.06;
+    ventLight.intensity = 14;
+    beamGroup.visible = true;
+    ventMat.emissive.setHex(0xaaddff);
+    ventMat.emissiveIntensity = 1.2;
+    lightBtn.textContent = '🔌 Свет ВЫКЛ';
+    lightBtn.classList.add('off');
+  }
+}
+
+lightBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleLight();
+});
+
+// Клавиша F — работает и когда курсор захвачен
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'KeyF') toggleLight();
+});
+
+
+/* =========================================================
+   ===== НОВОЕ #3: ССЫЛКИ НА РУКИ ДЛЯ АНИМАЦИИ =====
+   ========================================================= */
+const handLeftEl  = document.getElementById('handLeft');
+const handRightEl = document.getElementById('handRight');
+
 
 // --- Управление от первого лица ---
 const keys = {};
@@ -252,7 +477,6 @@ const player = {
 addEventListener('keydown', e => keys[e.code] = true);
 addEventListener('keyup',   e => keys[e.code] = false);
 
-// Захват мыши
 const lockEl = document.getElementById('lock');
 lockEl.addEventListener('click', () => renderer.domElement.requestPointerLock());
 
@@ -290,21 +514,34 @@ function update(dt) {
   player.pos.x += player.vel.x * dt;
   player.pos.z += player.vel.z * dt;
 
-  // Стены: удерживаем игрока внутри
   const limX = ROOM_W / 2 - PLAYER_RADIUS;
   const limZ = ROOM_D / 2 - PLAYER_RADIUS;
   player.pos.x = Math.max(-limX, Math.min(limX, player.pos.x));
   player.pos.z = Math.max(-limZ, Math.min(limZ, player.pos.z));
 
-  // Камера
   camera.position.copy(player.pos);
   camera.rotation.order = 'YXZ';
   camera.rotation.y = player.yaw;
   camera.rotation.x = player.pitch;
 
-  // Лёгкое дыхание камеры (покачивание) — усиливает клаустрофобию
   const t = clock.getElapsedTime();
   camera.position.y += Math.sin(t * 1.5) * 0.008;
+
+  /* ===== НОВОЕ: анимация рук при ходьбе ===== */
+  const walking = move.lengthSq() > 0;
+  const bobFreq   = walking ? 9 : 1.5;
+  const bobAmpY   = walking ? 11 : 2;
+  const bobAmpX   = walking ? 6  : 1;
+  const swingAmp  = walking ? 5  : 1;
+
+  const bobY  = Math.sin(t * bobFreq) * bobAmpY;
+  const bobX  = Math.sin(t * bobFreq * 0.5) * bobAmpX;
+  const swing = Math.sin(t * bobFreq) * swingAmp;
+
+  handLeftEl.style.transform  =
+    `rotate(${-8 + swing}deg) translate(${bobX}px, ${bobY}px)`;
+  handRightEl.style.transform =
+    `rotate(${ 8 - swing}deg) translate(${-bobX}px, ${bobY}px)`;
 }
 
 function animate() {
