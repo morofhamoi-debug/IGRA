@@ -1,382 +1,371 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="light">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>VEXA — Общение без границ</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>VEXA — Messenger</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%236C5CE7'/><text x='50' y='68' font-size='60' font-weight='800' fill='white' text-anchor='middle' font-family='Arial'>V</text></svg>"/>
 <style>
-/* ================= THEME ================= */
 :root{
-  --accent:#6C5CE7; --accent-2:#8E7BFF;
-  --bg:#F5F6FA; --surface:#FFFFFF; --surface-2:#EEF0F6;
-  --text:#0F1320; --text-2:#6B7280; --border:#E5E7EB;
-  --bubble:#6C5CE7; --danger:#EF4444; --ok:#22C55E;
-  --radius:16px; --radius-lg:22px;
-  --font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --accent:#6C5CE7;--accent2:#8E7BFF;
+  --bg:#F5F6FA;--surface:#fff;--surface2:#EEF0F6;--surface3:#E2E5EE;
+  --text:#0F1320;--text2:#6B7280;--border:#E5E7EB;
+  --danger:#EF4444;--ok:#22C55E;--warn:#F59E0B;
+  --bubble-me:#6C5CE7;--bubble-me-text:#fff;--bubble-other:#fff;
+  --r:14px;--r-lg:22px;
+  --font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --anim:1;
 }
 [data-theme="dark"]{
-  --bg:#0B0F1A; --surface:#131826; --surface-2:#1B2233;
-  --text:#E8EAF2; --text-2:#8A91A6; --border:#242B3D;
+  --bg:#0B0F1A;--surface:#131826;--surface2:#1B2233;--surface3:#232B40;
+  --text:#E8EAF2;--text2:#8A91A6;--border:#242B3D;
+  --bubble-other:#1B2233;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font:var(--font);background:var(--bg);color:var(--text);overflow:hidden}
-button,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer;border:0;background:none}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg)}
-.screen.active{display:flex;animation:fade .25s ease}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+html[data-anim="0"] *{transition:none!important;animation:none!important}
+button,input,textarea,select{font:inherit;color:inherit;background:none;border:0;outline:none}
+button{cursor:pointer}
+a{color:var(--accent);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+svg{display:block}
 .hidden{display:none!important}
 
-/* ================= COMMON ================= */
-.btn-primary{
-  width:100%;padding:16px;border-radius:var(--radius);
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  color:#fff;font-weight:600;font-size:16px;
-  transition:transform .12s, opacity .12s;
-}
-.btn-primary:active{transform:scale(.98)}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.btn-ghost{color:var(--text-2);padding:12px}
-.link{color:var(--accent);text-decoration:none;cursor:pointer}
-.link:hover{text-decoration:underline}
-.field{
-  width:100%;padding:14px 16px;border-radius:14px;
-  background:var(--surface-2);border:1px solid transparent;
-  outline:none;transition:border-color .15s;
-}
+/* Screens */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg);overflow:hidden}
+.screen.active{display:flex;animation:fs .22s ease}
+@keyframes fs{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Common */
+.btn{width:100%;padding:15px;border-radius:var(--r);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;font-size:16px;transition:transform .1s,opacity .15s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-2{background:var(--surface2);color:var(--text)}
+.btn-danger{background:var(--danger)}
+.btn-sm{padding:9px 16px;font-size:14px;width:auto;border-radius:11px}
+.field{width:100%;padding:14px;border-radius:var(--r);background:var(--surface2);border:1px solid transparent;transition:border-color .15s}
 .field:focus{border-color:var(--accent)}
-.label{font-size:13px;color:var(--text-2);margin:0 4px 6px}
+.lbl{font-size:13px;color:var(--text2);margin:0 4px 6px;display:block}
+.icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--text2);flex-shrink:0;transition:background .15s,color .15s}
+.icon-btn:hover{background:var(--surface2);color:var(--text)}
+.icon-btn:active{background:var(--surface3)}
+.row{display:flex;align-items:center;gap:10px}
+.spacer{flex:1}
+.avatar{border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden;user-select:none}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.av-32{width:32px;height:32px;font-size:13px}
+.av-40{width:40px;height:40px;font-size:15px}
+.av-54{width:54px;height:54px;font-size:20px}
+.av-72{width:72px;height:72px;font-size:26px}
+.av-96{width:96px;height:96px;font-size:34px}
 
-/* ================= WELCOME ================= */
-#screen-welcome{align-items:center;justify-content:center;padding:32px;text-align:center}
-.logo-wrap{margin-bottom:24px;animation:pop .7s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
-.logo-mark{width:96px;height:96px;border-radius:26px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  display:grid;place-items:center;color:#fff;font-weight:800;font-size:44px;
-  box-shadow:0 18px 44px rgba(108,92,231,.4);position:relative}
-.logo-mark::after{content:"";position:absolute;inset:8px;border-radius:20px;
-  border:2px solid rgba(255,255,255,.25)}
-.brand{font-size:38px;font-weight:800;letter-spacing:6px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-.slogan{color:var(--text-2);margin-top:6px;font-size:15px}
-.welcome-actions{width:100%;max-width:380px;margin-top:40px}
-.welcome-actions .btn-primary{padding:18px}
-.legal{color:var(--text-2);font-size:12px;margin-top:20px;max-width:360px}
-.legal a{color:var(--accent);text-decoration:none}
-.lang-select{margin-top:20px;display:flex;gap:8px;justify-content:center}
-.lang-select button{padding:8px 14px;border-radius:10px;background:var(--surface-2);
-  color:var(--text-2);font-size:13px}
-.lang-select button.on{background:var(--accent);color:#fff}
+/* Welcome */
+#welcome{align-items:center;justify-content:center;padding:32px;text-align:center}
+.logo{width:104px;height:104px;border-radius:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:52px;box-shadow:0 20px 46px rgba(108,92,231,.42);position:relative;animation:pop .7s cubic-bezier(.2,.9,.3,1.2)}
+.logo::after{content:"";position:absolute;inset:9px;border-radius:20px;border:2px solid rgba(255,255,255,.28)}
+@keyframes pop{from{opacity:0;transform:scale(.5) rotate(-8deg)}to{opacity:1;transform:none}}
+.brand{font-size:42px;font-weight:800;letter-spacing:8px;margin-top:24px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.slogan{color:var(--text2);margin-top:6px;font-size:15px}
+.welcome-box{width:100%;max-width:400px;margin-top:36px}
+.welcome-box .btn{padding:17px;font-size:17px}
+.lang-toggle{display:inline-flex;gap:4px;margin-top:22px;background:var(--surface2);padding:4px;border-radius:12px}
+.lang-toggle button{padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;color:var(--text2)}
+.lang-toggle button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.legal{color:var(--text2);font-size:12px;margin-top:20px;max-width:360px;line-height:1.5}
 
-/* ================= AUTH ================= */
-#screen-auth{padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
-.auth-top{display:flex;justify-content:space-between;align-items:center}
-.auth-title{font-size:26px;font-weight:700;margin:32px 0 8px}
-.auth-sub{color:var(--text-2);margin-bottom:24px;font-size:14px}
+/* Auth */
+.auth{padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
+.auth .top{display:flex;justify-content:space-between;align-items:center;min-height:40px}
+.auth-title{font-size:26px;font-weight:700;margin:24px 0 8px}
+.auth-sub{color:var(--text2);margin-bottom:24px;font-size:14px}
 .phone-row{display:flex;gap:10px}
-.country-btn{
-  display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;
-  border-radius:14px;background:var(--surface-2);border:1px solid transparent;
-  white-space:nowrap;
-}
-.phone-input{flex:1;height:52px;font-size:17px;letter-spacing:.5px}
+.country-btn{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:var(--r);background:var(--surface2);white-space:nowrap;font-weight:600}
+#phoneInput{flex:1;height:52px;font-size:17px;letter-spacing:.4px}
+.hint{font-size:12px;color:var(--text2);margin-top:6px}
+.err{font-size:12px;color:var(--danger);margin-top:6px;min-height:14px}
 
 /* OTP */
-.otp-wrap{display:flex;gap:10px;margin:24px 0}
-.otp-cell{
-  flex:1;height:58px;text-align:center;font-size:24px;font-weight:700;
-  background:var(--surface-2);border:1.5px solid transparent;
-  border-radius:14px;outline:none;
-}
+.otp-wrap{display:flex;gap:8px;margin:20px 0}
+.otp-cell{flex:1;height:56px;text-align:center;font-size:22px;font-weight:700;background:var(--surface2);border:1.5px solid transparent;border-radius:var(--r)}
 .otp-cell:focus{border-color:var(--accent)}
-.otp-meta{color:var(--text-2);font-size:13px;display:flex;justify-content:space-between;margin-top:8px}
-.otp-meta a{color:var(--accent)}
-.otp-meta a.disabled{color:var(--text-2);cursor:not-allowed}
+.otp-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-top:6px}
+.otp-meta a.disabled{color:var(--text2);cursor:not-allowed;text-decoration:none}
+.code-banner{background:var(--surface2);border:1px dashed var(--accent);color:var(--text);padding:12px;border-radius:12px;margin-top:14px;font-size:13px;line-height:1.5}
+.code-banner strong{color:var(--accent);letter-spacing:2px;font-size:16px}
 
-/* ================= APP SHELL ================= */
-#screen-app{display:none;flex-direction:row;background:var(--bg)}
-#screen-app.active{display:flex}
-.sidebar{
-  width:min(340px,100%);flex-shrink:0;background:var(--surface);
-  border-right:1px solid var(--border);display:flex;flex-direction:column;
-}
-.app-header{
-  display:flex;align-items:center;gap:12px;padding:14px 16px;
-  border-bottom:1px solid var(--border);
-}
-.app-header .logo-mini{width:34px;height:34px;border-radius:10px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px}
-.app-header .brand-mini{font-weight:800;letter-spacing:3px;font-size:15px}
-.app-header .spacer{flex:1}
-.icon-btn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
-  color:var(--text-2);transition:background .15s}
-.icon-btn:hover{background:var(--surface-2);color:var(--text)}
-.icon-btn:active{transform:scale(.94)}
-
-.tabs{display:flex;gap:6px;padding:10px 12px;overflow-x:auto;
-  border-bottom:1px solid var(--border);scrollbar-width:none}
+/* App shell */
+#app{display:none;flex-direction:row}
+#app.active{display:flex}
+.sidebar{width:min(360px,100%);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.app-header{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border);min-height:60px}
+.logo-mini{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0}
+.brand-mini{font-weight:800;letter-spacing:3px;font-size:15px;margin-left:4px}
+.tabs{display:flex;gap:4px;padding:8px 10px;overflow-x:auto;border-bottom:1px solid var(--border);scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{padding:8px 14px;border-radius:20px;background:transparent;color:var(--text-2);
-  font-size:13px;white-space:nowrap;font-weight:500;transition:all .15s}
+.tab{padding:8px 14px;border-radius:18px;font-size:13px;font-weight:500;color:var(--text2);white-space:nowrap;transition:background .15s,color .15s}
+.tab:hover{background:var(--surface2)}
 .tab.on{background:var(--accent);color:#fff}
+.list{flex:1;overflow-y:auto;padding:4px 0}
+.chat-row{display:flex;gap:12px;padding:12px 14px;cursor:pointer;align-items:center;transition:background .12s}
+.chat-row:hover{background:var(--surface2)}
+.chat-row.active{background:var(--surface3)}
+.chat-meta{flex:1;min-width:0}
+.chat-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.chat-preview{color:var(--text2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.chat-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.chat-time{font-size:11px;color:var(--text2)}
+.badge{background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px;min-width:20px;text-align:center}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 24px;color:var(--text2);height:100%}
+.chat-empty svg{opacity:.35;margin-bottom:16px;color:var(--accent)}
+.chat-empty h3{color:var(--text);font-size:17px;font-weight:600;margin-bottom:8px}
+.chat-empty p{font-size:14px;max-width:280px;margin-bottom:20px;line-height:1.5}
 
-.list{flex:1;overflow-y:auto;padding:8px 0}
-.empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100%;padding:32px;text-align:center;color:var(--text-2);
-}
-.empty svg{opacity:.4;margin-bottom:16px}
-.empty h3{color:var(--text);font-size:17px;margin-bottom:8px;font-weight:600}
-.empty p{font-size:14px;margin-bottom:18px;max-width:280px}
-.empty button{padding:12px 22px;border-radius:14px;background:var(--accent);color:#fff;
-  font-weight:600}
+/* Chat view */
+.chat-view{flex:1;display:flex;flex-direction:column;background:var(--bg);min-width:0}
+.chat-top{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);min-height:60px}
+.chat-top-info{flex:1;min-width:0;cursor:pointer}
+.chat-top-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-top-status{font-size:12px;color:var(--text2)}
+.msgs{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:4px}
+.day-sep{align-self:center;font-size:11px;color:var(--text2);background:var(--surface2);padding:3px 10px;border-radius:10px;margin:8px 0;text-transform:uppercase;letter-spacing:.5px}
+.msg{max-width:min(72%,480px);padding:8px 12px;border-radius:14px;font-size:14.5px;line-height:1.4;word-wrap:break-word;position:relative;align-self:flex-start;background:var(--bubble-other);border:1px solid var(--border)}
+.msg.me{align-self:flex-end;background:var(--bubble-me);color:var(--bubble-me-text);border-color:transparent}
+.msg.reply{border-left:3px solid var(--accent)}
+.msg .quote{font-size:12px;opacity:.85;border-left:2px solid currentColor;padding:2px 8px;margin-bottom:4px;border-radius:4px;background:rgba(255,255,255,.15)}
+.msg.me .quote{background:rgba(255,255,255,.15)}
+.msg .meta{font-size:10.5px;opacity:.75;margin-top:4px;text-align:right;display:flex;justify-content:flex-end;gap:6px;align-items:center}
+.msg .meta .edited{font-style:italic}
+.msg .reactions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.msg .react{background:rgba(255,255,255,.2);padding:2px 7px;border-radius:10px;font-size:12px;display:flex;gap:3px;align-items:center;cursor:pointer;border:1px solid transparent}
+.msg:not(.me) .react{background:var(--surface2);color:var(--text)}
+.msg .react.mine{border-color:var(--accent)}
+.msg.actions-open .msg-actions{display:flex}
+.msg-actions{position:absolute;top:-14px;right:8px;display:none;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2px;box-shadow:0 4px 14px rgba(0,0,0,.12);z-index:5}
+.msg.me .msg-actions{right:auto;left:8px}
+.msg-actions button{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--text2)}
+.msg-actions button:hover{background:var(--surface2);color:var(--text)}
+.empty-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:32px;text-align:center;color:var(--text2)}
+.empty-chat h3{color:var(--text);font-size:17px;margin:14px 0 8px;font-weight:600}
+.empty-chat p{font-size:14px;max-width:300px}
 
-.chat-main{
-  flex:1;display:flex;flex-direction:column;background:var(--bg);
-  align-items:center;justify-content:center;padding:32px;text-align:center;
-  color:var(--text-2);
-}
+/* Composer */
+.composer{padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border)}
+.reply-bar{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--surface2);border-radius:10px;margin-bottom:8px;font-size:13px}
+.reply-bar.on{display:flex}
+.reply-bar .spacer{flex:1}
+.composer-row{display:flex;gap:8px;align-items:flex-end}
+.composer textarea{flex:1;padding:12px 14px;background:var(--surface2);border-radius:20px;resize:none;max-height:140px;min-height:44px;font-size:15px;line-height:1.4;border:1px solid transparent}
+.composer textarea:focus{border-color:var(--accent)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;flex-shrink:0}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+.side-btn{width:44px;height:44px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;color:var(--text2);flex-shrink:0}
+.side-btn:hover{background:var(--surface3);color:var(--text)}
 
-/* ================= SIDEBAR MENU ================= */
-.drawer-backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;
-  transition:opacity .25s;z-index:50;
-}
-.drawer-backdrop.open{opacity:1;pointer-events:auto}
-.drawer{
-  position:fixed;top:0;left:0;bottom:0;width:min(320px,85vw);
-  background:var(--surface);z-index:60;transform:translateX(-100%);
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
-  display:flex;flex-direction:column;
-  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
-}
+/* Drawer */
+.drawer-bd{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:50}
+.drawer-bd.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(320px,86vw);background:var(--surface);z-index:60;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 .drawer.open{transform:none}
 .drawer-head{padding:20px;border-bottom:1px solid var(--border)}
-.drawer-user{display:flex;align-items:center;gap:14px}
-.avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;flex-shrink:0}
-.avatar.sm{width:42px;height:42px;font-size:16px}
-.avatar.lg{width:96px;height:96px;font-size:34px}
-.user-meta{min-width:0}
-.user-name{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-sub{color:var(--text-2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .drawer-list{flex:1;overflow-y:auto;padding:8px}
-.drawer-item{
-  display:flex;align-items:center;gap:14px;padding:12px 14px;
-  border-radius:12px;color:var(--text);width:100%;text-align:left;
-  transition:background .12s;
-}
-.drawer-item:hover{background:var(--surface-2)}
-.drawer-item svg{color:var(--text-2);flex-shrink:0}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;width:100%;text-align:left;transition:background .12s;font-size:14.5px}
+.drawer-item:hover{background:var(--surface2)}
+.drawer-item svg{color:var(--text2);flex-shrink:0}
 .drawer-item.danger{color:var(--danger)}
 .drawer-item.danger svg{color:var(--danger)}
-.drawer-sep{height:1px;background:var(--border);margin:8px 14px}
+.drawer-sep{height:1px;background:var(--border);margin:6px 14px}
 
-/* ================= MODAL ================= */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);
-  display:none;align-items:center;justify-content:center;z-index:80;padding:20px}
-.modal-backdrop.open{display:flex;animation:fade .2s}
-.modal{background:var(--surface);border-radius:var(--radius-lg);
-  width:100%;max-width:440px;max-height:85vh;overflow-y:auto;padding:24px}
-.modal h2{font-size:20px;margin-bottom:18px}
-.modal-row{display:flex;justify-content:space-between;align-items:center;
-  padding:14px 0;border-bottom:1px solid var(--border)}
-.modal-row:last-of-type{border-bottom:0}
-.modal-row .label-block{flex:1;padding-right:12px}
-.modal-row .label-block small{display:block;color:var(--text-2);font-size:12px;margin-top:2px}
-.switch{width:48px;height:28px;border-radius:20px;background:var(--surface-2);
-  position:relative;transition:background .2s;flex-shrink:0}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;
-  border-radius:50%;background:#fff;transition:transform .2s;
-  box-shadow:0 2px 6px rgba(0,0,0,.2)}
+/* Modal */
+.modal-bd{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:80;padding:20px}
+.modal-bd.open{display:flex;animation:fs .2s}
+.modal{background:var(--surface);border-radius:var(--r-lg);width:100%;max-width:460px;max-height:86vh;overflow-y:auto;padding:22px}
+.modal h2{font-size:19px;font-weight:700;margin-bottom:16px}
+.modal-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);gap:12px}
+.modal-row:last-child{border-bottom:0}
+.modal-row .lbl-block{flex:1;min-width:0}
+.modal-row .lbl-block small{display:block;color:var(--text2);font-size:12px;margin-top:2px}
+.switch{width:46px;height:27px;border-radius:20px;background:var(--surface3);position:relative;transition:background .2s;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .switch.on{background:var(--accent)}
-.switch.on::after{transform:translateX(20px)}
-.seg{display:flex;background:var(--surface-2);border-radius:12px;padding:4px}
-.seg button{padding:8px 14px;border-radius:8px;font-size:13px;color:var(--text-2)}
+.switch.on::after{transform:translateX(19px)}
+.seg{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:2px}
+.seg button{padding:8px 14px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text2);transition:background .15s}
 .seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.search-box{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--surface2);border-radius:12px;margin-bottom:12px}
+.search-box input{flex:1;font-size:14px}
+.result-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;transition:background .12s}
+.result-item:hover{background:var(--surface2)}
 
-/* toast */
-#toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);
-  background:#1F2937;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;
-  opacity:0;pointer-events:none;transition:all .25s;z-index:100;max-width:90vw}
+/* Context menu */
+.ctx{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:6px;min-width:190px;z-index:90;display:none}
+.ctx.open{display:block;animation:fs .15s}
+.ctx button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:8px;font-size:14px;text-align:left}
+.ctx button:hover{background:var(--surface2)}
+.ctx button.danger{color:var(--danger)}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:#1F2937;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:200;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--danger)}
+#toast.ok{background:var(--ok)}
 
-/* mobile */
-@media (max-width:800px){
+@media (max-width:820px){
   .sidebar{width:100%;border-right:0}
-  .chat-main{display:none}
+  #app .chat-view{display:none}
+  #app.chat-open .sidebar{display:none}
+  #app.chat-open .chat-view{display:flex}
 }
 </style>
 </head>
 <body>
 
 <!-- ========== WELCOME ========== -->
-<section id="screen-welcome" class="screen active">
-  <div class="logo-wrap">
-    <div class="logo-mark">V</div>
-  </div>
+<section id="welcome" class="screen active">
+  <div class="logo">V</div>
   <div class="brand">VEXA</div>
-  <div class="slogan" id="welcome-slogan">Общение без границ</div>
-
-  <div class="welcome-actions">
-    <button class="btn-primary" id="btn-start">Начать</button>
-    <div class="lang-select" id="lang-select">
+  <div class="slogan" data-i18n="welcome.slogan">Общение без границ</div>
+  <div class="welcome-box">
+    <button class="btn" id="btnStart" data-i18n="welcome.start">Начать</button>
+    <div class="lang-toggle" id="langWelcome">
       <button data-lang="ru" class="on">Русский</button>
       <button data-lang="en">English</button>
     </div>
   </div>
-
-  <div class="legal" id="welcome-legal">
-    Продолжая, вы принимаете <a href="#" id="link-privacy">Политику конфиденциальности</a>
-    и <a href="#" id="link-terms">Пользовательское соглашение</a>.
-  </div>
+  <div class="legal" data-i18n="welcome.legal">Продолжая, вы принимаете условия использования и политику конфиденциальности.</div>
 </section>
 
-<!-- ========== AUTH (PHONE) ========== -->
-<section id="screen-auth" class="screen">
-  <div class="auth-top">
-    <button class="icon-btn" id="auth-back" aria-label="Назад">
+<!-- ========== AUTH: PHONE ========== -->
+<section id="auth" class="screen auth">
+  <div class="top">
+    <button class="icon-btn" id="authBack" aria-label="Назад">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button class="btn-ghost link" id="auth-to-login">Уже есть аккаунт?</button>
+    <button class="btn-2 btn-sm" id="authToLogin" data-i18n="auth.have">Уже есть аккаунт?</button>
   </div>
-
-  <h1 class="auth-title" id="auth-title">Введите номер телефона</h1>
-  <p class="auth-sub" id="auth-sub">Мы отправим SMS с кодом подтверждения</p>
-
-  <label class="label">Номер телефона</label>
+  <h1 class="auth-title" id="authTitle" data-i18n="auth.title">Введите номер телефона</h1>
+  <p class="auth-sub" id="authSub" data-i18n="auth.sub">Мы отправим SMS с кодом</p>
+  <label class="lbl" data-i18n="auth.phone">Номер телефона</label>
   <div class="phone-row">
-    <button class="country-btn" id="country-btn" aria-label="Страна">
-      <span id="country-flag">🇷🇺</span><span id="country-code">+7</span>
-    </button>
-    <input class="field phone-input" id="phone" type="tel" inputmode="numeric"
-           autocomplete="tel" placeholder="+7 (___) ___-__-__" />
+    <button class="country-btn" id="countryBtn">🇷🇺 +7</button>
+    <input class="field" id="phoneInput" type="tel" inputmode="numeric" autocomplete="tel" placeholder="+7 (___) ___-__-__"/>
   </div>
-  <div class="otp-meta" style="margin-top:8px">
-    <span id="phone-hint">11 цифр, начиная с +7</span>
-  </div>
-
-  <div style="margin-top:24px">
-    <button class="btn-primary" id="btn-send-code" disabled>Продолжить</button>
-  </div>
-
-  <div class="legal" style="margin-top:auto" id="auth-legal">
-    Нажимая «Продолжить», вы соглашаетесь с условиями использования.
-  </div>
+  <div class="hint" data-i18n="auth.hint">11 цифр, начиная с +7</div>
+  <div class="err" id="phoneErr"></div>
+  <button class="btn" id="btnSendCode" disabled style="margin-top:14px" data-i18n="auth.continue">Продолжить</button>
 </section>
 
 <!-- ========== OTP ========== -->
-<section id="screen-otp" class="screen" style="padding:24px;padding-top:max(24px,env(safe-area-inset-top))">
-  <div class="auth-top">
-    <button class="icon-btn" id="otp-back" aria-label="Назад">
+<section id="otp" class="screen auth">
+  <div class="top">
+    <button class="icon-btn" id="otpBack" aria-label="Назад">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
   </div>
-  <h1 class="auth-title" id="otp-title">Введите код</h1>
-  <p class="auth-sub" id="otp-sub">Мы отправили SMS на номер</p>
-
-  <div class="otp-wrap" id="otp-wrap">
-    <input class="otp-cell" maxlength="1" inputmode="numeric" />
-    <input class="otp-cell" maxlength="1" inputmode="numeric" />
-    <input class="otp-cell" maxlength="1" inputmode="numeric" />
-    <input class="otp-cell" maxlength="1" inputmode="numeric" />
-    <input class="otp-cell" maxlength="1" inputmode="numeric" />
-    <input class="otp-cell" maxlength="1" inputmode="numeric" />
+  <h1 class="auth-title" data-i18n="otp.title">Введите код</h1>
+  <p class="auth-sub" id="otpSub">—</p>
+  <div class="otp-wrap" id="otpWrap">
+    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
   </div>
   <div class="otp-meta">
-    <a id="otp-change">Изменить номер</a>
-    <a id="otp-resend" class="disabled">Отправить снова через <span id="otp-timer">60</span>с</a>
+    <a id="otpChange" data-i18n="otp.change">Изменить номер</a>
+    <a id="otpResend" class="disabled"><span data-i18n="otp.resend">Отправить снова через</span> <span id="otpTimer">60</span>с</a>
   </div>
-
-  <div style="margin-top:24px">
-    <button class="btn-primary" id="btn-verify" disabled>Подтвердить</button>
-  </div>
+  <div class="code-banner" id="codeBanner"></div>
+  <button class="btn" id="btnVerify" disabled style="margin-top:14px" data-i18n="otp.confirm">Подтвердить</button>
 </section>
 
-<!-- ========== NAME (NEW USER) ========== -->
-<section id="screen-name" class="screen" style="padding:24px;padding-top:max(24px,env(safe-area-inset-top))">
-  <h1 class="auth-title" id="name-title">Как вас зовут?</h1>
-  <p class="auth-sub" id="name-sub">Это увидят другие пользователи VEXA</p>
-
-  <label class="label">Имя *</label>
-  <input class="field" id="inp-name" placeholder="Иван" autocomplete="given-name" style="margin-bottom:14px"/>
-
-  <label class="label">Фамилия</label>
-  <input class="field" id="inp-surname" placeholder="Иванов" autocomplete="family-name" style="margin-bottom:14px"/>
-
-  <label class="label">Username (необязательно)</label>
-  <input class="field" id="inp-username" placeholder="ivan_vexa" style="margin-bottom:6px"/>
-  <div class="label" id="username-status" style="margin:0 4px 14px;min-height:16px"></div>
-
-  <button class="btn-primary" id="btn-create" disabled>Создать аккаунт</button>
+<!-- ========== NAME ========== -->
+<section id="nameScreen" class="screen auth">
+  <h1 class="auth-title" data-i18n="name.title">Как вас зовут?</h1>
+  <p class="auth-sub" data-i18n="name.sub">Это увидят другие пользователи VEXA</p>
+  <label class="lbl" data-i18n="name.first">Имя *</label>
+  <input class="field" id="inpName" autocomplete="given-name" style="margin-bottom:12px"/>
+  <label class="lbl" data-i18n="name.last">Фамилия</label>
+  <input class="field" id="inpSurname" autocomplete="family-name" style="margin-bottom:12px"/>
+  <label class="lbl" data-i18n="name.user">Username</label>
+  <input class="field" id="inpUsername" placeholder="username"/>
+  <div class="hint" id="usernameHint" style="min-height:16px"></div>
+  <button class="btn" id="btnCreate" disabled style="margin-top:14px" data-i18n="name.create">Создать аккаунт</button>
 </section>
 
 <!-- ========== APP ========== -->
-<section id="screen-app" class="screen">
+<section id="app" class="screen">
   <aside class="sidebar">
     <header class="app-header">
-      <button class="icon-btn" id="btn-menu" aria-label="Меню">
+      <button class="icon-btn" id="btnMenu" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <div class="logo-mini">V</div>
       <div class="brand-mini">VEXA</div>
       <div class="spacer"></div>
-      <button class="icon-btn" id="btn-search" aria-label="Поиск">
+      <button class="icon-btn" id="btnSearch" aria-label="Search">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       </button>
-      <button class="icon-btn" id="btn-new" aria-label="Новый чат">
+      <button class="icon-btn" id="btnNewChat" aria-label="New chat">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       </button>
     </header>
-
     <nav class="tabs" id="tabs">
-      <button class="tab on" data-tab="all">Все</button>
-      <button class="tab" data-tab="personal">Личные</button>
-      <button class="tab" data-tab="groups">Группы</button>
-      <button class="tab" data-tab="channels">Каналы</button>
-      <button class="tab" data-tab="unread">Непрочитанные</button>
-      <button class="tab" data-tab="saved">Избранное</button>
+      <button class="tab on" data-tab="all" data-i18n="tab.all">Все</button>
+      <button class="tab" data-tab="personal" data-i18n="tab.personal">Личные</button>
+      <button class="tab" data-tab="group" data-i18n="tab.groups">Группы</button>
+      <button class="tab" data-tab="channel" data-i18n="tab.channels">Каналы</button>
+      <button class="tab" data-tab="unread" data-i18n="tab.unread">Непрочитанные</button>
+      <button class="tab" data-tab="saved" data-i18n="tab.saved">Избранное</button>
     </nav>
-
-    <div class="list" id="chat-list">
-      <div class="empty" id="empty-chats">
-        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-        </svg>
-        <h3 id="empty-title">У вас пока нет чатов</h3>
-        <p id="empty-sub">Начните общение — найдите пользователя или создайте группу.</p>
-        <button id="empty-action">Начать новый чат</button>
-      </div>
-    </div>
+    <div class="list" id="chatList"></div>
   </aside>
 
-  <main class="chat-main" id="chat-main">
-    <svg width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-    </svg>
-    <h3 style="color:var(--text);font-size:18px;margin:14px 0 8px">Выберите чат</h3>
-    <p style="font-size:14px">Откройте существующий диалог или начните новый</p>
+  <main class="chat-view" id="chatView">
+    <div class="chat-top" id="chatTop" style="display:none"></div>
+    <div class="msgs" id="msgs"></div>
+    <div class="composer" id="composer" style="display:none">
+      <div class="reply-bar" id="replyBar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg>
+        <span id="replyText" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <button class="icon-btn" style="width:32px;height:32px" id="replyCancel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="composer-row">
+        <button class="side-btn" id="btnAttach" title="Attach">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.4 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <button class="side-btn" id="btnEmoji" title="Emoji">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+        </button>
+        <textarea id="msgInput" placeholder="Сообщение..." rows="1" maxlength="4000"></textarea>
+        <button class="send-btn" id="btnSend" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="empty-chat" id="noChatOpen">
+      <svg width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <h3 data-i18n="chat.pick">Выберите чат</h3>
+      <p data-i18n="chat.pick_sub">Откройте существующий диалог или начните новый</p>
+    </div>
   </main>
 </section>
 
 <!-- ========== DRAWER ========== -->
-<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer-bd" id="drawerBd"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
-    <div class="drawer-user">
-      <div class="avatar" id="drawer-avatar">?</div>
-      <div class="user-meta">
-        <div class="user-name" id="drawer-name">—</div>
-        <div class="user-sub" id="drawer-username">@—</div>
+    <div class="row">
+      <div class="avatar av-54" id="drawerAvatar">?</div>
+      <div style="min-width:0;flex:1">
+        <div style="font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="drawerName">—</div>
+        <div style="color:var(--text2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="drawerUsername">@—</div>
       </div>
     </div>
   </div>
-  <nav class="drawer-list">
+  <nav class="drawer-list" id="drawerList">
     <button class="drawer-item" data-action="profile">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
       <span data-i18n="menu.profile">Мой профиль</span>
@@ -415,7 +404,7 @@ button{cursor:pointer;border:0;background:none}
       <span data-i18n="menu.invite">Пригласить друзей</span>
     </button>
     <button class="drawer-item" data-action="help">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01"/></svg>
       <span data-i18n="menu.help">Помощь</span>
     </button>
     <button class="drawer-item" data-action="about">
@@ -430,673 +419,1480 @@ button{cursor:pointer;border:0;background:none}
   </nav>
 </aside>
 
-<!-- ========== MODAL: SETTINGS ========== -->
-<div class="modal-backdrop" id="modal-settings">
-  <div class="modal">
-    <h2 data-i18n="settings.title">Настройки</h2>
-
-    <div class="modal-row">
-      <div class="label-block">
-        <div data-i18n="settings.theme">Тема</div>
-        <small data-i18n="settings.theme_hint">Светлая, тёмная или системная</small>
-      </div>
-    </div>
-    <div class="seg" id="seg-theme" style="margin:6px 0 10px">
-      <button data-theme="light" data-i18n="settings.light">Светлая</button>
-      <button data-theme="dark" data-i18n="settings.dark">Тёмная</button>
-      <button data-theme="system" data-i18n="settings.system">Системная</button>
-    </div>
-
-    <div class="modal-row">
-      <div class="label-block">
-        <div data-i18n="settings.language">Язык</div>
-      </div>
-      <div class="seg" id="seg-lang">
-        <button data-lang="ru">RU</button>
-        <button data-lang="en">EN</button>
-      </div>
-    </div>
-
-    <div class="modal-row">
-      <div class="label-block"><div data-i18n="settings.animations">Анимации</div></div>
-      <div class="switch on" id="sw-anim"></div>
-    </div>
-
-    <div class="modal-row">
-      <div class="label-block"><div data-i18n="settings.compact">Компактный режим</div></div>
-      <div class="switch" id="sw-compact"></div>
-    </div>
-
-    <div style="margin-top:22px;display:flex;gap:10px">
-      <button class="btn-primary" id="settings-close" data-i18n="settings.close">Готово</button>
-    </div>
-  </div>
+<!-- ========== MODAL: generic ========== -->
+<div class="modal-bd" id="modalBd">
+  <div class="modal" id="modalBody"></div>
 </div>
 
-<!-- ========== MODAL: PROFILE ========== -->
-<div class="modal-backdrop" id="modal-profile">
-  <div class="modal">
-    <h2 data-i18n="profile.title">Мой профиль</h2>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:20px">
-      <div class="avatar lg" id="prof-avatar">?</div>
-      <div style="text-align:center">
-        <div style="font-weight:700;font-size:18px" id="prof-name">—</div>
-        <div style="color:var(--text-2);font-size:14px" id="prof-username">@—</div>
-        <div style="color:var(--text-2);font-size:13px;margin-top:4px" id="prof-phone">—</div>
-      </div>
-    </div>
-    <button class="btn-primary" id="profile-close" data-i18n="profile.close">Закрыть</button>
-  </div>
-</div>
+<!-- context menu -->
+<div class="ctx" id="ctxMenu"></div>
 
 <!-- toast -->
 <div id="toast"></div>
 
 <script>
 /* ============================================================
-   VEXA — app
+   VEXA — single file. Everything works.
+   Storage: localStorage (structured like a real DB)
    ============================================================ */
 
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';        // ← заменить
-const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';                       // ← заменить
+/* ---------- DB ---------- */
+const DB = (() => {
+  const KEY = 'vexa.db.v1';
+  let cache = null;
+  const load = () => {
+    if (cache) return cache;
+    try { cache = JSON.parse(localStorage.getItem(KEY)) || null; } catch { cache = null; }
+    if (!cache) cache = { users:[], chats:[], messages:[], contacts:[], calls:[], settings:{}, session:null };
+    return cache;
+  };
+  const save = () => localStorage.setItem(KEY, JSON.stringify(cache));
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
-});
+  return {
+    get data(){ return load(); },
+    persist: save,
+    uid,
+    // Users
+    createUser(data){ const u = {id:uid(), createdAt:Date.now(), ...data}; load().users.push(u); save(); return u; },
+    findUserByPhone(p){ return load().users.find(u => u.phone === p); },
+    findUserByUsername(u){ if(!u) return null; u = u.toLowerCase(); return load().users.find(x => (x.username||'').toLowerCase() === u); },
+    findUserById(id){ return load().users.find(u => u.id === id); },
+    updateUser(id, patch){ const u = this.findUserById(id); if(!u) return; Object.assign(u, patch); save(); return u; },
+    // Session
+    setSession(userId){ load().session = userId; save(); },
+    getSession(){ return load().session; },
+    clearSession(){ load().session = null; save(); },
+    // Chats
+    createChat(data){ const c = {id:uid(), createdAt:Date.now(), ...data}; load().chats.push(c); save(); return c; },
+    getChat(id){ return load().chats.find(c => c.id === id); },
+    updateChat(id, patch){ const c = this.getChat(id); if(!c) return; Object.assign(c, patch); save(); return c; },
+    deleteChat(id){
+      const d = load();
+      d.chats = d.chats.filter(c => c.id !== id);
+      d.messages = d.messages.filter(m => m.chatId !== id);
+      save();
+    },
+    chatsOf(userId){ return load().chats.filter(c => c.members.includes(userId)); },
+    // Messages
+    createMessage(data){ const m = {id:uid(), createdAt:Date.now(), reactions:{}, deleted:false, edited:false, ...data}; load().messages.push(m); save(); return m; },
+    getMessages(chatId){ return load().messages.filter(m => m.chatId === chatId); },
+    getMessage(id){ return load().messages.find(m => m.id === id); },
+    updateMessage(id, patch){ const m = this.getMessage(id); if(!m) return; Object.assign(m, patch); save(); return m; },
+    deleteMessage(id, forAll){
+      if (forAll){ this.updateMessage(id, {deleted:true, text:'', attachments:[]}); }
+      else { const d = load(); d.messages = d.messages.filter(x => x.id !== id); save(); }
+    },
+    // Contacts
+    addContact(ownerId, contactId){
+      const d = load();
+      if (d.contacts.find(c => c.ownerId===ownerId && c.contactId===contactId)) return;
+      d.contacts.push({ownerId, contactId, createdAt:Date.now()}); save();
+    },
+    removeContact(ownerId, contactId){
+      const d = load();
+      d.contacts = d.contacts.filter(c => !(c.ownerId===ownerId && c.contactId===contactId));
+      save();
+    },
+    contactsOf(userId){
+      const d = load();
+      return d.contacts.filter(c => c.ownerId === userId).map(c => this.findUserById(c.contactId)).filter(Boolean);
+    },
+    isContact(ownerId, contactId){ return !!load().contacts.find(c => c.ownerId===ownerId && c.contactId===contactId); },
+    // Calls
+    createCall(data){ const c = {id:uid(), createdAt:Date.now(), ...data}; load().calls.push(c); save(); return c; },
+    callsOf(userId){ return load().calls.filter(c => c.from===userId || c.to===userId).sort((a,b)=>b.createdAt-a.createdAt); },
+    // Settings
+    getSettings(userId){
+      const d = load();
+      if (!d.settings[userId]) d.settings[userId] = {theme:'system', lang:null, animations:true, compact:false};
+      return d.settings[userId];
+    },
+    setSettings(userId, patch){ const s = this.getSettings(userId); Object.assign(s, patch); save(); return s; }
+  };
+})();
 
 /* ---------- i18n ---------- */
-const STRINGS = {
+const STR = {
   ru: {
     'welcome.slogan':'Общение без границ','welcome.start':'Начать',
-    'auth.title':'Введите номер телефона','auth.sub':'Мы отправим SMS с кодом подтверждения',
-    'auth.hint':'11 цифр, начиная с +7','auth.continue':'Продолжить',
-    'auth.have':'Уже есть аккаунт?','auth.legal':'Нажимая «Продолжить», вы соглашаетесь с условиями.',
+    'welcome.legal':'Продолжая, вы принимаете условия использования и политику конфиденциальности.',
+    'auth.title':'Введите номер телефона','auth.sub':'Мы отправим SMS с кодом','auth.phone':'Номер телефона',
+    'auth.hint':'11 цифр, начиная с +7','auth.continue':'Продолжить','auth.have':'Уже есть аккаунт?',
     'otp.title':'Введите код','otp.sub':'Мы отправили SMS на','otp.change':'Изменить номер',
     'otp.resend':'Отправить снова через','otp.confirm':'Подтвердить',
+    'otp.banner':'SMS-провайдер не подключён (single-file build). Ваш код:',
     'name.title':'Как вас зовут?','name.sub':'Это увидят другие пользователи VEXA',
-    'name.first':'Имя *','name.last':'Фамилия','name.user':'Username (необязательно)',
+    'name.first':'Имя *','name.last':'Фамилия','name.user':'Username',
     'name.create':'Создать аккаунт',
-    'empty.chats':'У вас пока нет чатов','empty.chats_sub':'Начните общение — найдите пользователя или создайте группу.',
-    'empty.chats_btn':'Начать новый чат',
+    'tab.all':'Все','tab.personal':'Личные','tab.groups':'Группы','tab.channels':'Каналы','tab.unread':'Непрочитанные','tab.saved':'Избранное',
+    'empty.chats':'У вас пока нет чатов','empty.chats_sub':'Начните общение — найдите пользователя или создайте группу или канал.',
+    'empty.start':'Новый чат',
+    'empty.cat':'В этой категории пока пусто',
+    'empty.cat_sub':'Здесь появятся ваши чаты.',
+    'chat.pick':'Выберите чат','chat.pick_sub':'Откройте существующий диалог или начните новый',
+    'chat.no_msgs':'Сообщений пока нет','chat.no_msgs_sub':'Отправьте первое сообщение, чтобы начать беседу.',
+    'chat.input_ph':'Сообщение...',
     'menu.profile':'Мой профиль','menu.new':'Новое сообщение','menu.group':'Создать группу',
-    'menu.channel':'Создать канал','menu.contacts':'Контакты','menu.calls':'Звонки',
-    'menu.saved':'Избранное','menu.settings':'Настройки','menu.invite':'Пригласить друзей',
-    'menu.help':'Помощь','menu.about':'О приложении','menu.logout':'Выйти',
+    'menu.channel':'Создать канал','menu.contacts':'Контакты','menu.calls':'Звонки','menu.saved':'Избранное',
+    'menu.settings':'Настройки','menu.invite':'Пригласить друзей','menu.help':'Помощь',
+    'menu.about':'О приложении','menu.logout':'Выйти',
     'settings.title':'Настройки','settings.theme':'Тема','settings.theme_hint':'Светлая, тёмная или системная',
     'settings.light':'Светлая','settings.dark':'Тёмная','settings.system':'Системная',
-    'settings.language':'Язык','settings.animations':'Анимации','settings.compact':'Компактный режим',
+    'settings.lang':'Язык','settings.anim':'Анимации','settings.anim_hint':'Плавные переходы интерфейса',
+    'settings.compact':'Компактный режим','settings.compact_hint':'Меньше отступов',
     'settings.close':'Готово',
-    'profile.title':'Мой профиль','profile.close':'Закрыть',
-    'msg.sent':'Код отправлен','msg.err_phone':'Введите корректный номер (11 цифр)',
-    'msg.err_code':'Неверный код','msg.err_generic':'Что-то пошло не так',
-    'msg.logged_out':'Вы вышли из аккаунта','msg.welcome':'Добро пожаловать в VEXA!'
+    'profile.title':'Мой профиль','profile.edit':'Редактировать','profile.save':'Сохранить',
+    'profile.first':'Имя','profile.last':'Фамилия','profile.user':'Username','profile.bio':'О себе',
+    'profile.phone':'Телефон','profile.close':'Закрыть',
+    'newchat.title':'Новый чат','newchat.search':'Поиск по username или имени',
+    'newchat.no_results':'Никого не найдено','newchat.hint':'Начните вводить имя или username',
+    'group.title':'Создать группу','group.name':'Название группы','group.desc':'Описание',
+    'group.members':'Участники','group.create':'Создать','group.no_contacts':'Нет доступных контактов',
+    'channel.title':'Создать канал','channel.name':'Название канала','channel.desc':'Описание',
+    'channel.public':'Публичный','channel.create':'Создать',
+    'contacts.title':'Контакты','contacts.empty':'Контактов пока нет',
+    'contacts.empty_sub':'Найдите пользователя, чтобы добавить его в контакты.',
+    'contacts.find':'Найти пользователя','contacts.add':'Добавить контакт','contacts.remove':'Удалить из контактов',
+    'contacts.open':'Открыть чат','contacts.write':'Написать',
+    'calls.title':'Звонки','calls.empty':'Звонков пока нет','calls.empty_sub':'Здесь появится история ваших звонков.',
+    'calls.voice':'Голосовой','calls.video':'Видео','calls.out':'Исходящий','calls.missed':'Пропущен',
+    'calls.unavailable':'Звонки требуют сервер WebRTC-сигнализации. В single-file сборке недоступны.',
+    'saved.title':'Избранное','saved.empty':'Здесь пока пусто','saved.empty_sub':'Сохраняйте сюда заметки, ссылки и файлы.',
+    'invite.title':'Пригласить друзей',
+    'invite.link':'Ваша ссылка-приглашение:','invite.copy':'Скопировать','invite.copied':'Ссылка скопирована',
+    'help.title':'Помощь','about.title':'О приложении',
+    'about.version':'Версия','about.build':'Сборка',
+    'confirm.title':'Подтверждение','confirm.delete_chat':'Удалить чат? Это действие нельзя отменить.',
+    'confirm.delete_msg':'Удалить сообщение?','confirm.logout':'Выйти из аккаунта?',
+    'confirm.cancel':'Отмена','confirm.yes':'Удалить','confirm.ok':'Продолжить',
+    'ctx.open':'Открыть','ctx.pin':'Закрепить','ctx.unpin':'Открепить','ctx.read':'Прочитано','ctx.unread':'Непрочитано',
+    'ctx.mute':'Отключить уведомления','ctx.unmute':'Включить уведомления','ctx.delete':'Удалить чат',
+    'ctx.reply':'Ответить','ctx.edit':'Изменить','ctx.delete_msg':'Удалить','ctx.copy':'Копировать',
+    'ctx.forward':'Переслать','ctx.info':'Информация',
+    'msg.edited':'изменено','msg.deleted':'Сообщение удалено','msg.you':'Вы',
+    'toast.lang_switched':'Язык изменён','toast.theme':'Тема сохранена','toast.logged_out':'Вы вышли из аккаунта',
+    'toast.welcome':'Добро пожаловать в VEXA!','toast.profile_saved':'Профиль сохранён',
+    'toast.username_taken':'Этот username занят','toast.username_free':'Свободно','toast.username_short':'Минимум 3 символа',
+    'toast.copied':'Скопировано','toast.contact_added':'Контакт добавлен','toast.contact_removed':'Контакт удалён',
+    'toast.chat_created':'Чат создан','toast.group_created':'Группа создана','toast.channel_created':'Канал создан',
+    'toast.fill_name':'Введите имя','toast.select_members':'Выберите хотя бы одного участника',
+    'toast.err':'Что-то пошло не так',
+    'err.phone':'Введите корректный номер (11 цифр, +7...)',
+    'err.otp':'Неверный код. Попробуйте снова.',
+    'chat.info':'Информация о чате','chat.members':'Участники','chat.leave':'Покинуть чат',
+    'chat.leave_confirm':'Покинуть этот чат?','chat.member_since':'Участник с'
   },
   en: {
     'welcome.slogan':'Communication without borders','welcome.start':'Get started',
-    'auth.title':'Enter your phone number','auth.sub':"We'll send an SMS with a verification code",
-    'auth.hint':'11 digits starting with +7','auth.continue':'Continue',
-    'auth.have':'Already have an account?','auth.legal':'By tapping Continue you accept our terms.',
+    'welcome.legal':'By continuing you accept our terms of service and privacy policy.',
+    'auth.title':'Enter your phone number','auth.sub':"We'll send an SMS with a code",'auth.phone':'Phone number',
+    'auth.hint':'11 digits, starting with +7','auth.continue':'Continue','auth.have':'Already have an account?',
     'otp.title':'Enter the code','otp.sub':'We sent an SMS to','otp.change':'Change number',
     'otp.resend':'Resend in','otp.confirm':'Confirm',
-    'name.title':"What's your name?",'name.sub':'This will be visible to other VEXA users',
-    'name.first':'First name *','name.last':'Last name','name.user':'Username (optional)',
+    'otp.banner':'SMS provider not connected (single-file build). Your code:',
+    'name.title':"What's your name?",'name.sub':'Other VEXA users will see this',
+    'name.first':'First name *','name.last':'Last name','name.user':'Username',
     'name.create':'Create account',
-    'empty.chats':"You don't have any chats yet",'empty.chats_sub':'Start chatting — find a user or create a group.',
-    'empty.chats_btn':'Start new chat',
+    'tab.all':'All','tab.personal':'Personal','tab.groups':'Groups','tab.channels':'Channels','tab.unread':'Unread','tab.saved':'Saved',
+    'empty.chats':"You don't have any chats yet",'empty.chats_sub':'Start chatting — find a user or create a group or channel.',
+    'empty.start':'New chat',
+    'empty.cat':'Nothing here yet',
+    'empty.cat_sub':'Your chats will appear here.',
+    'chat.pick':'Select a chat','chat.pick_sub':'Open an existing conversation or start a new one',
+    'chat.no_msgs':'No messages yet','chat.no_msgs_sub':'Send the first message to start the conversation.',
+    'chat.input_ph':'Message...',
     'menu.profile':'My profile','menu.new':'New message','menu.group':'Create group',
-    'menu.channel':'Create channel','menu.contacts':'Contacts','menu.calls':'Calls',
-    'menu.saved':'Saved','menu.settings':'Settings','menu.invite':'Invite friends',
-    'menu.help':'Help','menu.about':'About','menu.logout':'Log out',
+    'menu.channel':'Create channel','menu.contacts':'Contacts','menu.calls':'Calls','menu.saved':'Saved',
+    'menu.settings':'Settings','menu.invite':'Invite friends','menu.help':'Help',
+    'menu.about':'About','menu.logout':'Log out',
     'settings.title':'Settings','settings.theme':'Theme','settings.theme_hint':'Light, dark or system',
     'settings.light':'Light','settings.dark':'Dark','settings.system':'System',
-    'settings.language':'Language','settings.animations':'Animations','settings.compact':'Compact mode',
+    'settings.lang':'Language','settings.anim':'Animations','settings.anim_hint':'Smooth UI transitions',
+    'settings.compact':'Compact mode','settings.compact_hint':'Less padding',
     'settings.close':'Done',
-    'profile.title':'My profile','profile.close':'Close',
-    'msg.sent':'Code sent','msg.err_phone':'Enter a valid phone (11 digits)',
-    'msg.err_code':'Invalid code','msg.err_generic':'Something went wrong',
-    'msg.logged_out':'Signed out','msg.welcome':'Welcome to VEXA!'
+    'profile.title':'My profile','profile.edit':'Edit','profile.save':'Save',
+    'profile.first':'First name','profile.last':'Last name','profile.user':'Username','profile.bio':'About',
+    'profile.phone':'Phone','profile.close':'Close',
+    'newchat.title':'New chat','newchat.search':'Search by username or name',
+    'newchat.no_results':'No one found','newchat.hint':'Start typing a name or username',
+    'group.title':'Create group','group.name':'Group name','group.desc':'Description',
+    'group.members':'Members','group.create':'Create','group.no_contacts':'No contacts available',
+    'channel.title':'Create channel','channel.name':'Channel name','channel.desc':'Description',
+    'channel.public':'Public','channel.create':'Create',
+    'contacts.title':'Contacts','contacts.empty':'No contacts yet',
+    'contacts.empty_sub':'Find a user to add them to contacts.',
+    'contacts.find':'Find user','contacts.add':'Add contact','contacts.remove':'Remove from contacts',
+    'contacts.open':'Open chat','contacts.write':'Message',
+    'calls.title':'Calls','calls.empty':'No calls yet','calls.empty_sub':'Your call history will appear here.',
+    'calls.voice':'Voice','calls.video':'Video','calls.out':'Outgoing','calls.missed':'Missed',
+    'calls.unavailable':'Calls require a WebRTC signalling server. Not available in single-file build.',
+    'saved.title':'Saved messages','saved.empty':'Nothing here yet','saved.empty_sub':'Save notes, links and files here.',
+    'invite.title':'Invite friends',
+    'invite.link':'Your invite link:','invite.copy':'Copy','invite.copied':'Link copied',
+    'help.title':'Help','about.title':'About',
+    'about.version':'Version','about.build':'Build',
+    'confirm.title':'Confirm','confirm.delete_chat':'Delete chat? This cannot be undone.',
+    'confirm.delete_msg':'Delete message?','confirm.logout':'Log out of account?',
+    'confirm.cancel':'Cancel','confirm.yes':'Delete','confirm.ok':'Continue',
+    'ctx.open':'Open','ctx.pin':'Pin','ctx.unpin':'Unpin','ctx.read':'Mark read','ctx.unread':'Mark unread',
+    'ctx.mute':'Mute','ctx.unmute':'Unmute','ctx.delete':'Delete chat',
+    'ctx.reply':'Reply','ctx.edit':'Edit','ctx.delete_msg':'Delete','ctx.copy':'Copy',
+    'ctx.forward':'Forward','ctx.info':'Info',
+    'msg.edited':'edited','msg.deleted':'Message deleted','msg.you':'You',
+    'toast.lang_switched':'Language changed','toast.theme':'Theme saved','toast.logged_out':'Signed out',
+    'toast.welcome':'Welcome to VEXA!','toast.profile_saved':'Profile saved',
+    'toast.username_taken':'Username taken','toast.username_free':'Available','toast.username_short':'Min 3 chars',
+    'toast.copied':'Copied','toast.contact_added':'Contact added','toast.contact_removed':'Contact removed',
+    'toast.chat_created':'Chat created','toast.group_created':'Group created','toast.channel_created':'Channel created',
+    'toast.fill_name':'Enter a name','toast.select_members':'Select at least one member',
+    'toast.err':'Something went wrong',
+    'err.phone':'Enter a valid phone (11 digits, +7...)',
+    'err.otp':'Wrong code. Try again.',
+    'chat.info':'Chat info','chat.members':'Members','chat.leave':'Leave chat',
+    'chat.leave_confirm':'Leave this chat?','chat.member_since':'Member since'
   }
 };
-let LANG = localStorage.getItem('vexa.lang') || 'ru';
-const t = k => (STRINGS[LANG] && STRINGS[LANG][k]) || k;
+let LANG = localStorage.getItem('vexa.ui.lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
+const t = k => (STR[LANG] && STR[LANG][k]) || (STR.ru[k]) || k;
 
 function applyLang(){
   document.documentElement.lang = LANG;
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    el.textContent = t(el.dataset.i18n);
-  });
-  document.querySelectorAll('#lang-select button').forEach(b=>b.classList.toggle('on', b.dataset.lang===LANG));
-  document.querySelectorAll('#seg-lang button').forEach(b=>b.classList.toggle('on', b.dataset.lang===LANG));
-  document.getElementById('welcome-slogan').textContent = t('welcome.slogan');
-  document.getElementById('btn-start').textContent = t('welcome.start');
-  document.getElementById('auth-title').textContent = t('auth.title');
-  document.getElementById('auth-sub').textContent = t('auth.sub');
-  document.getElementById('auth-to-login').textContent = t('auth.have');
-  document.getElementById('phone-hint').textContent = t('auth.hint');
-  document.getElementById('btn-send-code').textContent = t('auth.continue');
-  document.getElementById('otp-title').textContent = t('otp.title');
-  document.getElementById('otp-change').textContent = t('otp.change');
-  document.getElementById('btn-verify').textContent = t('otp.confirm');
-  document.getElementById('name-title').textContent = t('name.title');
-  document.getElementById('name-sub').textContent = t('name.sub');
-  document.getElementById('empty-title').textContent = t('empty.chats');
-  document.getElementById('empty-sub').textContent = t('empty.chats_sub');
-  document.getElementById('empty-action').textContent = t('empty.chats_btn');
-  document.getElementById('inp-name').previousElementSibling.textContent = t('name.first');
-  document.getElementById('inp-surname').previousElementSibling.textContent = t('name.last');
-  document.getElementById('inp-username').previousElementSibling.textContent = t('name.user');
-  document.getElementById('btn-create').textContent = t('name.create');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('#langWelcome button').forEach(b => b.classList.toggle('on', b.dataset.lang === LANG));
+  document.querySelectorAll('.composer textarea').forEach(a => a.placeholder = t('chat.input_ph'));
+  const cb = document.getElementById('codeBanner');
+  if (cb && cb.dataset.code) cb.innerHTML = t('otp.banner') + ' <strong>' + cb.dataset.code + '</strong>';
+  // refresh drawer labels
+  document.querySelectorAll('.drawer-item span[data-i18n]').forEach(s => s.textContent = t(s.dataset.i18n));
+}
+function setLang(l){
+  LANG = l; localStorage.setItem('vexa.ui.lang', l); applyLang();
+  const sid = DB.getSession();
+  if (sid) DB.setSettings(sid, {lang: l});
 }
 
-/* ---------- toast ---------- */
-let toastTimer;
-function toast(msg){
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>el.classList.remove('show'), 2600);
-}
-
-/* ---------- screens ---------- */
-function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active', s.id===id));
-}
-
-/* ============================================================
-   PHONE MASK  +7 (777) 777-77-77
-   11 digits total, always leading 7
-   ============================================================ */
-const phoneInput = document.getElementById('phone');
-const btnSend = document.getElementById('btn-send-code');
-
-function digitsOnly(s){ return (s||'').replace(/\D/g,''); }
-
+/* ---------- phone mask ---------- */
+function digitsOf(s){ return (s||'').replace(/\D/g,''); }
 function normalizePhone(raw){
-  let d = digitsOnly(raw);
+  let d = digitsOf(raw);
   if (!d) return '';
-  if (d[0] === '8') d = '7' + d.slice(1);   // 8... → 7...
-  if (d[0] !== '7') d = '7' + d;            // always start with 7
+  if (d[0] === '8') d = '7' + d.slice(1);
+  if (d[0] !== '7') d = '7' + d;
   return d.slice(0, 11);
 }
-
 function formatPhone(raw){
   const d = normalizePhone(raw);
   if (!d) return '';
-  const r = d.slice(1); // 10 digits
-  let out = '+7';
-  if (r.length)              out += ' (' + r.slice(0,3);
-  if (r.length >= 3)         out += ')';
-  if (r.length > 3)          out += ' ' + r.slice(3,6);
-  if (r.length > 6)          out += '-' + r.slice(6,8);
-  if (r.length > 8)          out += '-' + r.slice(8,10);
-  return out;
+  const r = d.slice(1);
+  let o = '+7';
+  if (r.length)         o += ' (' + r.slice(0,3);
+  if (r.length >= 3)    o += ')';
+  if (r.length > 3)     o += ' ' + r.slice(3,6);
+  if (r.length > 6)     o += '-' + r.slice(6,8);
+  if (r.length > 8)     o += '-' + r.slice(8,10);
+  return o;
+}
+function phoneValid(v){ return digitsOf(v).length === 11; }
+
+/* ---------- UI helpers ---------- */
+let toastTimer;
+function toast(msg, kind){
+  const el = document.getElementById('toast');
+  el.className = ''; el.textContent = msg;
+  if (kind) el.classList.add(kind);
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+}
+function initials(u){
+  if (!u) return '?';
+  const a = (u.firstName || '')[0] || '';
+  const b = (u.lastName || '')[0] || '';
+  return ((a+b) || (u.username||'')[0] || '?').toUpperCase();
+}
+function displayName(u){
+  if (!u) return '—';
+  return [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || u.phone || '—';
+}
+function el(html){
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+function esc(s){
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtTime(ts){
+  const d = new Date(ts);
+  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+}
+function fmtDay(ts){
+  const d = new Date(ts), n = new Date();
+  const same = d.toDateString() === n.toDateString();
+  if (same) return LANG==='ru' ? 'Сегодня' : 'Today';
+  const y = new Date(n); y.setDate(n.getDate()-1);
+  if (d.toDateString() === y.toDateString()) return LANG==='ru' ? 'Вчера' : 'Yesterday';
+  return d.toLocaleDateString(LANG === 'ru' ? 'ru-RU' : 'en-GB', {day:'2-digit', month:'short'});
 }
 
-function isPhoneValid(){
-  return digitsOnly(phoneInput.value).length === 11;
+/* ---------- theme ---------- */
+function applyTheme(mode){
+  let th = mode;
+  if (mode === 'system') th = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', th);
+  document.querySelectorAll('#segTheme button').forEach(b => b.classList.toggle('on', b.dataset.theme === mode));
 }
-
-function refreshSendBtn(){
-  btnSend.disabled = !isPhoneValid();
-}
-
-phoneInput.addEventListener('input', e=>{
-  const pos = e.target.selectionStart;
-  const before = e.target.value.length;
-  const formatted = formatPhone(e.target.value);
-  e.target.value = formatted;
-  const after = formatted.length;
-  // курсор: сдвигаем с учётом добавленных символов
-  const next = Math.max(0, pos + (after - before));
-  e.target.setSelectionRange(next, next);
-  refreshSendBtn();
-});
-
-phoneInput.addEventListener('keydown', e=>{
-  // не даём удалять базовый +7
-  if (e.key === 'Backspace' && digitsOnly(phoneInput.value).length <= 1){
-    e.preventDefault();
-  }
-});
-
-phoneInput.addEventListener('focus', ()=>{
-  if (!phoneInput.value) phoneInput.value = '+7 ';
-});
-phoneInput.addEventListener('blur', ()=>{
-  if (digitsOnly(phoneInput.value).length <= 1) phoneInput.value = '';
-  refreshSendBtn();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  const sid = DB.getSession();
+  if (!sid) return;
+  const s = DB.getSettings(sid);
+  if (s.theme === 'system') applyTheme('system');
 });
 
 /* ============================================================
-   NAVIGATION
+   STATE
    ============================================================ */
-document.getElementById('btn-start').onclick = async ()=>{
-  // если уже авторизован — сразу в приложение
-  const { data:{ session } } = await supabase.auth.getSession();
-  if (session) { await enterApp(session.user); return; }
-  show('screen-auth');
+const State = {
+  me: null,       // current user object
+  activeChat: null,
+  activeTab: 'all',
+  replyTo: null,
+  editing: null,
+  tempOtp: null,
+  tempPhone: null
 };
-document.getElementById('auth-back').onclick = ()=>show('screen-welcome');
-document.getElementById('otp-back').onclick = ()=>show('screen-auth');
-document.getElementById('auth-to-login').onclick = ()=>{
-  // тот же экран — просто меняем подсказку
-  document.getElementById('auth-title').textContent = LANG==='ru'?'Вход в аккаунт':'Sign in';
-};
-document.getElementById('otp-change').onclick = ()=>show('screen-auth');
 
 /* ============================================================
-   SEND OTP
+   WELCOME
    ============================================================ */
-let currentPhone = '';   // E.164 (например +77777777777)
-
-btnSend.onclick = async ()=>{
-  if (!isPhoneValid()) return;
-  const e164 = '+' + digitsOnly(phoneInput.value);
-  currentPhone = e164;
-  btnSend.disabled = true; btnSend.textContent = '…';
-
-  try {
-    const { error } = await supabase.auth.signInWithOtp({ phone: e164 });
-    if (error) throw error;
-    toast(t('msg.sent'));
-    document.getElementById('otp-sub').textContent =
-      (LANG==='ru'?'Мы отправили SMS на ':'We sent an SMS to ') + formatPhone(e164);
-    show('screen-otp');
-    startResendTimer();
-    focusOtp(0);
-  } catch(err){
-    console.error(err);
-    toast(err.message || t('msg.err_generic'));
-  } finally {
-    btnSend.disabled = false; btnSend.textContent = t('auth.continue');
-    refreshSendBtn();
-  }
+document.getElementById('btnStart').onclick = () => {
+  const sid = DB.getSession();
+  if (sid && DB.findUserById(sid)) { bootUser(sid); return; }
+  showScreen('auth');
 };
+document.querySelectorAll('#langWelcome button').forEach(b => {
+  b.onclick = () => { setLang(b.dataset.lang); toast(t('toast.lang_switched')); };
+});
 
 /* ============================================================
-   OTP INPUT
+   AUTH — PHONE
+   ============================================================ */
+const phoneInput = document.getElementById('phoneInput');
+const btnSendCode = document.getElementById('btnSendCode');
+const phoneErr = document.getElementById('phoneErr');
+
+phoneInput.addEventListener('focus', () => { if (!phoneInput.value) phoneInput.value = '+7 '; });
+phoneInput.addEventListener('blur', () => { if (digitsOf(phoneInput.value).length <= 1) phoneInput.value = ''; refreshSend(); });
+phoneInput.addEventListener('input', e => {
+  const el = e.target;
+  const cursorBefore = el.selectionStart;
+  const digitsBefore = digitsOf(el.value.slice(0, cursorBefore)).length;
+  const formatted = formatPhone(el.value);
+  el.value = formatted;
+  let pos = 0, cnt = 0;
+  while (pos < formatted.length && cnt < digitsBefore) { if (/\d/.test(formatted[pos])) cnt++; pos++; }
+  el.setSelectionRange(pos, pos);
+  refreshSend();
+});
+phoneInput.addEventListener('keydown', e => {
+  if (e.key === 'Backspace' && digitsOf(phoneInput.value).length <= 1) e.preventDefault();
+});
+
+function refreshSend(){
+  const ok = phoneValid(phoneInput.value);
+  btnSendCode.disabled = !ok;
+  phoneErr.textContent = phoneInput.value && !ok ? t('err.phone') : '';
+}
+
+btnSendCode.onclick = () => {
+  if (!phoneValid(phoneInput.value)) return;
+  const e164 = '+' + digitsOf(phoneInput.value);
+  State.tempPhone = e164;
+  // generate OTP — real SMS needs a backend, we show it openly
+  State.tempOtp = String(Math.floor(100000 + Math.random() * 900000));
+  const existing = DB.findUserByPhone(e164);
+  // show OTP screen
+  document.getElementById('otpSub').textContent = (LANG==='ru'?'Мы отправили SMS на ':'We sent an SMS to ') + formatPhone(e164);
+  const cb = document.getElementById('codeBanner');
+  cb.dataset.code = State.tempOtp;
+  cb.innerHTML = t('otp.banner') + ' <strong>' + State.tempOtp + '</strong>';
+  document.querySelectorAll('.otp-cell').forEach(c => c.value = '');
+  btnVerify.disabled = true;
+  showScreen('otp');
+  startResend();
+  setTimeout(() => document.querySelectorAll('.otp-cell')[0].focus(), 100);
+};
+
+document.getElementById('authBack').onclick = () => showScreen('welcome');
+document.getElementById('authToLogin').onclick = () => {
+  document.getElementById('authTitle').textContent = LANG === 'ru' ? 'Вход в аккаунт' : 'Sign in';
+  phoneInput.focus();
+};
+document.getElementById('countryBtn').onclick = () => toast(LANG==='ru'?'Доступен только +7':'Only +7 available');
+document.getElementById('otpBack').onclick = () => showScreen('auth');
+document.getElementById('otpChange').onclick = () => { showScreen('auth'); phoneInput.focus(); };
+
+/* ============================================================
+   OTP
    ============================================================ */
 const otpCells = [...document.querySelectorAll('.otp-cell')];
-const btnVerify = document.getElementById('btn-verify');
+const btnVerify = document.getElementById('btnVerify');
+const otpResend = document.getElementById('otpResend');
+const otpTimer = document.getElementById('otpTimer');
+let resendInterval;
 
-function focusOtp(i){ if (otpCells[i]) otpCells[i].focus(); }
-function otpValue(){ return otpCells.map(c=>c.value).join(''); }
+function otpValue(){ return otpCells.map(c => c.value).join(''); }
 function refreshVerify(){ btnVerify.disabled = otpValue().length !== 6; }
 
-otpCells.forEach((cell, i)=>{
-  cell.addEventListener('input', e=>{
+otpCells.forEach((cell, i) => {
+  cell.addEventListener('input', e => {
     let v = e.target.value.replace(/\D/g,'');
-    if (v.length > 1){ // вставка нескольких цифр
+    if (v.length > 1){
       const arr = v.split('');
       for (let k=0;k<arr.length && i+k<6;k++) otpCells[i+k].value = arr[k];
-      focusOtp(Math.min(5, i+arr.length));
+      const next = Math.min(5, i + arr.length);
+      otpCells[next].focus(); otpCells[next].setSelectionRange(1,1);
     } else {
-      e.target.value = v;
-      if (v) focusOtp(i+1);
+      cell.value = v;
+      if (v && i < 5) otpCells[i+1].focus();
     }
     refreshVerify();
   });
-  cell.addEventListener('keydown', e=>{
-    if (e.key === 'Backspace' && !e.target.value && i>0) focusOtp(i-1);
-    if (e.key === 'ArrowLeft'  && i>0) focusOtp(i-1);
-    if (e.key === 'ArrowRight' && i<5) focusOtp(i+1);
+  cell.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !cell.value && i > 0) otpCells[i-1].focus();
+    if (e.key === 'ArrowLeft' && i > 0) otpCells[i-1].focus();
+    if (e.key === 'ArrowRight' && i < 5) otpCells[i+1].focus();
   });
-  cell.addEventListener('paste', e=>{
+  cell.addEventListener('paste', e => {
     e.preventDefault();
     const txt = (e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6);
     for (let k=0;k<6;k++) otpCells[k].value = txt[k] || '';
-    focusOtp(Math.min(5, txt.length));
+    otpCells[Math.min(5, txt.length)].focus();
     refreshVerify();
   });
 });
 
-/* resend timer */
-let resendInterval, resendLeft = 60;
-const resendEl = document.getElementById('otp-resend');
-const timerEl  = document.getElementById('otp-timer');
-function startResendTimer(){
-  resendLeft = 60; resendEl.classList.add('disabled');
+function startResend(){
+  let left = 60; otpResend.classList.add('disabled'); otpTimer.textContent = left;
   clearInterval(resendInterval);
-  timerEl.textContent = resendLeft;
-  resendInterval = setInterval(()=>{
-    resendLeft--; timerEl.textContent = resendLeft;
-    if (resendLeft <= 0){
-      clearInterval(resendInterval);
-      resendEl.classList.remove('disabled');
-    }
+  resendInterval = setInterval(() => {
+    left--; otpTimer.textContent = left;
+    if (left <= 0){ clearInterval(resendInterval); otpResend.classList.remove('disabled'); }
   }, 1000);
 }
-resendEl.onclick = async ()=>{
-  if (resendEl.classList.contains('disabled')) return;
-  try {
-    const { error } = await supabase.auth.signInWithOtp({ phone: currentPhone });
-    if (error) throw error;
-    toast(t('msg.sent')); startResendTimer();
-  } catch(err){ toast(err.message || t('msg.err_generic')); }
+otpResend.onclick = () => {
+  if (otpResend.classList.contains('disabled')) return;
+  State.tempOtp = String(Math.floor(100000 + Math.random() * 900000));
+  const cb = document.getElementById('codeBanner');
+  cb.dataset.code = State.tempOtp;
+  cb.innerHTML = t('otp.banner') + ' <strong>' + State.tempOtp + '</strong>';
+  startResend();
+  toast(t('toast.ok'), 'ok');
 };
 
-/* ============================================================
-   VERIFY OTP
-   ============================================================ */
-btnVerify.onclick = async ()=>{
-  const token = otpValue();
-  if (token.length !== 6) return;
-  btnVerify.disabled = true; btnVerify.textContent = '…';
-  try {
-    const { data, error } = await supabase.auth.verifyOtp({
-      phone: currentPhone, token, type: 'sms'
-    });
-    if (error) throw error;
-    await routeAfterAuth(data.user);
-  } catch(err){
-    console.error(err);
-    toast(err.message || t('msg.err_code'));
-    otpCells.forEach(c=>c.value=''); focusOtp(0); refreshVerify();
-  } finally {
-    btnVerify.textContent = t('otp.confirm');
-    refreshVerify();
-  }
+btnVerify.onclick = () => {
+  if (otpValue() !== State.tempOtp){ toast(t('err.otp'), 'err'); return; }
+  const phone = State.tempPhone;
+  const existing = DB.findUserByPhone(phone);
+  if (existing){ DB.setSession(existing.id); bootUser(existing.id); toast(t('toast.welcome'), 'ok'); }
+  else { showScreen('nameScreen'); document.getElementById('inpName').focus(); }
 };
-
-/* ============================================================
-   ROUTING AFTER AUTH  ← ключевая логика!
-   ============================================================ */
-async function routeAfterAuth(user){
-  if (!user) return;
-  // Загружаем профиль
-  const { data: profile, error } = await supabase
-    .from('profiles').select('*').eq('id', user.id).maybeSingle();
-
-  if (error){ console.error(error); toast(t('msg.err_generic')); return; }
-
-  if (!profile){
-    // Новый пользователь → регистрация
-    show('screen-name');
-    document.getElementById('inp-name').focus();
-  } else {
-    // Уже зарегистрирован → сразу в приложение
-    toast(t('msg.welcome'));
-    await enterApp(user, profile);
-  }
-}
 
 /* ============================================================
    NAME SCREEN
    ============================================================ */
-const inpName     = document.getElementById('inp-name');
-const inpSurname  = document.getElementById('inp-surname');
-const inpUsername = document.getElementById('inp-username');
-const btnCreate   = document.getElementById('btn-create');
-const userStatus  = document.getElementById('username-status');
+const inpName = document.getElementById('inpName');
+const inpSurname = document.getElementById('inpSurname');
+const inpUsername = document.getElementById('inpUsername');
+const btnCreate = document.getElementById('btnCreate');
+const usernameHint = document.getElementById('usernameHint');
 
 function refreshCreate(){
-  btnCreate.disabled = !inpName.value.trim() || inpName.value.trim().length < 2;
+  btnCreate.disabled = !inpName.value.trim();
 }
 inpName.addEventListener('input', refreshCreate);
 
-let usernameCheckTimer;
-inpUsername.addEventListener('input', ()=>{
-  const v = inpUsername.value.trim().toLowerCase();
-  inpUsername.value = inpUsername.value.replace(/[^a-zA-Z0-9_]/g,'').toLowerCase();
-  clearTimeout(usernameCheckTimer);
-  userStatus.textContent = '';
+let unameTimer;
+inpUsername.addEventListener('input', () => {
+  inpUsername.value = inpUsername.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  clearTimeout(unameTimer);
+  const v = inpUsername.value;
+  usernameHint.textContent = ''; usernameHint.style.color = '';
   if (!v) return;
-  if (v.length < 3){ userStatus.textContent = LANG==='ru'?'Минимум 3 символа':'Min 3 chars'; userStatus.style.color='var(--danger)'; return; }
-  userStatus.textContent = '…'; userStatus.style.color = 'var(--text-2)';
-  usernameCheckTimer = setTimeout(async ()=>{
-    const { data, error } = await supabase
-      .from('profiles').select('id').ilike('username', v).maybeSingle();
-    if (error && error.code !== 'PGRST116'){ userStatus.textContent = ''; return; }
-    if (data){ userStatus.textContent = LANG==='ru'?'Занято':'Taken'; userStatus.style.color='var(--danger)'; }
-    else     { userStatus.textContent = LANG==='ru'?'Свободно':'Available'; userStatus.style.color='var(--ok)'; }
-  }, 400);
+  if (v.length < 3){ usernameHint.textContent = t('toast.username_short'); usernameHint.style.color = 'var(--danger)'; return; }
+  unameTimer = setTimeout(() => {
+    const taken = DB.findUserByUsername(v);
+    if (taken){ usernameHint.textContent = t('toast.username_taken'); usernameHint.style.color = 'var(--danger)'; }
+    else { usernameHint.textContent = t('toast.username_free'); usernameHint.style.color = 'var(--ok)'; }
+  }, 300);
 });
 
-btnCreate.onclick = async ()=>{
-  btnCreate.disabled = true; btnCreate.textContent = '…';
-  try {
-    const { data:{ user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('No user');
-
-    // Проверим занят ли username
-    const uname = inpUsername.value.trim().toLowerCase() || null;
-    if (uname){
-      const { data: taken } = await supabase
-        .from('profiles').select('id').ilike('username', uname).maybeSingle();
-      if (taken) throw new Error(LANG==='ru'?'Username занят':'Username taken');
-    }
-
-    const { error } = await supabase.from('profiles').insert({
-      id: user.id,
-      phone: user.phone,
-      first_name: inpName.value.trim(),
-      last_name: inpSurname.value.trim() || null,
-      username: uname
-    });
-    if (error) throw error;
-
-    // создаём дефолтные настройки
-    await supabase.from('user_settings').insert({ user_id: user.id });
-
-    toast(t('msg.welcome'));
-    await enterApp(user);
-  } catch(err){
-    console.error(err);
-    toast(err.message || t('msg.err_generic'));
-  } finally {
-    btnCreate.textContent = t('name.create');
-    refreshCreate();
-  }
+btnCreate.onclick = () => {
+  const name = inpName.value.trim();
+  if (!name) { toast(t('toast.fill_name'), 'err'); return; }
+  const uname = inpUsername.value.trim() || null;
+  if (uname && DB.findUserByUsername(uname)) { toast(t('toast.username_taken'), 'err'); return; }
+  const user = DB.createUser({
+    phone: State.tempPhone,
+    firstName: name,
+    lastName: inpSurname.value.trim() || null,
+    username: uname,
+    bio: '',
+    avatar: null
+  });
+  DB.setSession(user.id);
+  // create Saved chat (the only auto-created chat — allowed by spec)
+  DB.createChat({
+    type: 'saved',
+    title: null,
+    ownerId: user.id,
+    members: [user.id]
+  });
+  inpName.value = inpSurname.value = inpUsername.value = '';
+  refreshCreate();
+  bootUser(user.id);
+  toast(t('toast.welcome'), 'ok');
 };
 
 /* ============================================================
-   APP SHELL
+   BOOT USER INTO APP
    ============================================================ */
-let ME = null;            // { user, profile }
-let SETTINGS = null;
-
-async function enterApp(user, profile){
-  ME = { user, profile: profile || null };
-
-  if (!ME.profile){
-    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-    ME.profile = data;
-  }
-  // settings
-  const { data: st } = await supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle();
-  SETTINGS = st || { theme:'system', language:LANG, animations:true, compact:false };
-  if (!st){
-    await supabase.from('user_settings').insert({
-      user_id: user.id, theme:'system', language:LANG, animations:true, compact:false
-    });
-  }
-  // применяем настройки
-  applyTheme(SETTINGS.theme);
-  applyCompact(SETTINGS.compact);
-  LANG = SETTINGS.language || LANG; applyLang();
-
-  // заполняем drawer
-  const p = ME.profile || {};
-  const initials = ((p.first_name||'?')[0] || '?').toUpperCase();
-  document.getElementById('drawer-avatar').textContent = initials;
-  document.getElementById('drawer-name').textContent =
-    [p.first_name, p.last_name].filter(Boolean).join(' ') || '—';
-  document.getElementById('drawer-username').textContent = p.username ? '@'+p.username : '@—';
-
-  // профиль-модал
-  document.getElementById('prof-avatar').textContent = initials;
-  document.getElementById('prof-name').textContent =
-    [p.first_name, p.last_name].filter(Boolean).join(' ') || '—';
-  document.getElementById('prof-username').textContent = p.username ? '@'+p.username : '@—';
-  document.getElementById('prof-phone').textContent = user.phone || '';
-
-  // синхронизируем UI настроек
-  document.querySelectorAll('#seg-theme button').forEach(b=>b.classList.toggle('on', b.dataset.theme===SETTINGS.theme));
-  document.querySelectorAll('#seg-lang  button').forEach(b=>b.classList.toggle('on', b.dataset.lang===LANG));
-  document.getElementById('sw-anim').classList.toggle('on', !!SETTINGS.animations);
-  document.getElementById('sw-compact').classList.toggle('on', !!SETTINGS.compact);
-
-  // Список чатов — пустой (никаких демо-данных)
-  await loadChats();
-
-  show('screen-app');
+function bootUser(userId){
+  const u = DB.findUserById(userId);
+  if (!u){ showScreen('welcome'); return; }
+  State.me = u;
+  const st = DB.getSettings(u.id);
+  if (st.lang) LANG = st.lang;
+  applyLang();
+  applyTheme(st.theme);
+  document.documentElement.setAttribute('data-anim', st.animations ? '1' : '0');
+  document.documentElement.style.setProperty('--font',
+    st.compact
+      ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
+      : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
+  );
+  updateDrawer();
+  renderChats();
+  State.activeChat = null;
+  document.getElementById('chatTop').style.display = 'none';
+  document.getElementById('composer').style.display = 'none';
+  document.getElementById('noChatOpen').style.display = 'flex';
+  document.getElementById('app').classList.remove('chat-open');
+  showScreen('app');
 }
 
-/* пустой список чатов */
-async function loadChats(){
-  const list = document.getElementById('chat-list');
-  // Убираем всё кроме empty
-  [...list.querySelectorAll(':scope > *:not(#empty-chats)')].forEach(n=>n.remove());
-  // В этой версии чатов из БД ещё нет — показываем пустое состояние
-  document.getElementById('empty-chats').style.display = '';
+function updateDrawer(){
+  const u = State.me;
+  document.getElementById('drawerAvatar').textContent = initials(u);
+  document.getElementById('drawerName').textContent = displayName(u);
+  document.getElementById('drawerUsername').textContent = u.username ? '@' + u.username : '@—';
+}
+
+/* ============================================================
+   CHAT LIST
+   ============================================================ */
+function chatsForTab(tab){
+  const all = DB.chatsOf(State.me.id);
+  switch(tab){
+    case 'personal': return all.filter(c => c.type === 'personal');
+    case 'group':    return all.filter(c => c.type === 'group');
+    case 'channel':  return all.filter(c => c.type === 'channel');
+    case 'unread':   return all.filter(c => (c.unread || 0) > 0);
+    case 'saved':    return all.filter(c => c.type === 'saved');
+    default:         return all;
+  }
+}
+
+function chatTitle(chat){
+  if (chat.type === 'saved') return LANG === 'ru' ? 'Избранное' : 'Saved messages';
+  if (chat.type === 'personal'){
+    const other = chat.members.find(id => id !== State.me.id);
+    const u = DB.findUserById(other);
+    return u ? displayName(u) : '—';
+  }
+  return chat.title || '—';
+}
+function chatAvatarUser(chat){
+  if (chat.type === 'personal'){
+    const other = chat.members.find(id => id !== State.me.id);
+    return DB.findUserById(other);
+  }
+  return null;
+}
+function chatPreview(chat){
+  const msgs = DB.getMessages(chat.id);
+  if (!msgs.length) return chat.type === 'saved' ? t('saved.empty_sub') : '';
+  const last = msgs[msgs.length - 1];
+  if (last.deleted) return t('msg.deleted');
+  const sender = DB.findUserById(last.senderId);
+  const prefix = chat.type === 'group' && sender ? displayName(sender).split(' ')[0] + ': ' : '';
+  return prefix + (last.text || '').slice(0, 60);
+}
+
+function renderChats(){
+  const list = document.getElementById('chatList');
+  list.innerHTML = '';
+  const chats = chatsForTab(State.activeTab).sort((a,b) => {
+    const am = DB.getMessages(a.id), bm = DB.getMessages(b.id);
+    const at = am.length ? am[am.length-1].createdAt : a.createdAt;
+    const bt = bm.length ? bm[bm.length-1].createdAt : b.createdAt;
+    return bt - at;
+  });
+
+  if (!chats.length){
+    const empty = el(`
+      <div class="chat-empty">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <h3>${esc(State.activeTab === 'all' ? t('empty.chats') : t('empty.cat'))}</h3>
+        <p>${esc(State.activeTab === 'all' ? t('empty.chats_sub') : t('empty.cat_sub'))}</p>
+        ${State.activeTab === 'all' ? `<button class="btn btn-sm" id="emptyNewBtn">${esc(t('empty.start'))}</button>` : ''}
+      </div>`);
+    list.appendChild(empty);
+    const nb = document.getElementById('emptyNewBtn');
+    if (nb) nb.onclick = openNewChatModal;
+    return;
+  }
+
+  chats.forEach(c => {
+    const row = el(`
+      <div class="chat-row" data-id="${c.id}">
+        <div class="avatar av-54"></div>
+        <div class="chat-meta">
+          <div class="chat-name">
+            <span class="title"></span>
+            ${c.pinned ? '📌' : ''}
+          </div>
+          <div class="chat-preview"></div>
+        </div>
+        <div class="chat-side">
+          <div class="chat-time"></div>
+          ${(c.unread||0) > 0 ? `<div class="badge">${c.unread}</div>` : ''}
+        </div>
+      </div>`);
+    const av = row.querySelector('.avatar');
+    const otherU = chatAvatarUser(c);
+    if (c.type === 'saved'){
+      av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)';
+      av.textContent = '★';
+    } else if (c.avatar){
+      av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
+    } else if (otherU){
+      av.textContent = initials(otherU);
+    } else {
+      av.textContent = (c.title || '?')[0].toUpperCase();
+    }
+    row.querySelector('.title').textContent = chatTitle(c);
+    row.querySelector('.chat-preview').textContent = chatPreview(c);
+    const msgs = DB.getMessages(c.id);
+    const last = msgs[msgs.length-1];
+    row.querySelector('.chat-time').textContent = last ? fmtTime(last.createdAt) : '';
+    if (State.activeChat && State.activeChat.id === c.id) row.classList.add('active');
+    row.onclick = () => openChat(c.id);
+    row.oncontextmenu = e => { e.preventDefault(); openChatContext(e, c.id); };
+    list.appendChild(row);
+  });
+}
+
+/* tabs */
+document.querySelectorAll('.tab').forEach(tb => {
+  tb.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+    tb.classList.add('on');
+    State.activeTab = tb.dataset.tab;
+    renderChats();
+  };
+});
+
+/* ============================================================
+   OPEN CHAT
+   ============================================================ */
+function openChat(chatId){
+  const chat = DB.getChat(chatId);
+  if (!chat) return;
+  State.activeChat = chat;
+  State.replyTo = null;
+  State.editing = null;
+  chat.unread = 0;
+  DB.persist();
+  document.getElementById('noChatOpen').style.display = 'none';
+  document.getElementById('chatTop').style.display = 'flex';
+  document.getElementById('composer').style.display = 'block';
+  document.getElementById('app').classList.add('chat-open');
+  renderChatTop();
+  renderMessages();
+  renderChats();
+  setTimeout(() => document.getElementById('msgInput').focus(), 50);
+}
+
+function renderChatTop(){
+  const c = State.activeChat;
+  const top = document.getElementById('chatTop');
+  const otherU = chatAvatarUser(c);
+  const name = chatTitle(c);
+  const status = c.type === 'personal'
+    ? (otherU ? (otherU.online ? (LANG==='ru'?'в сети':'online') : '@'+(otherU.username||'—')) : '')
+    : c.type === 'group' ? (c.members.length + ' ' + (LANG==='ru'?'участников':'members'))
+    : c.type === 'channel' ? (LANG==='ru'?'канал':'channel')
+    : (LANG==='ru'?'ваши сохранённые сообщения':'your saved messages');
+
+  top.innerHTML = `
+    <button class="icon-btn" id="chatBackBtn" aria-label="Back">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="avatar av-40" id="chatTopAv"></div>
+    <div class="chat-top-info" id="chatTopInfo">
+      <div class="chat-top-name">${esc(name)}</div>
+      <div class="chat-top-status">${esc(status)}</div>
+    </div>
+    <button class="icon-btn" id="chatCallBtn" title="Call">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.4 1.8.7 2.6a2 2 0 01-.5 2.1L8 9.7a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5c.8.3 1.7.6 2.6.7a2 2 0 011.7 2z"/></svg>
+    </button>
+    <button class="icon-btn" id="chatMoreBtn" title="More">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+    </button>`;
+
+  const av = document.getElementById('chatTopAv');
+  if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
+  else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
+  else if (otherU) av.textContent = initials(otherU);
+  else av.textContent = (c.title||'?')[0].toUpperCase();
+
+  document.getElementById('chatBackBtn').onclick = () => {
+    document.getElementById('app').classList.remove('chat-open');
+    State.activeChat = null;
+    document.getElementById('chatTop').style.display = 'none';
+    document.getElementById('composer').style.display = 'none';
+    document.getElementById('noChatOpen').style.display = 'flex';
+    renderChats();
+  };
+  document.getElementById('chatCallBtn').onclick = () => {
+    toast(t('calls.unavailable'));
+  };
+  document.getElementById('chatTopInfo').onclick = () => openChatInfo();
+  document.getElementById('chatMoreBtn').onclick = e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    openContext(r.left - 180, r.bottom + 6, [
+      {icon:'info', label: t('chat.info'), fn: openChatInfo},
+      {sep:true},
+      {icon:'trash', label: t('ctx.delete'), danger:true, fn: () => confirmDialog(t('confirm.delete_chat'), () => {
+        DB.deleteChat(State.activeChat.id);
+        State.activeChat = null;
+        document.getElementById('chatBackBtn')?.click();
+        renderChats();
+      })}
+    ]);
+  };
+}
+
+function renderMessages(){
+  const box = document.getElementById('msgs');
+  box.innerHTML = '';
+  const c = State.activeChat;
+  if (!c) return;
+  const list = DB.getMessages(c.id).sort((a,b) => a.createdAt - b.createdAt);
+  if (!list.length){
+    box.innerHTML = `
+      <div class="empty-chat" style="flex:1">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <h3>${esc(t('chat.no_msgs'))}</h3>
+        <p>${esc(t('chat.no_msgs_sub'))}</p>
+      </div>`;
+    return;
+  }
+  let lastDay = '';
+  list.forEach(m => {
+    const day = fmtDay(m.createdAt);
+    if (day !== lastDay){
+      box.appendChild(el(`<div class="day-sep">${esc(day)}</div>`));
+      lastDay = day;
+    }
+    box.appendChild(renderMessage(m));
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderMessage(m){
+  const me = m.senderId === State.me.id;
+  const node = el(`<div class="msg${me ? ' me' : ''}" data-id="${m.id}"></div>`);
+  const sender = DB.findUserById(m.senderId);
+  const c = State.activeChat;
+  const showSender = !me && (c.type === 'group' || c.type === 'channel');
+  let inner = '';
+  if (showSender && sender) inner += `<div style="font-weight:600;font-size:12.5px;margin-bottom:3px;color:var(--accent)">${esc(displayName(sender))}</div>`;
+  if (m.replyTo){
+    const orig = DB.getMessage(m.replyTo);
+    if (orig) inner += `<div class="quote">${esc((orig.text||'').slice(0,80))}</div>`;
+  }
+  if (m.deleted){
+    inner += `<div style="opacity:.7;font-style:italic">${esc(t('msg.deleted'))}</div>`;
+  } else {
+    inner += `<div style="white-space:pre-wrap">${linkify(esc(m.text || ''))}</div>`;
+    if (m.attachments && m.attachments.length){
+      inner += `<div style="margin-top:6px;font-size:13px;opacity:.9">📎 ${esc(m.attachments[0].name || 'attachment')}</div>`;
+    }
+  }
+  const meta = `<div class="meta">${m.edited && !m.deleted ? `<span class="edited">${esc(t('msg.edited'))}</span>` : ''}<span>${fmtTime(m.createdAt)}</span>${me ? '<span>✓</span>' : ''}</div>`;
+  inner += meta;
+  node.innerHTML = inner;
+
+  if (!m.deleted && m.reactions && Object.keys(m.reactions).length){
+    const rbox = el(`<div class="reactions"></div>`);
+    Object.entries(m.reactions).forEach(([emoji, users]) => {
+      const r = el(`<span class="react${users.includes(State.me.id) ? ' mine' : ''}">${emoji} ${users.length}</span>`);
+      r.onclick = () => toggleReaction(m.id, emoji);
+      rbox.appendChild(r);
+    });
+    node.appendChild(rbox);
+  }
+
+  const actions = el(`
+    <div class="msg-actions">
+      <button data-a="reply" title="${esc(t('ctx.reply'))}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg>
+      </button>
+      <button data-a="react" title="+1">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+      </button>
+      <button data-a="more" title="More">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+      </button>
+    </div>`);
+  node.appendChild(actions);
+
+  node.oncontextmenu = e => { e.preventDefault(); openMessageContext(e, m.id); };
+  node.onclick = e => {
+    const btn = e.target.closest('.msg-actions button');
+    if (btn){
+      e.stopPropagation();
+      const a = btn.dataset.a;
+      if (a === 'reply'){ setReply(m.id); }
+      else if (a === 'react'){ toggleReaction(m.id, '👍'); }
+      else if (a === 'more'){ const r = btn.getBoundingClientRect(); openMessageContext({clientX: r.left, clientY: r.bottom, preventDefault(){}}, m.id); }
+      return;
+    }
+    // toggle actions
+    document.querySelectorAll('.msg.actions-open').forEach(x => { if (x !== node) x.classList.remove('actions-open'); });
+    node.classList.toggle('actions-open');
+  };
+  return node;
+}
+
+function linkify(s){
+  return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+}
+
+/* reactions */
+function toggleReaction(msgId, emoji){
+  const m = DB.getMessage(msgId);
+  if (!m) return;
+  if (!m.reactions) m.reactions = {};
+  if (!m.reactions[emoji]) m.reactions[emoji] = [];
+  const idx = m.reactions[emoji].indexOf(State.me.id);
+  if (idx >= 0) m.reactions[emoji].splice(idx, 1);
+  else m.reactions[emoji].push(State.me.id);
+  if (!m.reactions[emoji].length) delete m.reactions[emoji];
+  DB.persist();
+  renderMessages();
+}
+
+/* ============================================================
+   COMPOSER
+   ============================================================ */
+const msgInput = document.getElementById('msgInput');
+const btnSend = document.getElementById('btnSend');
+const replyBar = document.getElementById('replyBar');
+const replyText = document.getElementById('replyText');
+
+msgInput.addEventListener('input', () => {
+  btnSend.disabled = !msgInput.value.trim();
+  msgInput.style.height = 'auto';
+  msgInput.style.height = Math.min(140, msgInput.scrollHeight) + 'px';
+});
+msgInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey){
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function setReply(msgId){
+  State.replyTo = msgId;
+  const m = DB.getMessage(msgId);
+  if (!m) return;
+  replyText.textContent = (m.text || '').slice(0, 80);
+  replyBar.classList.add('on');
+  msgInput.focus();
+}
+document.getElementById('replyCancel').onclick = () => {
+  State.replyTo = null; State.editing = null;
+  replyBar.classList.remove('on');
+};
+
+function sendMessage(){
+  if (!State.activeChat) return;
+  const text = msgInput.value.trim();
+  if (!text) return;
+  if (State.editing){
+    DB.updateMessage(State.editing, { text, edited: true });
+    State.editing = null;
+    replyBar.classList.remove('on');
+  } else {
+    DB.createMessage({
+      chatId: State.activeChat.id,
+      senderId: State.me.id,
+      text,
+      replyTo: State.replyTo || null
+    });
+    State.replyTo = null;
+    replyBar.classList.remove('on');
+  }
+  msgInput.value = ''; msgInput.style.height = 'auto';
+  btnSend.disabled = true;
+  renderMessages(); renderChats();
+  if (State.activeChat.type === 'personal'){
+    const otherId = State.activeChat.members.find(id => id !== State.me.id);
+    if (otherId){
+      const other = DB.findUserById(otherId);
+      if (other){ /* nothing - single device */ }
+    }
+  }
+}
+btnSend.onclick = sendMessage;
+
+/* attach (files → dataURL, stored with message) */
+document.getElementById('btnAttach').onclick = () => {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*,video/*,application/*';
+  inp.onchange = () => {
+    const f = inp.files[0];
+    if (!f) return;
+    if (f.size > 3 * 1024 * 1024){ toast(LANG==='ru'?'Файл слишком большой (макс 3 МБ)':'File too large (max 3 MB)', 'err'); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      DB.createMessage({
+        chatId: State.activeChat.id,
+        senderId: State.me.id,
+        text: '',
+        attachments: [{name: f.name, type: f.type, size: f.size, data: reader.result}]
+      });
+      renderMessages(); renderChats();
+      toast(LANG==='ru'?'Файл отправлен':'File sent', 'ok');
+    };
+    reader.readAsDataURL(f);
+  };
+  inp.click();
+};
+
+/* emoji picker — a small quick picker */
+document.getElementById('btnEmoji').onclick = () => {
+  const r = document.getElementById('btnEmoji').getBoundingClientRect();
+  const emojis = ['👍','❤️','😂','😮','😢','🔥','👎','🎉','🙏','😍','🤔','😎','🥰','😅','😭'];
+  openContext(r.left - 120, r.top - 60, emojis.map(e => ({
+    label: e, fn: () => {
+      msgInput.value += e;
+      msgInput.dispatchEvent(new Event('input'));
+      msgInput.focus();
+    }
+  })));
+};
+
+/* ============================================================
+   MESSAGE CONTEXT MENU
+   ============================================================ */
+function openMessageContext(e, msgId){
+  const m = DB.getMessage(msgId);
+  if (!m) return;
+  const mine = m.senderId === State.me.id;
+  const items = [
+    {icon:'reply', label: t('ctx.reply'), fn: () => setReply(msgId)},
+    {icon:'copy', label: t('ctx.copy'), fn: () => {
+      navigator.clipboard?.writeText(m.text || '');
+      toast(t('toast.copied'), 'ok');
+    }},
+    {sep:true},
+    {emoji:'👍', label:'👍', fn: () => toggleReaction(msgId, '👍')},
+    {emoji:'❤️', label:'❤️', fn: () => toggleReaction(msgId, '❤️')},
+    {emoji:'🔥', label:'🔥', fn: () => toggleReaction(msgId, '🔥')},
+    {emoji:'😂', label:'😂', fn: () => toggleReaction(msgId, '😂')}
+  ];
+  if (mine && !m.deleted){
+    items.push({sep:true});
+    items.push({icon:'edit', label: t('ctx.edit'), fn: () => {
+      State.editing = msgId;
+      msgInput.value = m.text;
+      msgInput.dispatchEvent(new Event('input'));
+      replyText.textContent = t('ctx.edit') + ': ' + (m.text||'').slice(0,60);
+      replyBar.classList.add('on');
+      msgInput.focus();
+    }});
+    items.push({icon:'trash', label: t('ctx.delete_msg'), danger:true, fn: () => {
+      confirmDialog(t('confirm.delete_msg'), () => {
+        DB.deleteMessage(msgId, false);
+        renderMessages(); renderChats();
+      });
+    }});
+  }
+  openContext(e.clientX || 0, e.clientY || 0, items);
+}
+
+/* ============================================================
+   CHAT CONTEXT MENU
+   ============================================================ */
+function openChatContext(e, chatId){
+  const c = DB.getChat(chatId);
+  if (!c) return;
+  const items = [
+    {icon:'open', label: t('ctx.open'), fn: () => openChat(chatId)},
+    {icon:'pin', label: c.pinned ? t('ctx.unpin') : t('ctx.pin'), fn: () => {
+      DB.updateChat(chatId, {pinned: !c.pinned}); renderChats();
+    }},
+    {icon:'read', label: c.unread ? t('ctx.read') : t('ctx.unread'), fn: () => {
+      DB.updateChat(chatId, {unread: c.unread ? 0 : 1}); renderChats();
+    }},
+    {icon:'bell', label: c.muted ? t('ctx.unmute') : t('ctx.mute'), fn: () => {
+      DB.updateChat(chatId, {muted: !c.muted}); renderChats();
+    }},
+    {sep:true},
+    {icon:'trash', label: t('ctx.delete'), danger:true, fn: () => {
+      confirmDialog(t('confirm.delete_chat'), () => {
+        DB.deleteChat(chatId);
+        if (State.activeChat?.id === chatId){
+          State.activeChat = null;
+          document.getElementById('chatTop').style.display = 'none';
+          document.getElementById('composer').style.display = 'none';
+          document.getElementById('noChatOpen').style.display = 'flex';
+        }
+        renderChats();
+      });
+    }}
+  ];
+  openContext(e.clientX, e.clientY, items);
+}
+
+/* ============================================================
+   CONTEXT MENU RENDERER
+   ============================================================ */
+function openContext(x, y, items){
+  const ctx = document.getElementById('ctxMenu');
+  ctx.innerHTML = '';
+  items.forEach(it => {
+    if (it.sep){ ctx.appendChild(el('<div class="drawer-sep"></div>')); return; }
+    const b = el(`<button${it.danger ? ' class="danger"' : ''}>${it.emoji ? `<span style="font-size:16px">${it.emoji}</span>` : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`}<span>${esc(it.label)}</span></button>`);
+    b.onclick = () => { closeContext(); it.fn(); };
+    ctx.appendChild(b);
+  });
+  ctx.classList.add('open');
+  const maxX = window.innerWidth - ctx.offsetWidth - 10;
+  const maxY = window.innerHeight - ctx.offsetHeight - 10;
+  ctx.style.left = Math.max(10, Math.min(x, maxX)) + 'px';
+  ctx.style.top = Math.max(10, Math.min(y, maxY)) + 'px';
+}
+function closeContext(){ document.getElementById('ctxMenu').classList.remove('open'); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('#ctxMenu')) closeContext();
+  if (!e.target.closest('.msg')) document.querySelectorAll('.msg.actions-open').forEach(x => x.classList.remove('actions-open'));
+});
+
+/* ============================================================
+   MODAL — generic
+   ============================================================ */
+function openModal(html, setup){
+  const bd = document.getElementById('modalBd');
+  const body = document.getElementById('modalBody');
+  body.innerHTML = html;
+  bd.classList.add('open');
+  if (setup) setup(body);
+}
+function closeModal(){
+  document.getElementById('modalBd').classList.remove('open');
+}
+document.getElementById('modalBd').addEventListener('click', e => {
+  if (e.target.id === 'modalBd') closeModal();
+});
+
+function confirmDialog(text, onYes){
+  openModal(`
+    <h2>${esc(t('confirm.title'))}</h2>
+    <p style="color:var(--text2);margin-bottom:20px;font-size:14.5px">${esc(text)}</p>
+    <div class="row" style="gap:10px">
+      <button class="btn btn-2" id="cfNo">${esc(t('confirm.cancel'))}</button>
+      <button class="btn btn-danger" id="cfYes">${esc(t('confirm.yes'))}</button>
+    </div>`,
+    b => {
+      b.querySelector('#cfNo').onclick = closeModal;
+      b.querySelector('#cfYes').onclick = () => { closeModal(); onYes(); };
+    });
 }
 
 /* ============================================================
    DRAWER
    ============================================================ */
 const drawer = document.getElementById('drawer');
-const backdrop = document.getElementById('drawer-backdrop');
-function openDrawer(){ drawer.classList.add('open'); backdrop.classList.add('open'); }
-function closeDrawer(){ drawer.classList.remove('open'); backdrop.classList.remove('open'); }
+const drawerBd = document.getElementById('drawerBd');
+function openDrawer(){ drawer.classList.add('open'); drawerBd.classList.add('open'); }
+function closeDrawer(){ drawer.classList.remove('open'); drawerBd.classList.remove('open'); }
+document.getElementById('btnMenu').onclick = openDrawer;
+drawerBd.onclick = closeDrawer;
+let dsX = 0;
+drawer.addEventListener('touchstart', e => dsX = e.touches[0].clientX);
+drawer.addEventListener('touchend', e => { if (e.changedTouches[0].clientX - dsX < -60) closeDrawer(); });
 
-document.getElementById('btn-menu').onclick = openDrawer;
-backdrop.onclick = closeDrawer;
-
-// свайп-закрытие
-let touchStartX = 0;
-drawer.addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; });
-drawer.addEventListener('touchend', e=>{
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (dx < -60) closeDrawer();
-});
-
-/* drawer items */
-document.querySelectorAll('.drawer-item').forEach(btn=>{
-  btn.onclick = async ()=>{
-    const action = btn.dataset.action;
+document.querySelectorAll('.drawer-item').forEach(b => {
+  b.onclick = () => {
+    const a = b.dataset.action;
     closeDrawer();
-    switch(action){
-      case 'profile':  openModal('modal-profile'); break;
-      case 'settings': openModal('modal-settings'); break;
-      case 'logout':   await doLogout(); break;
-      case 'new-chat':
-      case 'new-group':
-      case 'new-channel':
-      case 'contacts':
-      case 'calls':
-      case 'saved':
-      case 'invite':
-      case 'help':
-      case 'about':
-        toast(LANG==='ru' ? 'Раздел в разработке — данные отсутствуют' : 'Section under construction — no data yet');
-        break;
-    }
+    handleDrawerAction(a);
   };
 });
 
-/* ============================================================
-   LOGOUT
-   ============================================================ */
-async function doLogout(){
-  await supabase.auth.signOut();
-  ME = null;
-  toast(t('msg.logged_out'));
-  show('screen-welcome');
-}
-
-/* ============================================================
-   MODALS
-   ============================================================ */
-function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-backdrop').forEach(b=>{
-  b.addEventListener('click', e=>{ if (e.target===b) b.classList.remove('open'); });
-});
-document.getElementById('settings-close').onclick = ()=>closeModal('modal-settings');
-document.getElementById('profile-close').onclick  = ()=>closeModal('modal-profile');
-
-/* ============================================================
-   THEME / SETTINGS
-   ============================================================ */
-function applyTheme(mode){
-  let t = mode;
-  if (mode === 'system'){
-    t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+function handleDrawerAction(a){
+  switch(a){
+    case 'profile':     openProfileModal(); break;
+    case 'new-chat':    openNewChatModal(); break;
+    case 'new-group':   openCreateGroupModal(); break;
+    case 'new-channel': openCreateChannelModal(); break;
+    case 'contacts':    openContactsModal(); break;
+    case 'calls':       openCallsModal(); break;
+    case 'saved':       openSavedChat(); break;
+    case 'settings':    openSettingsModal(); break;
+    case 'invite':      openInviteModal(); break;
+    case 'help':        openHelpModal(); break;
+    case 'about':       openAboutModal(); break;
+    case 'logout':      doLogout(); break;
   }
-  document.documentElement.setAttribute('data-theme', t);
-}
-function applyCompact(on){
-  document.documentElement.style.setProperty('--font',
-    on ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
-       : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
-}
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{
-  if (SETTINGS && SETTINGS.theme === 'system') applyTheme('system');
-});
-
-async function saveSetting(patch){
-  if (!ME) return;
-  SETTINGS = { ...SETTINGS, ...patch };
-  await supabase.from('user_settings').upsert({ user_id: ME.user.id, ...SETTINGS });
 }
 
-document.querySelectorAll('#seg-theme button').forEach(b=>{
-  b.onclick = ()=>{
-    document.querySelectorAll('#seg-theme button').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');
-    applyTheme(b.dataset.theme);
-    saveSetting({ theme: b.dataset.theme });
-  };
-});
-document.querySelectorAll('#seg-lang button, #lang-select button').forEach(b=>{
-  b.onclick = ()=>{
-    LANG = b.dataset.lang;
-    localStorage.setItem('vexa.lang', LANG);
-    applyLang();
-    saveSetting({ language: LANG });
-  };
-});
-document.getElementById('sw-anim').onclick = (e)=>{
-  const on = !e.currentTarget.classList.contains('on');
-  e.currentTarget.classList.toggle('on', on);
-  document.documentElement.style.setProperty('--anim', on ? '1' : '0');
-  saveSetting({ animations: on });
-};
-document.getElementById('sw-compact').onclick = (e)=>{
-  const on = !e.currentTarget.classList.toggle('on');
-  applyCompact(on);
-  saveSetting({ compact: on });
-};
-
-/* tabs */
-document.querySelectorAll('.tab').forEach(tb=>{
-  tb.onclick = ()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-    tb.classList.add('on');
-    loadChats();
-  };
-});
-
-/* header buttons */
-document.getElementById('btn-new').onclick    = ()=> toast(LANG==='ru'?'Функция появится в следующей версии':'Coming in next version');
-document.getElementById('btn-search').onclick = ()=> toast(LANG==='ru'?'Функция появится в следующей версии':'Coming in next version');
-document.getElementById('empty-action').onclick = ()=> toast(LANG==='ru'?'Функция появится в следующей версии':'Coming in next version');
+function doLogout(){
+  confirmDialog(t('confirm.logout'), () => {
+    DB.clearSession();
+    State.me = null; State.activeChat = null;
+    document.getElementById('app').classList.remove('chat-open');
+    showScreen('welcome');
+    toast(t('toast.logged_out'));
+  });
+}
 
 /* ============================================================
-   BOOT
+   MODAL: PROFILE
    ============================================================ */
-applyLang();
-phoneInput.value = '';
+function openProfileModal(){
+  const u = State.me;
+  openModal(`
+    <h2>${esc(t('profile.title'))}</h2>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:20px">
+      <div class="avatar av-96" id="pmAvatar">${esc(initials(u))}</div>
+      <div style="text-align:center">
+        <div style="font-weight:700;font-size:18px">${esc(displayName(u))}</div>
+        <div style="color:var(--text2);font-size:14px">${u.username ? '@'+esc(u.username) : '@—'}</div>
+      </div>
+    </div>
+    <label class="lbl">${esc(t('profile.first'))}</label>
+    <input class="field" id="pfFirst" value="${esc(u.firstName || '')}" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('profile.last'))}</label>
+    <input class="field" id="pfLast" value="${esc(u.lastName || '')}" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('profile.user'))}</label>
+    <input class="field" id="pfUser" value="${esc(u.username || '')}" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('profile.bio'))}</label>
+    <input class="field" id="pfBio" value="${esc(u.bio || '')}" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('profile.phone'))}</label>
+    <input class="field" value="${esc(u.phone || '')}" disabled style="margin-bottom:20px;opacity:.6"/>
+    <div class="row" style="gap:10px">
+      <button class="btn btn-2" id="pfClose">${esc(t('profile.close'))}</button>
+      <button class="btn" id="pfSave">${esc(t('profile.save'))}</button>
+    </div>`,
+    b => {
+      b.querySelector('#pfClose').onclick = closeModal;
+      b.querySelector('#pfSave').onclick = () => {
+        const first = b.querySelector('#pfFirst').value.trim();
+        const last = b.querySelector('#pfLast').value.trim() || null;
+        const un = b.querySelector('#pfUser').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'') || null;
+        const bio = b.querySelector('#pfBio').value.trim() || null;
+        if (!first){ toast(t('toast.fill_name'), 'err'); return; }
+        if (un){
+          const existing = DB.findUserByUsername(un);
+          if (existing && existing.id !== State.me.id){ toast(t('toast.username_taken'), 'err'); return; }
+        }
+        DB.updateUser(State.me.id, {firstName:first, lastName:last, username:un, bio});
+        State.me = DB.findUserById(State.me.id);
+        updateDrawer();
+        closeModal();
+        toast(t('toast.profile_saved'), 'ok');
+      };
+    });
+}
 
-(async ()=>{
-  const { data:{ session } } = await supabase.auth.getSession();
-  if (session?.user){
-    // есть активная сессия → в приложение (или на name, если профиля нет)
-    await routeAfterAuth(session.user);
-  } else {
-    show('screen-welcome');
-  }
-})();
-</script>
-</body>
-</html>
+/* ============================================================
+   MODAL: NEW CHAT
+   ============================================================ */
+function openNewChatModal(){
+  openModal(`
+    <h2>${esc(t('newchat.title'))}</h2>
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text2)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="ncSearch" placeholder="${esc(t('newchat.search'))}" autofocus/>
+    </div>
+    <div id="ncResults" style="max-height:400px;overflow-y:auto"></div>`,
+    b => {
+      const inp = b.querySelector('#ncSearch');
+      const res = b.querySelector('#ncResults');
+      const render = () => {
+        const q = inp.value.trim().toLowerCase();
+        res.innerHTML = '';
+        if (!q){ res.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:16px;text-align:center">${esc(t('newchat.hint'))}</div>`; return; }
+        const users = DB.data.users.filter(u =>
+          u.id !== State.me.id &&
+          ((u.username||'').toLowerCase().includes(q) ||
+           (u.firstName||'').toLowerCase().includes(q) ||
+           (u.lastName||'').toLowerCase().includes(q))
+        );
+        if (!users.length){ res.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:16px;text-align:center">${esc(t('newchat.no_results'))}</div>`; return; }
+        users.forEach(u => {
+          const r = el(`
+            <div class="result-item">
+              <div class="avatar av-40">${esc(initials(u))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(u))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
+              </div>
+            </div>`);
+          r.onclick = () => {
+            let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
+            if (!chat){
+              chat = DB.createChat({
+                type: 'personal',
+                members: [State.me.id, u.id],
+                ownerId: State.me.id
+              });
+              toast(t('toast.chat_created'), 'ok');
+            }
+            closeModal();
+            State.activeTab = 'all';
+            document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
+            renderChats();
+            openChat(chat.id);
+          };
+          res.appendChild(r);
+        });
+      };
+      inp.addEventListener('input', render);
+      render();
+    });
+}
+
+/* ============================================================
+   MODAL: CREATE GROUP
+   ============================================================ */
+function openCreateGroupModal(){
+  const contacts = DB.contactsOf(State.me.id);
+  const allUsers = DB.data.users.filter(u => u.id !== State.me.id);
+  const pool = contacts.length ? contacts : allUsers;
+  openModal(`
+    <h2>${esc(t('group.title'))}</h2>
+    <label class="lbl">${esc(t('group.name'))}</label>
+    <input class="field" id="grName" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('group.desc'))}</label>
+    <input class="field" id="grDesc" style="margin-bottom:14px"/>
+    <label class="lbl">${esc(t('group.members'))}</label>
+    <div id="grMembers" style="max-height:280px;overflow-y:auto;margin-bottom:16px"></div>
+    <div class="row" style="gap:10px">
+      <button class="btn btn-2" id="grCancel">${esc(t('confirm.cancel'))}</button>
+      <button class="btn" id="grCreate">${esc(t('group.create'))}</button>
+    </div>`,
+    b => {
+      const list = b.querySelector('#grMembers');
+      const selected = new Set();
+      if (!pool.length){
+        list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:14px;text-align:center">${esc(t('group.no_contacts'))}</div>`;
+      } else {
+        pool.forEach(u => {
+          const r = el(`
+            <div class="result-item" data-uid="${u.id}">
+              <div class="switch" style="pointer-events:none"></div>
+              <div class="avatar av-40">${esc(initials(u))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(u))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
+              </div>
+            </div>`);
+          r.onclick = () => {
+            if (selected.has(u.id)) selected.delete(u.id); else selected.add(u.id);
+            r.querySelector('.switch').classList.toggle('on', selected.has(u.id));
+          };
+          list.appendChild(r);
+        });
+      }
+      b.querySelector('#grCancel').onclick = closeModal;
+      b.querySelector('#grCreate').onclick = () => {
+        const name = b.querySelector('#grName').value.trim();
+        const desc = b.querySelector('#grDesc').value.trim();
+        if (!name){ toast(t('toast.fill_name'), 'err'); return; }
+        if (!selected.size){ toast(t('toast.select_members'), 'err'); return; }
+        const chat = DB.createChat({
+          type: 'group',
+          title: name,
+          description: desc,
+          ownerId: State.me.id,
+          members: [State.me.id, ...selected]
+        });
+        closeModal();
+        toast(t('toast.group_created'), 'ok');
+        State.activeTab = 'all';
+        document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
+        renderChats();
+        openChat(chat.id);
+      };
+    });
+}
+
+/* ============================================================
+   MODAL: CREATE CHANNEL
+   ============================================================ */
+function openCreateChannelModal(){
+  openModal(`
+    <h2>${esc(t('channel.title'))}</h2>
+    <label class="lbl">${esc(t('channel.name'))}</label>
+    <input class="field" id="chName" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('channel.desc'))}</label>
+    <input class="field" id="chDesc" style="margin-bottom:10px"/>
+    <label class="lbl">${esc(t('channel.public'))}</label>
+    <div class="row" style="gap:10px;margin-bottom:16px">
+      <div class="seg" id="chSeg" style="flex:1">
+        <button data-pub="0" class="on" style="flex:1">${esc(t('channel.public'))} — нет</button>
+        <button data-pub="1" style="flex:1">${esc(t('channel.public'))} — да</button>
+      </div>
+    </div>
+    <div class="row" style="gap:10px">
+      <button class="btn btn-2" id="chCancel">${esc(t('confirm.cancel'))}</button>
+      <button class="btn" id="chCreate">${esc(t('channel.create'))}</button>
+    </div>`,
+    b => {
+      let isPublic = false;
+      b.querySelectorAll('#chSeg button').forEach(btn => {
+        btn.onclick = () => {
+          b.querySelectorAll('#chSeg button').forEach(x => x.classList.remove('on'));
+          btn.classList.add('on');
+          isPublic = btn.dataset.pub === '1';
+        };
+      });
+      b.querySelector('#chCancel').onclick = closeModal;
+      b.querySelector('#chCreate').onclick = () => {
+        const name = b.querySelector('#chName').value.trim();
+        const desc = b.querySelector('#chDesc').value.trim();
+        if (!name){ toast(t('toast.fill_name'), 'err'); return; }
+        const chat = DB.createChat({
+          type: 'channel',
+          title: name,
+          description: desc,
+          isPublic,
+          ownerId: State.me.id,
+          members: [State.me.id]
+        });
+        closeModal();
+        toast(t('toast.channel_created'), 'ok');
+        State.activeTab = 'all';
+        document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
+        renderChats();
+        openChat(chat.id);
+      };
+    });
+}
+
+/* ============================================================
+   MODAL: CONTACTS
+   ============================================================ */
+function openContactsModal(){
+  const contacts = DB.contactsOf(State.me.id);
+  openModal(`
+    <h2>${esc(t('contacts.title'))}</h2>
+    <div class="row" style="gap:8px;margin-bottom:14px">
+      <button class="btn btn-sm" id="ctAdd">${esc(t('contacts.add'))}</button>
+      <button class="btn btn-sm btn-2" id="ctFind">${esc(t('contacts.find'))}</button>
+    </div>
+    <div id="ctList" style="max-height:400px;overflow-y:auto"></div>`,
+    b => {
+      const render = () => {
+        const list = b.querySelector('#ctList');
+        list.innerHTML = '';
+        const cs = DB.contactsOf(State.me.id);
+        if (!cs.length){
+          list.innerHTML = `
+            <div style="text-align:center;padding:20px;color:var(--text2)">
+              <div style="font-weight:600;color:var(--text);margin-bottom:6px">${esc(t('contacts.empty'))}</div>
+              <div style="font-size:13px">${esc(t('contacts.empty_sub'))}</div>
+            </div>`;
+          return;
+        }
+        cs.forEach(u => {
+          const r = el(`
+            <div class="result-item">
+              <div class="avatar av-40">${esc(initials(u))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(u))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
+              </div>
+            </div>`);
+          r.onclick = e => {
+            const rect = r.getBoundingClientRect();
+            openContext(e.clientX || rect.right, e.clientY || rect.top, [
+              {icon:'open', label: t('contacts.write'), fn: () => {
+                closeModal();
+                let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
+                if (!chat) chat = DB.createChat({type:'personal', members:[State.me.id, u.id], ownerId: State.me.id});
+                renderChats(); openChat(chat.id);
+              }},
+              {icon:'trash', label: t('contacts.remove'), danger:true, fn: () => {
+                DB.removeContact(State.me.id, u.id);
+                toast(t('toast.contact_removed'));
+                render();
+              }}
+            ]);
+          };
+          list.appendChild(r);
+        });
+      };
+      render();
+      b.querySelector('#ctAdd').onclick = () => { closeModal(); openAddContactModal(); };
+      b.querySelector('#ctFind').onclick = () => { closeModal(); openNewChatModal(); };
+    });
+}
+
+function openAddContactModal(){
+  openModal(`
+    <h2>${esc(t('contacts.add'))}</h2>
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text2)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="acSearch" placeholder="${esc(t('newchat.search'))}" autofocus/>
+    </div>
+    <div id="acRes" style="max-height:360px;overflow-y:auto"></div>`,
+    b => {
+      const inp = b.querySelector('#acSearch');
+      const res = b.querySelector('#acRes');
+      const render = () => {
+        const q = inp.value.trim().toLowerCase();
+        res.innerHTML = '';
+        if (!q) return;
+        const users = DB.data.users.filter(u =>
+          u.id !== State.me.id &&
+          ((u.username||'').toLowerCase().includes(q) ||
+           (u.firstName||'').toLowerCase().includes(q) ||
+           (u.lastName||'').toLowerCase().includes(q))
+        );
+        if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">${esc(t('newchat.no_results'))}</div>`; return; }
+        users.forEach(u => {
+          const inContacts = DB.isContact(State.me.id, u.id);
+          const r = el(`
+            <div class="result-item">
+              <div class="avatar av-40">${esc(initials(u))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(u))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
+              </div>
+              <button class="btn btn-sm${inContacts ? ' btn-2' : ''}">${inContacts ? esc(t('contacts.remove')) : esc(t('contacts.add'))}</button>
+            </div>`);
+          r.querySelector('button').onclick = () => {
+            if (DB.isContact(
