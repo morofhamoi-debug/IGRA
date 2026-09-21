@@ -2,7 +2,9 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no"/>
 <title>VEXA — Messenger</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%236C5CE7'/><text x='50' y='68' font-size='60' font-weight='800' fill='white' text-anchor='middle' font-family='Arial'>V</text></svg>"/>
 <style>
@@ -22,9 +24,30 @@
   --bubble-other:#1B2233;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font:var(--font);background:var(--bg);color:var(--text);overflow:hidden}
-html[data-anim="0"] *{transition:none!important;animation:none!important}
-button,input,textarea,select{font:inherit;color:inherit;background:none;border:0;outline:none}
+
+/* ====== ANTI-ZOOM / ANTI-SCALE ====== */
+html{
+  -webkit-text-size-adjust:100%;
+  -moz-text-size-adjust:100%;
+  text-size-adjust:100%;
+  touch-action:pan-x pan-y;
+  height:100%;
+}
+body{
+  height:100%;
+  font:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+  touch-action:pan-x pan-y;
+  overscroll-behavior:none;
+}
+button,input,textarea,select{
+  font-family:inherit;color:inherit;background:none;border:0;outline:none;
+  touch-action:manipulation;
+}
+/* iOS: любой input < 16px => авто-зум. Принудительно 16px+. */
+input,textarea,select{font-size:16px}
 button{cursor:pointer}
 a{color:var(--accent);text-decoration:none;cursor:pointer}
 a:hover{text-decoration:underline}
@@ -43,7 +66,7 @@ svg{display:block}
 .btn-2{background:var(--surface2);color:var(--text)}
 .btn-danger{background:var(--danger)}
 .btn-sm{padding:9px 16px;font-size:14px;width:auto;border-radius:11px}
-.field{width:100%;padding:14px;border-radius:var(--r);background:var(--surface2);border:1px solid transparent;transition:border-color .15s}
+.field{width:100%;padding:14px;border-radius:var(--r);background:var(--surface2);border:1px solid transparent;transition:border-color .15s;font-size:16px}
 .field:focus{border-color:var(--accent)}
 .lbl{font-size:13px;color:var(--text2);margin:0 4px 6px;display:block}
 .icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--text2);flex-shrink:0;transition:background .15s,color .15s}
@@ -79,14 +102,21 @@ svg{display:block}
 .auth-title{font-size:26px;font-weight:700;margin:24px 0 8px}
 .auth-sub{color:var(--text2);margin-bottom:24px;font-size:14px}
 .phone-row{display:flex;gap:10px}
-.country-btn{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:var(--r);background:var(--surface2);white-space:nowrap;font-weight:600}
+.country-btn{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;border-radius:var(--r);background:var(--surface2);white-space:nowrap;font-weight:600;font-size:16px}
 #phoneInput{flex:1;height:52px;font-size:17px;letter-spacing:.4px}
 .hint{font-size:12px;color:var(--text2);margin-top:6px}
 .err{font-size:12px;color:var(--danger);margin-top:6px;min-height:14px}
 
-/* OTP */
+/* OTP — увеличенный шрифт чтобы iOS не зумил */
 .otp-wrap{display:flex;gap:8px;margin:20px 0}
-.otp-cell{flex:1;height:56px;text-align:center;font-size:22px;font-weight:700;background:var(--surface2);border:1.5px solid transparent;border-radius:var(--r)}
+.otp-cell{
+  flex:1;min-width:0;height:56px;text-align:center;
+  font-size:22px;font-weight:700;line-height:56px;
+  background:var(--surface2);border:1.5px solid transparent;
+  border-radius:var(--r);
+  -webkit-appearance:none;appearance:none;
+  touch-action:manipulation;
+}
 .otp-cell:focus{border-color:var(--accent)}
 .otp-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-top:6px}
 .otp-meta a.disabled{color:var(--text2);cursor:not-allowed;text-decoration:none}
@@ -148,13 +178,13 @@ svg{display:block}
 .empty-chat h3{color:var(--text);font-size:17px;margin:14px 0 8px;font-weight:600}
 .empty-chat p{font-size:14px;max-width:300px}
 
-/* Composer */
+/* Composer — textarea тоже 16px чтобы не было зума */
 .composer{padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border)}
 .reply-bar{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--surface2);border-radius:10px;margin-bottom:8px;font-size:13px}
 .reply-bar.on{display:flex}
 .reply-bar .spacer{flex:1}
 .composer-row{display:flex;gap:8px;align-items:flex-end}
-.composer textarea{flex:1;padding:12px 14px;background:var(--surface2);border-radius:20px;resize:none;max-height:140px;min-height:44px;font-size:15px;line-height:1.4;border:1px solid transparent}
+.composer textarea{flex:1;padding:12px 14px;background:var(--surface2);border-radius:20px;resize:none;max-height:140px;min-height:44px;font-size:16px;line-height:1.4;border:1px solid transparent;-webkit-appearance:none;appearance:none}
 .composer textarea:focus{border-color:var(--accent)}
 .send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;flex-shrink:0}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
@@ -192,7 +222,7 @@ svg{display:block}
 .seg button{padding:8px 14px;border-radius:9px;font-size:13px;font-weight:500;color:var(--text2);transition:background .15s}
 .seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .search-box{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--surface2);border-radius:12px;margin-bottom:12px}
-.search-box input{flex:1;font-size:14px}
+.search-box input{flex:1;font-size:16px}
 .result-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;transition:background .12s}
 .result-item:hover{background:var(--surface2)}
 
@@ -264,12 +294,12 @@ svg{display:block}
   <h1 class="auth-title" data-i18n="otp.title">Введите код</h1>
   <p class="auth-sub" id="otpSub">—</p>
   <div class="otp-wrap" id="otpWrap">
-    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
-    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
-    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
-    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
-    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
-    <input class="otp-cell" maxlength="1" inputmode="numeric"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric" pattern="[0-9]*"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric" pattern="[0-9]*"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric" pattern="[0-9]*"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric" pattern="[0-9]*"/>
+    <input class="otp-cell" maxlength="1" inputmode="numeric" pattern="[0-9]*"/>
   </div>
   <div class="otp-meta">
     <a id="otpChange" data-i18n="otp.change">Изменить номер</a>
@@ -436,6 +466,35 @@ svg{display:block}
    Storage: localStorage (structured like a real DB)
    ============================================================ */
 
+/* ---------- ANTI-ZOOM: блокируем pinch и двойной тап ---------- */
+(function preventZoom(){
+  // iOS Safari specific
+  ['gesturestart','gesturechange','gestureend'].forEach(ev => {
+    document.addEventListener(ev, e => e.preventDefault(), {passive:false});
+  });
+  // Double-tap zoom
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', e => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+  }, {passive:false});
+  // Ctrl+wheel zoom (desktop)
+  document.addEventListener('wheel', e => {
+    if (e.ctrlKey) e.preventDefault();
+  }, {passive:false});
+  // Multi-touch pinch (общая защита)
+  document.addEventListener('touchmove', e => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, {passive:false});
+  // Ctrl + / Ctrl - / Ctrl 0
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')){
+      e.preventDefault();
+    }
+  });
+})();
+
 /* ---------- DB ---------- */
 const DB = (() => {
   const KEY = 'vexa.db.v1';
@@ -453,17 +512,14 @@ const DB = (() => {
     get data(){ return load(); },
     persist: save,
     uid,
-    // Users
     createUser(data){ const u = {id:uid(), createdAt:Date.now(), ...data}; load().users.push(u); save(); return u; },
     findUserByPhone(p){ return load().users.find(u => u.phone === p); },
     findUserByUsername(u){ if(!u) return null; u = u.toLowerCase(); return load().users.find(x => (x.username||'').toLowerCase() === u); },
     findUserById(id){ return load().users.find(u => u.id === id); },
     updateUser(id, patch){ const u = this.findUserById(id); if(!u) return; Object.assign(u, patch); save(); return u; },
-    // Session
     setSession(userId){ load().session = userId; save(); },
     getSession(){ return load().session; },
     clearSession(){ load().session = null; save(); },
-    // Chats
     createChat(data){ const c = {id:uid(), createdAt:Date.now(), ...data}; load().chats.push(c); save(); return c; },
     getChat(id){ return load().chats.find(c => c.id === id); },
     updateChat(id, patch){ const c = this.getChat(id); if(!c) return; Object.assign(c, patch); save(); return c; },
@@ -474,7 +530,6 @@ const DB = (() => {
       save();
     },
     chatsOf(userId){ return load().chats.filter(c => c.members.includes(userId)); },
-    // Messages
     createMessage(data){ const m = {id:uid(), createdAt:Date.now(), reactions:{}, deleted:false, edited:false, ...data}; load().messages.push(m); save(); return m; },
     getMessages(chatId){ return load().messages.filter(m => m.chatId === chatId); },
     getMessage(id){ return load().messages.find(m => m.id === id); },
@@ -483,7 +538,6 @@ const DB = (() => {
       if (forAll){ this.updateMessage(id, {deleted:true, text:'', attachments:[]}); }
       else { const d = load(); d.messages = d.messages.filter(x => x.id !== id); save(); }
     },
-    // Contacts
     addContact(ownerId, contactId){
       const d = load();
       if (d.contacts.find(c => c.ownerId===ownerId && c.contactId===contactId)) return;
@@ -499,10 +553,8 @@ const DB = (() => {
       return d.contacts.filter(c => c.ownerId === userId).map(c => this.findUserById(c.contactId)).filter(Boolean);
     },
     isContact(ownerId, contactId){ return !!load().contacts.find(c => c.ownerId===ownerId && c.contactId===contactId); },
-    // Calls
     createCall(data){ const c = {id:uid(), createdAt:Date.now(), ...data}; load().calls.push(c); save(); return c; },
     callsOf(userId){ return load().calls.filter(c => c.from===userId || c.to===userId).sort((a,b)=>b.createdAt-a.createdAt); },
-    // Settings
     getSettings(userId){
       const d = load();
       if (!d.settings[userId]) d.settings[userId] = {theme:'system', lang:null, animations:true, compact:false};
@@ -663,7 +715,6 @@ function applyLang(){
   document.querySelectorAll('.composer textarea').forEach(a => a.placeholder = t('chat.input_ph'));
   const cb = document.getElementById('codeBanner');
   if (cb && cb.dataset.code) cb.innerHTML = t('otp.banner') + ' <strong>' + cb.dataset.code + '</strong>';
-  // refresh drawer labels
   document.querySelectorAll('.drawer-item span[data-i18n]').forEach(s => s.textContent = t(s.dataset.i18n));
 }
 function setLang(l){
@@ -757,13 +808,8 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
    STATE
    ============================================================ */
 const State = {
-  me: null,       // current user object
-  activeChat: null,
-  activeTab: 'all',
-  replyTo: null,
-  editing: null,
-  tempOtp: null,
-  tempPhone: null
+  me: null, activeChat: null, activeTab: 'all',
+  replyTo: null, editing: null, tempOtp: null, tempPhone: null
 };
 
 /* ============================================================
@@ -812,10 +858,7 @@ btnSendCode.onclick = () => {
   if (!phoneValid(phoneInput.value)) return;
   const e164 = '+' + digitsOf(phoneInput.value);
   State.tempPhone = e164;
-  // generate OTP — real SMS needs a backend, we show it openly
   State.tempOtp = String(Math.floor(100000 + Math.random() * 900000));
-  const existing = DB.findUserByPhone(e164);
-  // show OTP screen
   document.getElementById('otpSub').textContent = (LANG==='ru'?'Мы отправили SMS на ':'We sent an SMS to ') + formatPhone(e164);
   const cb = document.getElementById('codeBanner');
   cb.dataset.code = State.tempOtp;
@@ -855,7 +898,7 @@ otpCells.forEach((cell, i) => {
       const arr = v.split('');
       for (let k=0;k<arr.length && i+k<6;k++) otpCells[i+k].value = arr[k];
       const next = Math.min(5, i + arr.length);
-      otpCells[next].focus(); otpCells[next].setSelectionRange(1,1);
+      otpCells[next].focus();
     } else {
       cell.value = v;
       if (v && i < 5) otpCells[i+1].focus();
@@ -911,9 +954,7 @@ const inpUsername = document.getElementById('inpUsername');
 const btnCreate = document.getElementById('btnCreate');
 const usernameHint = document.getElementById('usernameHint');
 
-function refreshCreate(){
-  btnCreate.disabled = !inpName.value.trim();
-}
+function refreshCreate(){ btnCreate.disabled = !inpName.value.trim(); }
 inpName.addEventListener('input', refreshCreate);
 
 let unameTimer;
@@ -937,21 +978,12 @@ btnCreate.onclick = () => {
   const uname = inpUsername.value.trim() || null;
   if (uname && DB.findUserByUsername(uname)) { toast(t('toast.username_taken'), 'err'); return; }
   const user = DB.createUser({
-    phone: State.tempPhone,
-    firstName: name,
+    phone: State.tempPhone, firstName: name,
     lastName: inpSurname.value.trim() || null,
-    username: uname,
-    bio: '',
-    avatar: null
+    username: uname, bio: '', avatar: null
   });
   DB.setSession(user.id);
-  // create Saved chat (the only auto-created chat — allowed by spec)
-  DB.createChat({
-    type: 'saved',
-    title: null,
-    ownerId: user.id,
-    members: [user.id]
-  });
+  DB.createChat({ type: 'saved', title: null, ownerId: user.id, members: [user.id] });
   inpName.value = inpSurname.value = inpUsername.value = '';
   refreshCreate();
   bootUser(user.id);
@@ -959,7 +991,7 @@ btnCreate.onclick = () => {
 };
 
 /* ============================================================
-   BOOT USER INTO APP
+   BOOT USER
    ============================================================ */
 function bootUser(userId){
   const u = DB.findUserById(userId);
@@ -1006,7 +1038,6 @@ function chatsForTab(tab){
     default:         return all;
   }
 }
-
 function chatTitle(chat){
   if (chat.type === 'saved') return LANG === 'ru' ? 'Избранное' : 'Saved messages';
   if (chat.type === 'personal'){
@@ -1075,16 +1106,10 @@ function renderChats(){
       </div>`);
     const av = row.querySelector('.avatar');
     const otherU = chatAvatarUser(c);
-    if (c.type === 'saved'){
-      av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)';
-      av.textContent = '★';
-    } else if (c.avatar){
-      av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
-    } else if (otherU){
-      av.textContent = initials(otherU);
-    } else {
-      av.textContent = (c.title || '?')[0].toUpperCase();
-    }
+    if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
+    else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
+    else if (otherU) av.textContent = initials(otherU);
+    else av.textContent = (c.title || '?')[0].toUpperCase();
     row.querySelector('.title').textContent = chatTitle(c);
     row.querySelector('.chat-preview').textContent = chatPreview(c);
     const msgs = DB.getMessages(c.id);
@@ -1097,7 +1122,6 @@ function renderChats(){
   });
 }
 
-/* tabs */
 document.querySelectorAll('.tab').forEach(tb => {
   tb.onclick = () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
@@ -1169,9 +1193,7 @@ function renderChatTop(){
     document.getElementById('noChatOpen').style.display = 'flex';
     renderChats();
   };
-  document.getElementById('chatCallBtn').onclick = () => {
-    toast(t('calls.unavailable'));
-  };
+  document.getElementById('chatCallBtn').onclick = () => toast(t('calls.unavailable'));
   document.getElementById('chatTopInfo').onclick = () => openChatInfo();
   document.getElementById('chatMoreBtn').onclick = e => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -1274,7 +1296,6 @@ function renderMessage(m){
       else if (a === 'more'){ const r = btn.getBoundingClientRect(); openMessageContext({clientX: r.left, clientY: r.bottom, preventDefault(){}}, m.id); }
       return;
     }
-    // toggle actions
     document.querySelectorAll('.msg.actions-open').forEach(x => { if (x !== node) x.classList.remove('actions-open'); });
     node.classList.toggle('actions-open');
   };
@@ -1285,7 +1306,6 @@ function linkify(s){
   return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 }
 
-/* reactions */
 function toggleReaction(msgId, emoji){
   const m = DB.getMessage(msgId);
   if (!m) return;
@@ -1353,17 +1373,9 @@ function sendMessage(){
   msgInput.value = ''; msgInput.style.height = 'auto';
   btnSend.disabled = true;
   renderMessages(); renderChats();
-  if (State.activeChat.type === 'personal'){
-    const otherId = State.activeChat.members.find(id => id !== State.me.id);
-    if (otherId){
-      const other = DB.findUserById(otherId);
-      if (other){ /* nothing - single device */ }
-    }
-  }
 }
 btnSend.onclick = sendMessage;
 
-/* attach (files → dataURL, stored with message) */
 document.getElementById('btnAttach').onclick = () => {
   const inp = document.createElement('input');
   inp.type = 'file';
@@ -1388,7 +1400,6 @@ document.getElementById('btnAttach').onclick = () => {
   inp.click();
 };
 
-/* emoji picker — a small quick picker */
 document.getElementById('btnEmoji').onclick = () => {
   const r = document.getElementById('btnEmoji').getBoundingClientRect();
   const emojis = ['👍','❤️','😂','😮','😢','🔥','👎','🎉','🙏','😍','🤔','😎','🥰','😅','😭'];
@@ -1508,9 +1519,7 @@ function openModal(html, setup){
   bd.classList.add('open');
   if (setup) setup(body);
 }
-function closeModal(){
-  document.getElementById('modalBd').classList.remove('open');
-}
+function closeModal(){ document.getElementById('modalBd').classList.remove('open'); }
 document.getElementById('modalBd').addEventListener('click', e => {
   if (e.target.id === 'modalBd') closeModal();
 });
@@ -1663,11 +1672,7 @@ function openNewChatModal(){
           r.onclick = () => {
             let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
             if (!chat){
-              chat = DB.createChat({
-                type: 'personal',
-                members: [State.me.id, u.id],
-                ownerId: State.me.id
-              });
+              chat = DB.createChat({ type: 'personal', members: [State.me.id, u.id], ownerId: State.me.id });
               toast(t('toast.chat_created'), 'ok');
             }
             closeModal();
@@ -1733,11 +1738,8 @@ function openCreateGroupModal(){
         if (!name){ toast(t('toast.fill_name'), 'err'); return; }
         if (!selected.size){ toast(t('toast.select_members'), 'err'); return; }
         const chat = DB.createChat({
-          type: 'group',
-          title: name,
-          description: desc,
-          ownerId: State.me.id,
-          members: [State.me.id, ...selected]
+          type: 'group', title: name, description: desc,
+          ownerId: State.me.id, members: [State.me.id, ...selected]
         });
         closeModal();
         toast(t('toast.group_created'), 'ok');
@@ -1785,12 +1787,8 @@ function openCreateChannelModal(){
         const desc = b.querySelector('#chDesc').value.trim();
         if (!name){ toast(t('toast.fill_name'), 'err'); return; }
         const chat = DB.createChat({
-          type: 'channel',
-          title: name,
-          description: desc,
-          isPublic,
-          ownerId: State.me.id,
-          members: [State.me.id]
+          type: 'channel', title: name, description: desc, isPublic,
+          ownerId: State.me.id, members: [State.me.id]
         });
         closeModal();
         toast(t('toast.channel_created'), 'ok');
@@ -1806,7 +1804,6 @@ function openCreateChannelModal(){
    MODAL: CONTACTS
    ============================================================ */
 function openContactsModal(){
-  const contacts = DB.contactsOf(State.me.id);
   openModal(`
     <h2>${esc(t('contacts.title'))}</h2>
     <div class="row" style="gap:8px;margin-bottom:14px">
@@ -1949,7 +1946,7 @@ function openCallsModal(){
 }
 
 /* ============================================================
-   MODAL: SAVED (open chat with self)
+   MODAL: SAVED
    ============================================================ */
 function openSavedChat(){
   let chat = DB.chatsOf(State.me.id).find(c => c.type === 'saved');
@@ -2022,8 +2019,7 @@ function openSettingsModal(){
         btn.onclick = () => {
           setLang(btn.dataset.lang);
           b.querySelectorAll('#segLang button').forEach(x => x.classList.toggle('on', x === btn));
-          // re-render everything translated
-          openSettingsModal(); // reopen translated
+          openSettingsModal();
           renderChats();
           if (State.activeChat){ renderChatTop(); renderMessages(); }
           toast(t('toast.lang_switched'), 'ok');
@@ -2042,11 +2038,7 @@ function openSettingsModal(){
              : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
         DB.setSettings(State.me.id, {compact: on});
       };
-      b.querySelector('#setClose').onclick = () => {
-        // re-render chats (labels could have changed)
-        renderChats();
-        closeModal();
-      };
+      b.querySelector('#setClose').onclick = () => { renderChats(); closeModal(); };
     });
 }
 
@@ -2163,7 +2155,7 @@ document.getElementById('btnNewChat').onclick = openNewChatModal;
 document.getElementById('btnSearch').onclick = openNewChatModal;
 
 /* ============================================================
-   ESC key closes modal / drawer / ctx
+   ESC key
    ============================================================ */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){
@@ -2186,7 +2178,6 @@ document.addEventListener('keydown', e => {
   }
 })();
 
-// expose for inline handlers
 window.closeModal = closeModal;
 </script>
 </body>
