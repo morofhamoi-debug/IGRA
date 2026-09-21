@@ -1895,4 +1895,299 @@ function openAddContactModal(){
               <button class="btn btn-sm${inContacts ? ' btn-2' : ''}">${inContacts ? esc(t('contacts.remove')) : esc(t('contacts.add'))}</button>
             </div>`);
           r.querySelector('button').onclick = () => {
-            if (DB.isContact(
+            if (DB.isContact(State.me.id, u.id)){
+              DB.removeContact(State.me.id, u.id);
+              toast(t('toast.contact_removed'));
+            } else {
+              DB.addContact(State.me.id, u.id);
+              toast(t('toast.contact_added'), 'ok');
+            }
+            render();
+          };
+          res.appendChild(r);
+        });
+      };
+      inp.addEventListener('input', render);
+    });
+}
+
+/* ============================================================
+   MODAL: CALLS
+   ============================================================ */
+function openCallsModal(){
+  const calls = DB.callsOf(State.me.id);
+  openModal(`
+    <h2>${esc(t('calls.title'))}</h2>
+    <div style="background:var(--surface2);padding:12px;border-radius:12px;font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.5">
+      ${esc(t('calls.unavailable'))}
+    </div>
+    <div id="callList"></div>`,
+    b => {
+      const list = b.querySelector('#callList');
+      if (!calls.length){
+        list.innerHTML = `
+          <div style="text-align:center;padding:18px;color:var(--text2)">
+            <div style="font-weight:600;color:var(--text);margin-bottom:6px">${esc(t('calls.empty'))}</div>
+            <div style="font-size:13px">${esc(t('calls.empty_sub'))}</div>
+          </div>`;
+        return;
+      }
+      calls.forEach(c => {
+        const other = DB.findUserById(c.from === State.me.id ? c.to : c.from);
+        if (!other) return;
+        const r = el(`
+          <div class="result-item">
+            <div class="avatar av-40">${esc(initials(other))}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600">${esc(displayName(other))}</div>
+              <div style="color:var(--text2);font-size:12.5px">${c.type === 'video' ? '📹' : '📞'} · ${new Date(c.createdAt).toLocaleString()}</div>
+            </div>
+          </div>`);
+        list.appendChild(r);
+      });
+    });
+}
+
+/* ============================================================
+   MODAL: SAVED (open chat with self)
+   ============================================================ */
+function openSavedChat(){
+  let chat = DB.chatsOf(State.me.id).find(c => c.type === 'saved');
+  if (!chat){
+    chat = DB.createChat({type:'saved', ownerId: State.me.id, members:[State.me.id]});
+  }
+  State.activeTab = 'saved';
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'saved'));
+  renderChats();
+  openChat(chat.id);
+}
+
+/* ============================================================
+   MODAL: SETTINGS
+   ============================================================ */
+function openSettingsModal(){
+  const s = DB.getSettings(State.me.id);
+  openModal(`
+    <h2>${esc(t('settings.title'))}</h2>
+
+    <div class="modal-row" style="flex-direction:column;align-items:stretch">
+      <div class="lbl-block" style="margin-bottom:8px">
+        <div style="font-weight:600">${esc(t('settings.theme'))}</div>
+        <small>${esc(t('settings.theme_hint'))}</small>
+      </div>
+      <div class="seg" id="segTheme">
+        <button data-theme="light" style="flex:1">${esc(t('settings.light'))}</button>
+        <button data-theme="dark" style="flex:1">${esc(t('settings.dark'))}</button>
+        <button data-theme="system" style="flex:1">${esc(t('settings.system'))}</button>
+      </div>
+    </div>
+
+    <div class="modal-row">
+      <div class="lbl-block"><div style="font-weight:600">${esc(t('settings.lang'))}</div></div>
+      <div class="seg" id="segLang">
+        <button data-lang="ru">RU</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </div>
+
+    <div class="modal-row">
+      <div class="lbl-block">
+        <div style="font-weight:600">${esc(t('settings.anim'))}</div>
+        <small>${esc(t('settings.anim_hint'))}</small>
+      </div>
+      <div class="switch${s.animations ? ' on' : ''}" id="swAnim"></div>
+    </div>
+
+    <div class="modal-row">
+      <div class="lbl-block">
+        <div style="font-weight:600">${esc(t('settings.compact'))}</div>
+        <small>${esc(t('settings.compact_hint'))}</small>
+      </div>
+      <div class="switch${s.compact ? ' on' : ''}" id="swCompact"></div>
+    </div>
+
+    <button class="btn" id="setClose" style="margin-top:18px">${esc(t('settings.close'))}</button>`,
+    b => {
+      b.querySelectorAll('#segTheme button').forEach(btn => {
+        btn.classList.toggle('on', btn.dataset.theme === s.theme);
+        btn.onclick = () => {
+          DB.setSettings(State.me.id, {theme: btn.dataset.theme});
+          applyTheme(btn.dataset.theme);
+          b.querySelectorAll('#segTheme button').forEach(x => x.classList.toggle('on', x === btn));
+          toast(t('toast.theme'), 'ok');
+        };
+      });
+      b.querySelectorAll('#segLang button').forEach(btn => {
+        btn.classList.toggle('on', btn.dataset.lang === LANG);
+        btn.onclick = () => {
+          setLang(btn.dataset.lang);
+          b.querySelectorAll('#segLang button').forEach(x => x.classList.toggle('on', x === btn));
+          // re-render everything translated
+          openSettingsModal(); // reopen translated
+          renderChats();
+          if (State.activeChat){ renderChatTop(); renderMessages(); }
+          toast(t('toast.lang_switched'), 'ok');
+        };
+      });
+      b.querySelector('#swAnim').onclick = e => {
+        const on = !e.currentTarget.classList.contains('on');
+        e.currentTarget.classList.toggle('on', on);
+        document.documentElement.setAttribute('data-anim', on ? '1' : '0');
+        DB.setSettings(State.me.id, {animations: on});
+      };
+      b.querySelector('#swCompact').onclick = e => {
+        const on = !e.currentTarget.classList.toggle('on');
+        document.documentElement.style.setProperty('--font',
+          on ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
+             : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
+        DB.setSettings(State.me.id, {compact: on});
+      };
+      b.querySelector('#setClose').onclick = () => {
+        // re-render chats (labels could have changed)
+        renderChats();
+        closeModal();
+      };
+    });
+}
+
+/* ============================================================
+   MODAL: INVITE
+   ============================================================ */
+function openInviteModal(){
+  const link = location.href.split('#')[0] + '?invite=' + State.me.id;
+  openModal(`
+    <h2>${esc(t('invite.title'))}</h2>
+    <div style="background:var(--surface2);padding:14px;border-radius:12px;font-family:monospace;font-size:13px;word-break:break-all;margin-bottom:14px">${esc(link)}</div>
+    <div class="row" style="gap:10px">
+      <button class="btn btn-2" id="ivClose">${esc(t('profile.close'))}</button>
+      <button class="btn" id="ivCopy">${esc(t('invite.copy'))}</button>
+    </div>`,
+    b => {
+      b.querySelector('#ivClose').onclick = closeModal;
+      b.querySelector('#ivCopy').onclick = () => {
+        navigator.clipboard?.writeText(link);
+        toast(t('invite.copied'), 'ok');
+      };
+    });
+}
+
+/* ============================================================
+   MODAL: HELP
+   ============================================================ */
+function openHelpModal(){
+  openModal(`
+    <h2>${esc(t('help.title'))}</h2>
+    <div style="color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:16px">
+      ${LANG === 'ru'
+        ? 'VEXA — это приложение для обмена сообщениями. Здесь вы можете создавать личные чаты, группы и каналы, добавлять контакты и настраивать интерфейс.<br><br>Если у вас есть вопрос или проблема — напишите в <b>Избранное</b>, чтобы сохранить важное.'
+        : 'VEXA is a messaging app. You can create private chats, groups and channels, add contacts, and customize the interface.<br><br>If you have a question or an issue — write to <b>Saved messages</b> to keep important notes.'}
+    </div>
+    <button class="btn" onclick="closeModal()">${esc(t('settings.close'))}</button>`);
+}
+
+/* ============================================================
+   MODAL: ABOUT
+   ============================================================ */
+function openAboutModal(){
+  openModal(`
+    <div style="text-align:center;padding:6px 0 16px">
+      <div style="width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-grid;place-items:center;color:#fff;font-size:38px;font-weight:800">V</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:5px;margin-top:12px">VEXA</div>
+      <div style="color:var(--text2);font-size:13px;margin-top:4px">${esc(t('welcome.slogan'))}</div>
+    </div>
+    <div class="modal-row">
+      <div class="lbl-block"><div>${esc(t('about.version'))}</div></div>
+      <div style="color:var(--text2)">1.0.0</div>
+    </div>
+    <div class="modal-row">
+      <div class="lbl-block"><div>${esc(t('about.build'))}</div></div>
+      <div style="color:var(--text2)">single-file</div>
+    </div>
+    <button class="btn" style="margin-top:18px" onclick="closeModal()">${esc(t('settings.close'))}</button>`);
+}
+
+/* ============================================================
+   CHAT INFO
+   ============================================================ */
+function openChatInfo(){
+  const c = State.activeChat;
+  if (!c) return;
+  const members = c.members.map(id => DB.findUserById(id)).filter(Boolean);
+  openModal(`
+    <h2>${esc(t('chat.info'))}</h2>
+    <div style="text-align:center;padding:8px 0 14px">
+      <div class="avatar av-96" style="margin:0 auto;${c.type==='saved' ? 'background:linear-gradient(135deg,#22C55E,#16A34A);' : ''}">
+        ${c.type === 'saved' ? '★' : esc((c.title||'?')[0].toUpperCase())}
+      </div>
+      <div style="font-weight:700;font-size:18px;margin-top:12px">${esc(chatTitle(c))}</div>
+      ${c.description ? `<div style="color:var(--text2);font-size:13px;margin-top:4px">${esc(c.description)}</div>` : ''}
+    </div>
+    <div class="modal-row" style="flex-direction:column;align-items:stretch">
+      <div style="font-weight:600;margin-bottom:8px">${esc(t('chat.members'))} · ${members.length}</div>
+      <div style="max-height:240px;overflow-y:auto">
+        ${members.map(u => `
+          <div class="row" style="padding:8px 0">
+            <div class="avatar av-40">${esc(initials(u))}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:500">${esc(displayName(u))}${u.id===State.me.id ? ' ('+esc(t('msg.you'))+')' : ''}</div>
+              <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    ${c.type !== 'saved' ? `<button class="btn btn-danger" id="ciLeave" style="margin-top:14px">${esc(t('chat.leave'))}</button>` : ''}
+    <button class="btn btn-2" style="margin-top:10px" onclick="closeModal()">${esc(t('settings.close'))}</button>`,
+    b => {
+      const lv = b.querySelector('#ciLeave');
+      if (lv) lv.onclick = () => {
+        confirmDialog(t('chat.leave_confirm'), () => {
+          c.members = c.members.filter(id => id !== State.me.id);
+          if (!c.members.length) DB.deleteChat(c.id);
+          else DB.persist();
+          closeModal();
+          State.activeChat = null;
+          document.getElementById('chatTop').style.display = 'none';
+          document.getElementById('composer').style.display = 'none';
+          document.getElementById('noChatOpen').style.display = 'flex';
+          document.getElementById('app').classList.remove('chat-open');
+          renderChats();
+        });
+      };
+    });
+}
+
+/* ============================================================
+   HEADER BUTTONS
+   ============================================================ */
+document.getElementById('btnNewChat').onclick = openNewChatModal;
+document.getElementById('btnSearch').onclick = openNewChatModal;
+
+/* ============================================================
+   ESC key closes modal / drawer / ctx
+   ============================================================ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){
+    closeContext();
+    closeDrawer();
+    closeModal();
+  }
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(function boot(){
+  applyLang();
+  const sid = DB.getSession();
+  if (sid && DB.findUserById(sid)){
+    bootUser(sid);
+  } else {
+    showScreen('welcome');
+  }
+})();
+
+// expose for inline handlers
+window.closeModal = closeModal;
+</script>
+</body>
+</html>
