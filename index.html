@@ -12,55 +12,50 @@
 <style>
 :root{
   --accent:#6C5CE7;--accent2:#8E7BFF;
-  --bg:#F2F3F8;
-  --surface:#FFFFFF;--surface2:#EEF0F6;--surface3:#E2E5EE;
-  --text:#0F1320;--text2:#6B7280;--border:#E5E7EB;
+  --bg:#FFFFFF;
+  --surface:#FFFFFF;--surface2:#F0F1F6;--surface3:#E6E8EF;
+  --text:#0F1320;--text2:#6B7280;--border:#E5E7EB;--divider:#E7E9EF;
   --danger:#EF4444;--ok:#22C55E;
   --bubble-me:linear-gradient(135deg,#6C5CE7,#8E7BFF);
-  --bubble-me-text:#fff;--bubble-other:#fff;
+  --bubble-me-text:#fff;--bubble-other:#F2F3F8;
 
-  /* GLASS (iOS 26) */
-  --glass-bg:rgba(255,255,255,0.72);
-  --glass-bg-2:rgba(255,255,255,0.55);
+  --glass-bg:rgba(255,255,255,0.78);
+  --glass-bg-2:rgba(255,255,255,0.6);
   --glass-border:rgba(255,255,255,0.7);
-  --glass-hi:rgba(255,255,255,0.9);
-  --glass-shadow:0 8px 32px rgba(20,20,50,0.10), 0 1.5px 0 rgba(255,255,255,0.6) inset;
+  --glass-shadow:0 8px 32px rgba(20,20,50,0.10);
   --glass-blur:blur(28px) saturate(180%);
 
-  --r:14px;--r-lg:22px;--r-xl:28px;
   --font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --anim:1;
 }
 [data-theme="dark"]{
-  --bg:#080B14;
-  --surface:#131826;--surface2:#1B2233;--surface3:#232B40;
-  --text:#E8EAF2;--text2:#8A91A6;--border:#242B3D;
-  --bubble-other:#1B2233;
+  --bg:#0E1621;
+  --surface:#0E1621;--surface2:#17212B;--surface3:#1E2A38;
+  --text:#E8EAF2;--text2:#8A91A6;--border:#232B3A;--divider:#1E2733;
+  --bubble-other:#182533;
 
-  --glass-bg:rgba(30,36,54,0.65);
-  --glass-bg-2:rgba(30,36,54,0.5);
+  --glass-bg:rgba(20,28,42,0.78);
+  --glass-bg-2:rgba(20,28,42,0.6);
   --glass-border:rgba(255,255,255,0.08);
-  --glass-hi:rgba(255,255,255,0.12);
-  --glass-shadow:0 8px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset;
+  --glass-shadow:0 8px 32px rgba(0,0,0,0.5);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
-/* ====== ANTI-ZOOM ====== */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-x pan-y;height:100%}
 body{
   height:100%;font:var(--font);
   color:var(--text);overflow:hidden;
   touch-action:pan-x pan-y;overscroll-behavior:none;
   background:
-    radial-gradient(circle at 15% 0%, rgba(140,120,255,.18) 0%, transparent 45%),
-    radial-gradient(circle at 85% 100%, rgba(108,92,231,.15) 0%, transparent 45%),
+    radial-gradient(circle at 15% 0%, rgba(140,120,255,.13) 0%, transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(108,92,231,.10) 0%, transparent 45%),
     var(--bg);
   background-attachment:fixed;
 }
 [data-theme="dark"] body{
   background:
-    radial-gradient(circle at 15% 0%, rgba(108,92,231,.22) 0%, transparent 45%),
-    radial-gradient(circle at 85% 100%, rgba(70,50,180,.20) 0%, transparent 45%),
+    radial-gradient(circle at 15% 0%, rgba(108,92,231,.16) 0%, transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(70,50,180,.14) 0%, transparent 45%),
     var(--bg);
 }
 button,input,textarea,select{font-family:inherit;color:inherit;background:none;border:0;outline:none;touch-action:manipulation}
@@ -69,27 +64,12 @@ button{cursor:pointer}
 a{color:var(--accent);text-decoration:none;cursor:pointer}
 svg{display:block}
 
-/* ============ GLASS UTILITY ============ */
-.glass{
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:var(--glass-blur);
-  backdrop-filter:var(--glass-blur);
-  border:1px solid var(--glass-border);
-  box-shadow:var(--glass-shadow);
-}
-.glass-2{
-  background:var(--glass-bg-2);
-  -webkit-backdrop-filter:var(--glass-blur);
-  backdrop-filter:var(--glass-blur);
-  border:1px solid var(--glass-border);
-}
-
-/* ============ SCREENS ============ */
+/* Screens */
 .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden}
 .screen.active{display:flex;animation:fs .25s ease}
 @keyframes fs{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* ============ BUTTONS / COMMON ============ */
+/* Buttons */
 .btn{width:100%;padding:15px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;font-size:16px;transition:transform .1s,opacity .15s;box-shadow:0 8px 22px rgba(108,92,231,.35)}
 .btn:active:not(:disabled){transform:scale(.98)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
@@ -111,21 +91,21 @@ svg{display:block}
 .av-72{width:72px;height:72px;font-size:26px}
 .av-96{width:96px;height:96px;font-size:34px}
 
-/* ============ WELCOME ============ */
+/* Welcome */
 #welcome{align-items:center;justify-content:center;padding:32px;text-align:center}
-.logo{width:104px;height:104px;border-radius:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:52px;box-shadow:0 24px 60px rgba(108,92,231,.5),0 0 0 6px rgba(255,255,255,.15) inset;position:relative;animation:pop .7s cubic-bezier(.2,.9,.3,1.2)}
+.logo{width:104px;height:104px;border-radius:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:52px;box-shadow:0 24px 60px rgba(108,92,231,.5),0 0 0 6px rgba(255,255,255,.15) inset;animation:pop .7s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes pop{from{opacity:0;transform:scale(.5) rotate(-8deg)}to{opacity:1;transform:none}}
 .brand{font-size:42px;font-weight:800;letter-spacing:8px;margin-top:24px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .slogan{color:var(--text2);margin-top:6px;font-size:15px}
 .welcome-box{width:100%;max-width:400px;margin-top:36px}
 .welcome-box .btn{padding:17px;font-size:17px}
 .lang-toggle{display:inline-flex;gap:4px;margin-top:22px;padding:4px;border-radius:14px}
-.lang-toggle.glass{background:var(--glass-bg-2)}
+.lang-toggle.glass{background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border)}
 .lang-toggle button{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;color:var(--text2)}
 .lang-toggle button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .legal{color:var(--text2);font-size:12px;margin-top:20px;max-width:360px;line-height:1.5}
 
-/* ============ AUTH ============ */
+/* Auth */
 .auth{padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
 .auth .top{display:flex;justify-content:space-between;align-items:center;min-height:40px}
 .auth-title{font-size:28px;font-weight:700;margin:24px 0 8px;letter-spacing:-.3px}
@@ -143,17 +123,15 @@ svg{display:block}
 .code-banner{background:rgba(108,92,231,.08);border:1px dashed var(--accent);color:var(--text);padding:12px;border-radius:14px;margin-top:14px;font-size:13px;line-height:1.5}
 .code-banner strong{color:var(--accent);letter-spacing:2px;font-size:16px}
 
-/* ============ APP SHELL ============ */
+/* App shell */
 #app{flex-direction:column;background:transparent}
 #app.active{display:flex}
 
-/* Header — стеклянный */
+/* Header */
 .app-header{
   position:relative;z-index:20;
-  display:flex;align-items:center;gap:8px;
-  padding:max(12px,env(safe-area-inset-top)) 16px 12px;
-  border-left:0;border-right:0;border-top:0;
-  border-radius:0;
+  display:flex;align-items:center;gap:6px;
+  padding:max(10px,env(safe-area-inset-top)) 12px 10px;
   -webkit-backdrop-filter:var(--glass-blur);
   backdrop-filter:var(--glass-blur);
   background:var(--glass-bg);
@@ -161,22 +139,21 @@ svg{display:block}
   box-shadow:0 1px 0 rgba(255,255,255,.4) inset;
 }
 .logo-mini{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0;box-shadow:0 6px 16px rgba(108,92,231,.4)}
-.brand-mini{font-weight:800;letter-spacing:3px;font-size:15px}
+.brand-mini{font-weight:800;letter-spacing:3px;font-size:15px;margin-left:4px}
 
-/* Main + panels */
 #appMain{flex:1;overflow:hidden;position:relative;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
-.panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;padding-top:8px}
+.panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;padding-top:4px}
 .panel.active{display:flex;animation:panelIn .28s cubic-bezier(.2,.9,.3,1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 
-.panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px}
-.panel-header h2{font-size:28px;font-weight:700;letter-spacing:-.4px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px}
+.panel-header h2{font-size:26px;font-weight:700;letter-spacing:-.4px}
 
-/* Tabs (chips) */
-.tabs{display:flex;gap:6px;padding:6px 16px 10px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+/* Tabs */
+.tabs{display:flex;gap:6px;padding:6px 12px 10px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .tabs::-webkit-scrollbar{display:none}
 .tab{
-  padding:8px 15px;border-radius:20px;font-size:13.5px;font-weight:500;
+  padding:7px 14px;border-radius:20px;font-size:13.5px;font-weight:500;
   color:var(--text2);white-space:nowrap;transition:all .18s;
   background:var(--glass-bg-2);
   -webkit-backdrop-filter:blur(18px);
@@ -185,53 +162,75 @@ svg{display:block}
 }
 .tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(108,92,231,.35)}
 
-/* Lists */
-.list{flex:1;overflow-y:auto;padding:0 12px 20px;scroll-behavior:smooth}
+/* List — Telegram style */
+.list{flex:1;overflow-y:auto;padding:0;scroll-behavior:smooth}
 .list::-webkit-scrollbar{width:0}
 
-/* Chat row — glass card */
+/* ==== CHAT ROW — плоский, с разделителем ==== */
 .chat-row{
-  display:flex;gap:12px;padding:12px 14px;margin:4px 0;cursor:pointer;align-items:center;
-  border-radius:20px;
-  background:var(--glass-bg-2);
-  -webkit-backdrop-filter:blur(18px);
-  backdrop-filter:blur(18px);
-  border:1px solid var(--glass-border);
-  box-shadow:0 4px 14px rgba(20,20,50,.05);
-  transition:transform .12s,background .12s;
+  display:flex;gap:12px;
+  padding:9px 16px;
+  cursor:pointer;align-items:center;
+  position:relative;
+  background:transparent;
+  transition:background .12s;
 }
-.chat-row:hover{background:var(--glass-bg)}
-.chat-row:active{transform:scale(.985)}
-.chat-row.active{background:var(--glass-bg);border-color:rgba(108,92,231,.4)}
+.chat-row:hover{background:rgba(120,120,140,.06)}
+.chat-row:active{background:rgba(120,120,140,.12)}
+.chat-row.active{background:rgba(108,92,231,.09)}
+/* разделитель снизу — не доходит до краёв */
+.chat-row::after{
+  content:"";
+  position:absolute;
+  left:82px;
+  right:16px;
+  bottom:0;
+  height:1px;
+  background:var(--divider);
+  pointer-events:none;
+}
+.chat-row:last-child::after{display:none}
+
 .chat-meta{flex:1;min-width:0}
-.chat-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
-.chat-preview{color:var(--text2);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.chat-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-.chat-time{font-size:11px;color:var(--text2)}
-.badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:11px;min-width:20px;text-align:center;box-shadow:0 4px 10px rgba(108,92,231,.4)}
+.chat-name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+.chat-preview{color:var(--text2);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.chat-side{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;min-width:44px}
+.chat-time{font-size:11.5px;color:var(--text2)}
+.badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:11px;min-width:20px;text-align:center;box-shadow:0 4px 10px rgba(108,92,231,.35)}
+.badge.muted{background:var(--text2);box-shadow:none}
 .chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 24px;color:var(--text2);height:100%}
 .chat-empty svg{opacity:.35;margin-bottom:16px;color:var(--accent)}
 .chat-empty h3{color:var(--text);font-size:17px;font-weight:600;margin-bottom:8px}
 .chat-empty p{font-size:14px;max-width:280px;margin-bottom:20px;line-height:1.5}
 
-/* Contacts/Calls panel list */
+/* ==== CONTACTS / CALLS rows — тоже плоские с разделителем ==== */
 .p-item{
-  display:flex;gap:14px;padding:12px 14px;margin:4px 0;cursor:pointer;align-items:center;
-  border-radius:18px;
-  background:var(--glass-bg-2);
-  -webkit-backdrop-filter:blur(18px);
-  backdrop-filter:blur(18px);
-  border:1px solid var(--glass-border);
-  transition:transform .12s,background .12s;
+  display:flex;gap:14px;
+  padding:10px 16px;
+  cursor:pointer;align-items:center;
+  position:relative;
+  background:transparent;
+  transition:background .12s;
 }
-.p-item:hover{background:var(--glass-bg)}
-.p-item:active{transform:scale(.985)}
+.p-item:hover{background:rgba(120,120,140,.06)}
+.p-item:active{background:rgba(120,120,140,.12)}
+.p-item::after{
+  content:"";
+  position:absolute;
+  left:82px;
+  right:16px;
+  bottom:0;
+  height:1px;
+  background:var(--divider);
+  pointer-events:none;
+}
+.p-item:last-child::after{display:none}
 
 /* ME panel */
 .me-hero{
   margin:12px;padding:24px;border-radius:28px;
   display:flex;flex-direction:column;align-items:center;gap:14px;
-  background:linear-gradient(135deg,rgba(108,92,231,.25),rgba(142,123,255,.15));
+  background:linear-gradient(135deg,rgba(108,92,231,.22),rgba(142,123,255,.12));
   -webkit-backdrop-filter:blur(28px) saturate(180%);
   backdrop-filter:blur(28px) saturate(180%);
   border:1px solid var(--glass-border);
@@ -247,42 +246,19 @@ svg{display:block}
   border:1px solid var(--glass-border);
   box-shadow:var(--glass-shadow);
 }
-.me-menu button{
-  display:flex;align-items:center;gap:14px;width:100%;padding:15px 18px;text-align:left;font-size:15px;
-  transition:background .12s;
-}
+.me-menu button{display:flex;align-items:center;gap:14px;width:100%;padding:15px 18px;text-align:left;font-size:15px;transition:background .12s}
 .me-menu button + button{border-top:1px solid var(--glass-border)}
 .me-menu button:hover{background:rgba(120,120,140,.08)}
 .me-menu button svg{color:var(--text2);flex-shrink:0}
 .me-menu button.danger{color:var(--danger)}
 .me-menu button.danger svg{color:var(--danger)}
 
-/* ============ FAB + / ============ */
-.fab-plus{
-  position:fixed;
-  right:18px;
-  bottom:calc(110px + env(safe-area-inset-bottom));
-  width:58px;height:58px;border-radius:50%;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;
-  display:grid;place-items:center;
-  box-shadow:0 14px 34px rgba(108,92,231,.55), 0 0 0 1px rgba(255,255,255,.2) inset;
-  z-index:42;
-  transition:transform .15s;
-}
-.fab-plus:active{transform:scale(.94)}
-.fab-plus.hidden{display:none}
-
-/* ============ BOTTOM NAV (GLASS OVAL) ============ */
+/* Bottom nav (стеклянная овальная) */
 .bottom-nav{
   position:fixed;
   left:50%;transform:translateX(-50%);
   bottom:calc(14px + env(safe-area-inset-bottom));
-  display:flex;
-  gap:2px;
-  padding:6px;
-  border-radius:999px;
-  z-index:40;
+  display:flex;gap:2px;padding:6px;border-radius:999px;z-index:40;
   background:var(--glass-bg);
   -webkit-backdrop-filter:blur(30px) saturate(190%);
   backdrop-filter:blur(30px) saturate(190%);
@@ -306,12 +282,11 @@ svg{display:block}
 }
 .bottom-nav button.on svg{transform:scale(1.06)}
 
-/* ============ CHAT OVERLAY ============ */
+/* Chat overlay */
 .chat-overlay{
   position:fixed;inset:0;z-index:55;
-  background:transparent;
+  background:var(--bg);
   display:none;flex-direction:column;
-  padding-bottom:0;
   animation:slideIn .3s cubic-bezier(.2,.9,.3,1);
 }
 .chat-overlay.open{display:flex}
@@ -319,7 +294,7 @@ svg{display:block}
 
 .chat-top{
   display:flex;align-items:center;gap:10px;
-  padding:max(12px,env(safe-area-inset-top)) 12px 12px;
+  padding:max(10px,env(safe-area-inset-top)) 10px 10px;
   background:var(--glass-bg);
   -webkit-backdrop-filter:var(--glass-blur);
   backdrop-filter:var(--glass-blur);
@@ -329,11 +304,11 @@ svg{display:block}
 .chat-top-info{flex:1;min-width:0;cursor:pointer}
 .chat-top-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chat-top-status{font-size:12px;color:var(--text2)}
-.msgs{flex:1;overflow-y:auto;padding:18px 14px 14px;display:flex;flex-direction:column;gap:6px}
+.msgs{flex:1;overflow-y:auto;padding:16px 12px 12px;display:flex;flex-direction:column;gap:4px}
 .msgs::-webkit-scrollbar{width:0}
 .day-sep{align-self:center;font-size:11px;color:var(--text2);background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);padding:4px 12px;border-radius:12px;margin:10px 0;text-transform:uppercase;letter-spacing:.5px;border:1px solid var(--glass-border)}
-.msg{max-width:min(74%,480px);padding:9px 13px;border-radius:20px;font-size:14.5px;line-height:1.42;word-wrap:break-word;position:relative;align-self:flex-start;background:var(--bubble-other);border:1px solid var(--border);box-shadow:0 2px 8px rgba(20,20,50,.05)}
-.msg.me{align-self:flex-end;background:var(--bubble-me);color:var(--bubble-me-text);border-color:transparent;box-shadow:0 6px 18px rgba(108,92,231,.3)}
+.msg{max-width:min(74%,480px);padding:8px 12px;border-radius:16px;font-size:14.5px;line-height:1.42;word-wrap:break-word;position:relative;align-self:flex-start;background:var(--bubble-other);color:var(--text)}
+.msg.me{align-self:flex-end;background:var(--bubble-me);color:var(--bubble-me-text)}
 .msg .quote{font-size:12px;opacity:.85;border-left:2px solid currentColor;padding:2px 8px;margin-bottom:4px;border-radius:4px;background:rgba(255,255,255,.15)}
 .msg .meta{font-size:10.5px;opacity:.75;margin-top:4px;text-align:right;display:flex;justify-content:flex-end;gap:6px;align-items:center}
 .msg .meta .edited{font-style:italic}
@@ -350,7 +325,6 @@ svg{display:block}
 .empty-chat h3{color:var(--text);font-size:17px;margin:14px 0 8px;font-weight:600}
 .empty-chat p{font-size:14px;max-width:300px}
 
-/* Composer — glass */
 .composer{
   padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));
   background:var(--glass-bg);
@@ -361,74 +335,33 @@ svg{display:block}
 .reply-bar{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--glass-bg-2);border-radius:12px;margin-bottom:8px;font-size:13px;border:1px solid var(--glass-border)}
 .reply-bar.on{display:flex}
 .composer-row{display:flex;gap:8px;align-items:flex-end}
-.composer textarea{flex:1;padding:12px 16px;background:var(--glass-bg-2);border-radius:22px;resize:none;max-height:140px;min-height:44px;font-size:16px;line-height:1.4;border:1px solid var(--glass-border);-webkit-appearance:none;appearance:none}
+.composer textarea{flex:1;padding:12px 16px;background:var(--surface2);border-radius:22px;resize:none;max-height:140px;min-height:44px;font-size:16px;line-height:1.4;border:1px solid transparent;-webkit-appearance:none;appearance:none}
 .composer textarea:focus{border-color:var(--accent)}
 .send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;flex-shrink:0;box-shadow:0 6px 18px rgba(108,92,231,.4)}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 .side-btn{width:44px;height:44px;border-radius:50%;background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:grid;place-items:center;color:var(--text2);flex-shrink:0;border:1px solid var(--glass-border)}
 .side-btn:hover{background:var(--glass-bg);color:var(--text)}
 
-/* ============ ACTION SHEET ============ */
-.sheet-bd{
-  position:fixed;inset:0;background:rgba(0,0,0,.42);
-  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-  z-index:100;display:none;
-  align-items:flex-end;justify-content:center;
-  padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));
-  animation:fs .2s ease;
-}
+/* Action Sheet */
+.sheet-bd{position:fixed;inset:0;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));animation:fs .2s ease}
 .sheet-bd.open{display:flex}
-.sheet{
-  width:100%;max-width:480px;
-  border-radius:28px;overflow:hidden;
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:blur(34px) saturate(200%);
-  backdrop-filter:blur(34px) saturate(200%);
-  border:1px solid var(--glass-border);
-  box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;
-  animation:slideUp .35s cubic-bezier(.2,.9,.3,1);
-}
+.sheet{width:100%;max-width:480px;border-radius:28px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;animation:slideUp .35s cubic-bezier(.2,.9,.3,1)}
 @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .sheet-title{padding:18px 22px 10px;font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);font-weight:600;text-align:center}
-.sheet button.sheet-item{
-  display:flex;align-items:center;gap:16px;width:100%;
-  padding:16px 22px;text-align:left;font-size:16px;font-weight:500;
-  transition:background .12s;
-}
+.sheet button.sheet-item{display:flex;align-items:center;gap:16px;width:100%;padding:16px 22px;text-align:left;font-size:16px;font-weight:500;transition:background .12s}
 .sheet button.sheet-item + button.sheet-item{border-top:1px solid var(--glass-border)}
 .sheet button.sheet-item:hover{background:rgba(120,120,140,.08)}
 .sheet button.sheet-item:active{background:rgba(120,120,140,.15)}
-.sheet button.sheet-item .sheet-ico{
-  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;flex-shrink:0;
-  box-shadow:0 6px 16px rgba(0,0,0,.15);
-}
+.sheet button.sheet-item .sheet-ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;flex-shrink:0;box-shadow:0 6px 16px rgba(0,0,0,.15)}
 .sheet-ico.i-group{background:linear-gradient(135deg,#6C5CE7,#8E7BFF)}
 .sheet-ico.i-channel{background:linear-gradient(135deg,#22C55E,#16A34A)}
 .sheet-ico.i-find{background:linear-gradient(135deg,#F59E0B,#EF4444)}
-.sheet button.sheet-cancel{
-  display:block;width:100%;text-align:center;padding:16px;
-  font-size:16px;font-weight:600;color:var(--accent);
-  border-top:1px solid var(--glass-border);
-  margin-top:8px;
-}
+.sheet button.sheet-cancel{display:block;width:100%;text-align:center;padding:16px;font-size:16px;font-weight:600;color:var(--accent);border-top:1px solid var(--glass-border);margin-top:8px}
 
-/* ============ MODALS ============ */
-.modal-bd{
-  position:fixed;inset:0;background:rgba(0,0,0,.42);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-  display:none;align-items:center;justify-content:center;z-index:120;padding:18px;
-}
+/* Modals */
+.modal-bd{position:fixed;inset:0;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:120;padding:18px}
 .modal-bd.open{display:flex;animation:fs .2s}
-.modal{
-  width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:22px;
-  border-radius:28px;
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:blur(34px) saturate(200%);
-  backdrop-filter:blur(34px) saturate(200%);
-  border:1px solid var(--glass-border);
-  box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;
-  animation:slideUp .3s cubic-bezier(.2,.9,.3,1);
-}
+.modal{width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:22px;border-radius:28px;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;animation:slideUp .3s cubic-bezier(.2,.9,.3,1)}
 .modal h2{font-size:20px;font-weight:700;margin-bottom:18px;letter-spacing:-.2px}
 .modal-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--glass-border);gap:12px}
 .modal-row:last-child{border-bottom:0}
@@ -441,21 +374,13 @@ svg{display:block}
 .seg{display:flex;background:var(--glass-bg-2);border-radius:14px;padding:4px;gap:2px;border:1px solid var(--glass-border)}
 .seg button{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;color:var(--text2);transition:background .15s}
 .seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.search-box{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--glass-bg-2);border-radius:16px;margin-bottom:12px;border:1px solid var(--glass-border)}
+.search-box{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--surface2);border-radius:16px;margin-bottom:12px}
 .search-box input{flex:1;font-size:16px}
 .result-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;cursor:pointer;transition:background .12s}
 .result-item:hover{background:rgba(120,120,140,.08)}
 
 /* Context menu */
-.ctx{
-  position:fixed;z-index:140;display:none;min-width:200px;padding:6px;
-  border-radius:18px;
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:blur(30px) saturate(190%);
-  backdrop-filter:blur(30px) saturate(190%);
-  border:1px solid var(--glass-border);
-  box-shadow:0 20px 50px rgba(0,0,0,.3), 0 1px 0 rgba(255,255,255,.5) inset;
-}
+.ctx{position:fixed;z-index:140;display:none;min-width:200px;padding:6px;border-radius:18px;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,.3), 0 1px 0 rgba(255,255,255,.5) inset}
 .ctx.open{display:block;animation:fs .15s}
 .ctx button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font-size:14px;text-align:left}
 .ctx button:hover{background:rgba(120,120,140,.12)}
@@ -463,29 +388,15 @@ svg{display:block}
 .ctx .drawer-sep{height:1px;background:var(--glass-border);margin:4px 8px}
 
 /* Toast */
-#toast{
-  position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom));
-  transform:translateX(-50%) translateY(20px);
-  padding:12px 20px;border-radius:16px;font-size:14px;font-weight:500;
-  opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1);z-index:200;max-width:88vw;text-align:center;
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:blur(30px) saturate(190%);
-  backdrop-filter:blur(30px) saturate(190%);
-  border:1px solid var(--glass-border);
-  color:var(--text);
-  box-shadow:0 16px 40px rgba(0,0,0,.25);
-}
+#toast{position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);padding:12px 20px;border-radius:16px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1);z-index:200;max-width:88vw;text-align:center;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);color:var(--text);box-shadow:0 16px 40px rgba(0,0,0,.25)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;border-color:transparent}
 #toast.ok{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;border-color:transparent}
-
-/* Drawer (для совместимости, не используется) */
-.drawer-bd,.drawer{display:none}
 </style>
 </head>
 <body>
 
-<!-- ==================== WELCOME ==================== -->
+<!-- WELCOME -->
 <section id="welcome" class="screen active">
   <div class="logo">V</div>
   <div class="brand">VEXA</div>
@@ -500,7 +411,7 @@ svg{display:block}
   <div class="legal" data-i18n="welcome.legal">Продолжая, вы принимаете условия использования и политику конфиденциальности.</div>
 </section>
 
-<!-- ==================== AUTH: PHONE ==================== -->
+<!-- AUTH -->
 <section id="auth" class="screen auth">
   <div class="top">
     <button class="icon-btn" id="authBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -518,7 +429,7 @@ svg{display:block}
   <button class="btn" id="btnSendCode" disabled style="margin-top:14px" data-i18n="auth.continue">Продолжить</button>
 </section>
 
-<!-- ==================== OTP ==================== -->
+<!-- OTP -->
 <section id="otp" class="screen auth">
   <div class="top">
     <button class="icon-btn" id="otpBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -541,7 +452,7 @@ svg{display:block}
   <button class="btn" id="btnVerify" disabled style="margin-top:14px" data-i18n="otp.confirm">Подтвердить</button>
 </section>
 
-<!-- ==================== NAME ==================== -->
+<!-- NAME -->
 <section id="nameScreen" class="screen auth">
   <h1 class="auth-title" data-i18n="name.title">Как вас зовут?</h1>
   <p class="auth-sub" data-i18n="name.sub">Это увидят другие пользователи VEXA</p>
@@ -555,10 +466,9 @@ svg{display:block}
   <button class="btn" id="btnCreate" disabled style="margin-top:14px" data-i18n="name.create">Создать аккаунт</button>
 </section>
 
-<!-- ==================== APP ==================== -->
+<!-- APP -->
 <section id="app" class="screen">
 
-  <!-- Glass header -->
   <header class="app-header">
     <div class="logo-mini">V</div>
     <div class="brand-mini">VEXA</div>
@@ -566,10 +476,12 @@ svg{display:block}
     <button class="icon-btn" id="btnSearch" aria-label="Search">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     </button>
+    <button class="icon-btn" id="btnPlus" aria-label="Create">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
   </header>
 
   <main id="appMain">
-    <!-- CHATS panel -->
     <div class="panel active" id="panel-chats">
       <nav class="tabs" id="tabs">
         <button class="tab on" data-tab="all" data-i18n="tab.all">Все</button>
@@ -582,7 +494,6 @@ svg{display:block}
       <div class="list" id="chatList"></div>
     </div>
 
-    <!-- CONTACTS panel -->
     <div class="panel" id="panel-contacts">
       <div class="panel-header">
         <h2 data-i18n="nav.contacts">Контакты</h2>
@@ -591,7 +502,6 @@ svg{display:block}
       <div class="list" id="contactsList"></div>
     </div>
 
-    <!-- CALLS panel -->
     <div class="panel" id="panel-calls">
       <div class="panel-header">
         <h2 data-i18n="nav.calls">Звонки</h2>
@@ -599,7 +509,6 @@ svg{display:block}
       <div class="list" id="callsList"></div>
     </div>
 
-    <!-- ME panel -->
     <div class="panel" id="panel-me">
       <div class="me-hero">
         <div class="avatar av-96" id="meAvatar">?</div>
@@ -638,12 +547,6 @@ svg{display:block}
     </div>
   </main>
 
-  <!-- + FAB -->
-  <button class="fab-plus" id="fabPlus" aria-label="Create">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-  </button>
-
-  <!-- Glass bottom nav -->
   <nav class="bottom-nav" id="bottomNav">
     <button data-nav="chats" class="on">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -663,7 +566,6 @@ svg{display:block}
     </button>
   </nav>
 
-  <!-- Chat overlay -->
   <div class="chat-overlay" id="chatOverlay">
     <div class="chat-top" id="chatTop"></div>
     <div class="msgs" id="msgs"></div>
@@ -691,28 +593,16 @@ svg{display:block}
   </div>
 </section>
 
-<!-- ==================== ACTION SHEET ==================== -->
-<div class="sheet-bd" id="sheetBd">
-  <div class="sheet" id="sheetBody"></div>
-</div>
-
-<!-- ==================== MODAL ==================== -->
-<div class="modal-bd" id="modalBd">
-  <div class="modal" id="modalBody"></div>
-</div>
-
-<!-- context menu -->
+<div class="sheet-bd" id="sheetBd"><div class="sheet" id="sheetBody"></div></div>
+<div class="modal-bd" id="modalBd"><div class="modal" id="modalBody"></div></div>
 <div class="ctx" id="ctxMenu"></div>
-
-<!-- toast -->
 <div id="toast"></div>
 
 <script>
 /* ============================================================
-   VEXA — iOS 26 glass single-file build
+   VEXA — Telegram-style + fixed channels
    ============================================================ */
 
-/* ---------- ANTI-ZOOM ---------- */
 (function preventZoom(){
   ['gesturestart','gesturechange','gestureend'].forEach(ev => document.addEventListener(ev, e => e.preventDefault(), {passive:false}));
   let lastTouchEnd = 0;
@@ -736,6 +626,26 @@ const DB = (() => {
     if (cache) return cache;
     try { cache = JSON.parse(localStorage.getItem(KEY)) || null; } catch { cache = null; }
     if (!cache) cache = { users:[], chats:[], messages:[], contacts:[], calls:[], settings:{}, session:null };
+    // MIGRATION: fix broken chats
+    cache.users = cache.users || [];
+    cache.chats = (cache.chats || []).map(c => ({
+      id: c.id || ('fix' + Math.random().toString(36).slice(2,10)),
+      createdAt: c.createdAt || Date.now(),
+      type: c.type || (c.title ? 'group' : 'personal'),
+      title: c.title || null,
+      description: c.description || null,
+      ownerId: c.ownerId || null,
+      members: Array.isArray(c.members) ? c.members : [],
+      avatar: c.avatar || null,
+      unread: c.unread || 0,
+      pinned: !!c.pinned,
+      muted: !!c.muted,
+      isPublic: !!c.isPublic
+    }));
+    cache.messages = cache.messages || [];
+    cache.contacts = cache.contacts || [];
+    cache.calls = cache.calls || [];
+    cache.settings = cache.settings || {};
     return cache;
   };
   const save = () => localStorage.setItem(KEY, JSON.stringify(cache));
@@ -751,11 +661,11 @@ const DB = (() => {
     setSession(id){ load().session=id; save(); },
     getSession(){ return load().session; },
     clearSession(){ load().session=null; save(); },
-    createChat(d){ const c={id:uid(),createdAt:Date.now(),...d}; load().chats.push(c); save(); return c; },
+    createChat(d){ const c={id:uid(),createdAt:Date.now(),type:'personal',members:[],unread:0,pinned:false,muted:false,...d}; load().chats.push(c); save(); return c; },
     getChat(id){ return load().chats.find(c => c.id===id); },
     updateChat(id, patch){ const c=this.getChat(id); if(!c) return; Object.assign(c,patch); save(); return c; },
     deleteChat(id){ const d=load(); d.chats=d.chats.filter(c=>c.id!==id); d.messages=d.messages.filter(m=>m.chatId!==id); save(); },
-    chatsOf(u){ return load().chats.filter(c => c.members.includes(u)); },
+    chatsOf(u){ return load().chats.filter(c => Array.isArray(c.members) && c.members.includes(u)); },
     createMessage(d){ const m={id:uid(),createdAt:Date.now(),reactions:{},deleted:false,edited:false,...d}; load().messages.push(m); save(); return m; },
     getMessages(c){ return load().messages.filter(m => m.chatId===c); },
     getMessage(id){ return load().messages.find(m => m.id===id); },
@@ -780,8 +690,7 @@ const STR = {
     'auth.title':'Введите номер телефона','auth.sub':'Мы отправим SMS с кодом','auth.phone':'Номер телефона',
     'auth.hint':'11 цифр, начиная с +7','auth.continue':'Продолжить','auth.have':'Уже есть аккаунт?',
     'otp.title':'Введите код','otp.sub':'Мы отправили SMS на','otp.change':'Изменить номер',
-    'otp.resend':'Отправить снова через','otp.confirm':'Подтвердить',
-    'otp.banner':'SMS-провайдер не подключён. Ваш код:',
+    'otp.resend':'Отправить снова через','otp.confirm':'Подтвердить','otp.banner':'SMS-провайдер не подключён. Ваш код:',
     'name.title':'Как вас зовут?','name.sub':'Это увидят другие пользователи VEXA',
     'name.first':'Имя *','name.last':'Фамилия','name.user':'Username','name.create':'Создать аккаунт',
     'tab.all':'Все','tab.personal':'Личные','tab.groups':'Группы','tab.channels':'Каналы','tab.unread':'Непрочитанные','tab.saved':'Избранное',
@@ -798,8 +707,7 @@ const STR = {
     'settings.title':'Настройки','settings.theme':'Тема','settings.theme_hint':'Светлая, тёмная или системная',
     'settings.light':'Светлая','settings.dark':'Тёмная','settings.system':'Системная',
     'settings.lang':'Язык','settings.anim':'Анимации','settings.anim_hint':'Плавные переходы',
-    'settings.compact':'Компактный режим','settings.compact_hint':'Меньше отступов',
-    'settings.close':'Готово',
+    'settings.compact':'Компактный режим','settings.compact_hint':'Меньше отступов','settings.close':'Готово',
     'profile.title':'Мой профиль','profile.edit':'Редактировать','profile.save':'Сохранить',
     'profile.first':'Имя','profile.last':'Фамилия','profile.user':'Username','profile.bio':'О себе',
     'profile.phone':'Телефон','profile.close':'Закрыть',
@@ -811,8 +719,7 @@ const STR = {
     'channel.public':'Публичный','channel.create':'Создать',
     'contacts.title':'Контакты','contacts.empty':'Контактов пока нет',
     'contacts.empty_sub':'Найдите пользователя, чтобы добавить его в контакты.',
-    'contacts.find':'Найти пользователя','contacts.add':'Добавить','contacts.remove':'Удалить',
-    'contacts.write':'Написать',
+    'contacts.find':'Найти пользователя','contacts.add':'Добавить','contacts.remove':'Удалить','contacts.write':'Написать',
     'calls.title':'Звонки','calls.empty':'Звонков пока нет','calls.empty_sub':'Здесь появится история ваших звонков.',
     'calls.unavailable':'Звонки требуют WebRTC-сервер. В single-file сборке недоступны.',
     'saved.title':'Избранное','saved.empty':'Здесь пока пусто','saved.empty_sub':'Сохраняйте сюда заметки, ссылки и файлы.',
@@ -835,8 +742,7 @@ const STR = {
     'chat.info':'Информация о чате','chat.members':'Участники','chat.leave':'Покинуть чат','chat.leave_confirm':'Покинуть этот чат?',
     'sheet.title':'Создать','sheet.group':'Создать группу','sheet.channel':'Создать канал','sheet.find':'Найти по номеру','sheet.cancel':'Отмена',
     'find.title':'Найти по номеру','find.hint':'Введите номер телефона, чтобы найти пользователя',
-    'find.notfound':'Пользователь с таким номером не найден','find.self':'Это ваш собственный номер',
-    'find.search':'Найти'
+    'find.notfound':'Пользователь с таким номером не найден','find.self':'Это ваш собственный номер','find.search':'Найти'
   },
   en: {
     'welcome.slogan':'Communication without borders','welcome.start':'Get started',
@@ -912,10 +818,10 @@ function applyLang(){
 function setLang(l){
   LANG = l; localStorage.setItem('vexa.ui.lang', l); applyLang();
   const sid = DB.getSession(); if (sid) DB.setSettings(sid, {lang:l});
-  renderChats(); renderContactsList(); renderCallsList(); updateMePanel();
+  if (State.me) { renderChats(); renderContactsList(); renderCallsList(); updateMePanel(); }
 }
 
-/* ---------- phone mask ---------- */
+/* ---------- phone ---------- */
 function digitsOf(s){ return (s||'').replace(/\D/g,''); }
 function normalizePhone(raw){
   let d = digitsOf(raw); if (!d) return '';
@@ -948,8 +854,8 @@ function toast(msg, kind){
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id)); }
 function initials(u){ if (!u) return '?'; const a=(u.firstName||'')[0]||'', b=(u.lastName||'')[0]||''; return ((a+b)||(u.username||'')[0]||'?').toUpperCase(); }
 function displayName(u){ if (!u) return '—'; return [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || u.phone || '—'; }
-function el(h){ const t=document.createElement('template'); t.innerHTML=h.trim(); return t.content.firstElementChild; }
-function esc(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function el(h){ const tpl=document.createElement('template'); tpl.innerHTML=h.trim(); return tpl.content.firstElementChild; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmtTime(ts){ const d=new Date(ts); return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0'); }
 function fmtDay(ts){
   const d=new Date(ts), n=new Date();
@@ -980,7 +886,7 @@ const State = {
 };
 
 /* ============================================================
-   WELCOME
+   WELCOME / AUTH
    ============================================================ */
 document.getElementById('btnStart').onclick = () => {
   const sid = DB.getSession();
@@ -991,9 +897,6 @@ document.querySelectorAll('#langWelcome button').forEach(b => {
   b.onclick = () => { setLang(b.dataset.lang); toast(t('toast.lang_switched')); };
 });
 
-/* ============================================================
-   AUTH — PHONE
-   ============================================================ */
 const phoneInput = document.getElementById('phoneInput');
 const btnSendCode = document.getElementById('btnSendCode');
 const phoneErr = document.getElementById('phoneErr');
@@ -1040,9 +943,6 @@ document.getElementById('countryBtn').onclick = () => toast(LANG==='ru'?'Дос�
 document.getElementById('otpBack').onclick = () => showScreen('auth');
 document.getElementById('otpChange').onclick = () => { showScreen('auth'); phoneInput.focus(); };
 
-/* ============================================================
-   OTP
-   ============================================================ */
 const otpCells = [...document.querySelectorAll('.otp-cell')];
 const btnVerify = document.getElementById('btnVerify');
 const otpResend = document.getElementById('otpResend');
@@ -1105,9 +1005,7 @@ btnVerify.onclick = () => {
   else { showScreen('nameScreen'); document.getElementById('inpName').focus(); }
 };
 
-/* ============================================================
-   NAME
-   ============================================================ */
+/* NAME */
 const inpName = document.getElementById('inpName');
 const inpSurname = document.getElementById('inpSurname');
 const inpUsername = document.getElementById('inpUsername');
@@ -1177,19 +1075,18 @@ function bootUser(userId){
 
 function updateMePanel(){
   const u = State.me; if (!u) return;
-  document.getElementById('meAvatar').textContent = initials(u);
-  document.getElementById('meName').textContent = displayName(u);
-  document.getElementById('meUsername').textContent = u.username ? '@'+u.username : '@—';
+  const av = document.getElementById('meAvatar'); if (av) av.textContent = initials(u);
+  const nm = document.getElementById('meName'); if (nm) nm.textContent = displayName(u);
+  const un = document.getElementById('meUsername'); if (un) un.textContent = u.username ? '@'+u.username : '@—';
 }
 
 /* ============================================================
-   BOTTOM NAV
+   NAV
    ============================================================ */
 function switchNav(name){
   State.activeNav = name;
   document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('on', b.dataset.nav === name));
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-'+name));
-  document.getElementById('fabPlus').classList.toggle('hidden', name !== 'chats');
   if (name === 'contacts') renderContactsList();
   if (name === 'calls') renderCallsList();
   if (name === 'me') updateMePanel();
@@ -1213,17 +1110,19 @@ function chatsForTab(tab){
   }
 }
 function chatTitle(chat){
+  if (!chat) return '—';
   if (chat.type === 'saved') return LANG === 'ru' ? 'Избранное' : 'Saved messages';
   if (chat.type === 'personal'){
-    const other = chat.members.find(id => id !== State.me.id);
+    const other = (chat.members||[]).find(id => id !== State.me.id);
     const u = DB.findUserById(other);
     return u ? displayName(u) : '—';
   }
   return chat.title || '—';
 }
 function chatAvatarUser(chat){
+  if (!chat) return null;
   if (chat.type === 'personal'){
-    const other = chat.members.find(id => id !== State.me.id);
+    const other = (chat.members||[]).find(id => id !== State.me.id);
     return DB.findUserById(other);
   }
   return null;
@@ -1234,13 +1133,14 @@ function chatPreview(chat){
   const last = msgs[msgs.length-1];
   if (last.deleted) return t('msg.deleted');
   const sender = DB.findUserById(last.senderId);
-  const prefix = chat.type === 'group' && sender ? displayName(sender).split(' ')[0] + ': ' : '';
+  const prefix = (chat.type === 'group' || chat.type === 'channel') && sender ? displayName(sender).split(' ')[0] + ': ' : '';
   return prefix + (last.text || '').slice(0, 60);
 }
 
 function renderChats(){
   if (!State.me) return;
   const list = document.getElementById('chatList');
+  if (!list) return;
   list.innerHTML = '';
   const chats = chatsForTab(State.activeTab).sort((a,b) => {
     const am = DB.getMessages(a.id), bm = DB.getMessages(b.id);
@@ -1273,7 +1173,7 @@ function renderChats(){
         </div>
         <div class="chat-side">
           <div class="chat-time"></div>
-          ${(c.unread||0) > 0 ? `<div class="badge">${c.unread}</div>` : ''}
+          ${(c.unread||0) > 0 ? `<div class="badge${c.muted ? ' muted' : ''}">${c.unread}</div>` : (c.muted ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><path d="M13.7 21a2 2 0 01-3.4 0M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M2 2l20 20"/></svg>' : '')}
         </div>
       </div>`);
     const av = row.querySelector('.avatar');
@@ -1281,7 +1181,7 @@ function renderChats(){
     if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
     else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
     else if (otherU) av.textContent = initials(otherU);
-    else av.textContent = (c.title||'?')[0].toUpperCase();
+    else av.textContent = ((c.title||'?')[0] || '?').toUpperCase();
     row.querySelector('.title').textContent = chatTitle(c);
     row.querySelector('.chat-preview').textContent = chatPreview(c);
     const msgs = DB.getMessages(c.id);
@@ -1304,11 +1204,12 @@ document.querySelectorAll('#tabs .tab').forEach(tb => {
 });
 
 /* ============================================================
-   CONTACTS PANEL
+   CONTACTS
    ============================================================ */
 function renderContactsList(){
   if (!State.me) return;
   const box = document.getElementById('contactsList');
+  if (!box) return;
   box.innerHTML = '';
   const cs = DB.contactsOf(State.me.id);
   if (!cs.length){
@@ -1327,10 +1228,9 @@ function renderContactsList(){
       <div class="p-item">
         <div class="avatar av-54">${esc(initials(u))}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(displayName(u))}</div>
-          <div style="color:var(--text2);font-size:12.5px;margin-top:2px">${u.username ? '@'+esc(u.username) : esc(u.phone||'')}</div>
+          <div style="font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(displayName(u))}</div>
+          <div style="color:var(--text2);font-size:13px;margin-top:1px">${u.username ? '@'+esc(u.username) : esc(u.phone||'')}</div>
         </div>
-        <button class="btn btn-sm btn-2" style="padding:8px 12px">${esc(t('contacts.write'))}</button>
       </div>`);
     r.onclick = () => {
       let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
@@ -1340,7 +1240,12 @@ function renderContactsList(){
     r.oncontextmenu = e => {
       e.preventDefault();
       openContext(e.clientX, e.clientY, [
-        {icon:'trash', label: t('contacts.remove'), danger:true, fn: () => {
+        {label: t('contacts.write'), fn: () => {
+          let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
+          if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, u.id]});
+          openChat(chat.id);
+        }},
+        {label: t('contacts.remove'), danger:true, fn: () => {
           DB.removeContact(State.me.id, u.id);
           toast(t('toast.contact_removed'));
           renderContactsList();
@@ -1353,11 +1258,12 @@ function renderContactsList(){
 document.getElementById('ctAddBtn').onclick = openAddContactModal;
 
 /* ============================================================
-   CALLS PANEL
+   CALLS
    ============================================================ */
 function renderCallsList(){
   if (!State.me) return;
   const box = document.getElementById('callsList');
+  if (!box) return;
   box.innerHTML = '';
   const calls = DB.callsOf(State.me.id);
   if (!calls.length){
@@ -1376,8 +1282,8 @@ function renderCallsList(){
       <div class="p-item">
         <div class="avatar av-54">${esc(initials(other))}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:600;font-size:15px">${esc(displayName(other))}</div>
-          <div style="color:var(--text2);font-size:12.5px;margin-top:2px">${c.type === 'video' ? '📹' : '📞'} · ${new Date(c.createdAt).toLocaleString()}</div>
+          <div style="font-weight:600;font-size:15.5px">${esc(displayName(other))}</div>
+          <div style="color:var(--text2);font-size:13px;margin-top:1px">${c.type === 'video' ? '📹' : '📞'} · ${new Date(c.createdAt).toLocaleString()}</div>
         </div>
       </div>`);
     box.appendChild(r);
@@ -1403,9 +1309,9 @@ function handleMeAction(a){
 }
 
 /* ============================================================
-   ACTION SHEET (+) 
+   ACTION SHEET (+) — открывается из хедера
    ============================================================ */
-document.getElementById('fabPlus').onclick = openActionSheet;
+document.getElementById('btnPlus').onclick = openActionSheet;
 
 function openActionSheet(){
   const bd = document.getElementById('sheetBd');
@@ -1451,7 +1357,7 @@ document.getElementById('sheetBd').addEventListener('click', e => {
 });
 
 /* ============================================================
-   OPEN CHAT (overlay)
+   OPEN CHAT
    ============================================================ */
 function openChat(chatId){
   const chat = DB.getChat(chatId);
@@ -1461,14 +1367,16 @@ function openChat(chatId){
   State.editing = null;
   chat.unread = 0;
   DB.persist();
-  document.getElementById('chatOverlay').classList.add('open');
+  const ov = document.getElementById('chatOverlay');
+  if (ov) ov.classList.add('open');
   renderChatTop();
   renderMessages();
   renderChats();
-  setTimeout(() => document.getElementById('msgInput').focus(), 60);
+  setTimeout(() => { const mi = document.getElementById('msgInput'); if (mi) mi.focus(); }, 60);
 }
 function closeChat(){
-  document.getElementById('chatOverlay').classList.remove('open');
+  const ov = document.getElementById('chatOverlay');
+  if (ov) ov.classList.remove('open');
   State.activeChat = null;
   renderChats();
 }
@@ -1476,13 +1384,14 @@ function closeChat(){
 function renderChatTop(){
   const c = State.activeChat; if (!c) return;
   const top = document.getElementById('chatTop');
+  if (!top) return;
   const otherU = chatAvatarUser(c);
   const name = chatTitle(c);
-  const status = c.type === 'personal'
-    ? (otherU ? '@'+(otherU.username||'—') : '')
-    : c.type === 'group' ? (c.members.length + ' ' + (LANG==='ru'?'участников':'members'))
-    : c.type === 'channel' ? (LANG==='ru'?'канал':'channel')
-    : (LANG==='ru'?'ваши сохранённые сообщения':'your saved messages');
+  let status = '';
+  if (c.type === 'personal') status = otherU ? '@'+(otherU.username||'—') : '';
+  else if (c.type === 'group') status = (c.members||[]).length + ' ' + (LANG==='ru'?'участников':'members');
+  else if (c.type === 'channel') status = (LANG==='ru'?'канал':'channel');
+  else status = (LANG==='ru'?'ваши сохранённые сообщения':'your saved messages');
 
   top.innerHTML = `
     <button class="icon-btn" id="chatBackBtn" aria-label="Back">
@@ -1501,10 +1410,12 @@ function renderChatTop(){
     </button>`;
 
   const av = document.getElementById('chatTopAv');
-  if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
-  else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
-  else if (otherU) av.textContent = initials(otherU);
-  else av.textContent = (c.title||'?')[0].toUpperCase();
+  if (av){
+    if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
+    else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
+    else if (otherU) av.textContent = initials(otherU);
+    else av.textContent = ((c.title||'?')[0] || '?').toUpperCase();
+  }
 
   document.getElementById('chatBackBtn').onclick = closeChat;
   document.getElementById('chatCallBtn').onclick = () => toast(t('calls.unavailable'));
@@ -1512,9 +1423,9 @@ function renderChatTop(){
   document.getElementById('chatMoreBtn').onclick = e => {
     const r = e.currentTarget.getBoundingClientRect();
     openContext(r.left - 180, r.bottom + 6, [
-      {icon:'info', label: t('chat.info'), fn: openChatInfo},
+      {label: t('chat.info'), fn: openChatInfo},
       {sep:true},
-      {icon:'trash', label: t('ctx.delete'), danger:true, fn: () => confirmDialog(t('confirm.delete_chat'), () => {
+      {label: t('ctx.delete'), danger:true, fn: () => confirmDialog(t('confirm.delete_chat'), () => {
         DB.deleteChat(State.activeChat.id);
         closeChat();
       })}
@@ -1524,6 +1435,7 @@ function renderChatTop(){
 
 function renderMessages(){
   const box = document.getElementById('msgs');
+  if (!box) return;
   box.innerHTML = '';
   const c = State.activeChat; if (!c) return;
   const list = DB.getMessages(c.id).sort((a,b) => a.createdAt - b.createdAt);
@@ -1550,7 +1462,7 @@ function renderMessage(m){
   const node = el(`<div class="msg${me ? ' me' : ''}" data-id="${m.id}"></div>`);
   const sender = DB.findUserById(m.senderId);
   const c = State.activeChat;
-  const showSender = !me && (c.type === 'group' || c.type === 'channel');
+  const showSender = !me && c && (c.type === 'group' || c.type === 'channel');
   let inner = '';
   if (showSender && sender) inner += `<div style="font-weight:600;font-size:12.5px;margin-bottom:3px;color:var(--accent)">${esc(displayName(sender))}</div>`;
   if (m.replyTo){
@@ -1580,7 +1492,7 @@ function renderMessage(m){
 
   const actions = el(`
     <div class="msg-actions">
-      <button data-a="reply" title="${esc(t('ctx.reply'))}">
+      <button data-a="reply">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg>
       </button>
       <button data-a="react">
@@ -1787,9 +1699,7 @@ function confirmDialog(text, onYes){
     });
 }
 
-/* ============================================================
-   MODAL: PROFILE
-   ============================================================ */
+/* PROFILE */
 function openProfileModal(){
   const u = State.me;
   openModal(`
@@ -1836,9 +1746,7 @@ function openProfileModal(){
     });
 }
 
-/* ============================================================
-   MODAL: NEW CHAT (search by name/username)
-   ============================================================ */
+/* NEW CHAT search */
 function openNewChatModal(){
   openModal(`
     <h2>${esc(t('newchat.title'))}</h2>
@@ -1883,9 +1791,7 @@ function openNewChatModal(){
     });
 }
 
-/* ============================================================
-   MODAL: FIND BY NUMBER
-   ============================================================ */
+/* FIND BY NUMBER */
 function openFindByNumber(){
   openModal(`
     <h2>${esc(t('find.title'))}</h2>
@@ -1958,9 +1864,7 @@ function openFindByNumber(){
     });
 }
 
-/* ============================================================
-   MODAL: CREATE GROUP
-   ============================================================ */
+/* CREATE GROUP */
 function openCreateGroupModal(){
   const contacts = DB.contactsOf(State.me.id);
   const allUsers = DB.data.users.filter(u => u.id !== State.me.id);
@@ -2009,6 +1913,9 @@ function openCreateGroupModal(){
         const chat = DB.createChat({type:'group', title:name, description:desc, ownerId:State.me.id, members:[State.me.id, ...selected]});
         closeModal();
         toast(t('toast.group_created'), 'ok');
+        // force tab to all
+        State.activeTab = 'all';
+        document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
         switchNav('chats');
         renderChats();
         openChat(chat.id);
@@ -2016,9 +1923,7 @@ function openCreateGroupModal(){
     });
 }
 
-/* ============================================================
-   MODAL: CREATE CHANNEL
-   ============================================================ */
+/* CREATE CHANNEL */
 function openCreateChannelModal(){
   openModal(`
     <h2>${esc(t('channel.title'))}</h2>
@@ -2051,9 +1956,14 @@ function openCreateChannelModal(){
         const name = b.querySelector('#chName').value.trim();
         const desc = b.querySelector('#chDesc').value.trim();
         if (!name){ toast(t('toast.fill_name'), 'err'); return; }
-        const chat = DB.createChat({type:'channel', title:name, description:desc, isPublic, ownerId:State.me.id, members:[State.me.id]});
+        const chat = DB.createChat({
+          type:'channel', title:name, description:desc, isPublic,
+          ownerId:State.me.id, members:[State.me.id]
+        });
         closeModal();
         toast(t('toast.channel_created'), 'ok');
+        State.activeTab = 'all';
+        document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
         switchNav('chats');
         renderChats();
         openChat(chat.id);
@@ -2061,9 +1971,7 @@ function openCreateChannelModal(){
     });
 }
 
-/* ============================================================
-   MODAL: ADD CONTACT
-   ============================================================ */
+/* ADD CONTACT */
 function openAddContactModal(){
   openModal(`
     <h2>${esc(t('contacts.add'))}</h2>
@@ -2113,22 +2021,18 @@ function openAddContactModal(){
     });
 }
 
-/* ============================================================
-   MODAL: SAVED
-   ============================================================ */
+/* SAVED */
 function openSavedChat(){
   let chat = DB.chatsOf(State.me.id).find(c => c.type === 'saved');
   if (!chat) chat = DB.createChat({type:'saved', ownerId:State.me.id, members:[State.me.id]});
-  State.activeTab = 'saved';
-  document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'saved'));
+  State.activeTab = 'all';
+  document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
   switchNav('chats');
   renderChats();
   openChat(chat.id);
 }
 
-/* ============================================================
-   MODAL: SETTINGS
-   ============================================================ */
+/* SETTINGS */
 function openSettingsModal(){
   const s = DB.getSettings(State.me.id);
   openModal(`
@@ -2196,7 +2100,7 @@ function openSettingsModal(){
         DB.setSettings(State.me.id, {animations: on});
       };
       b.querySelector('#swCompact').onclick = e => {
-        const on = !e.currentTarget.classList.toggle('on');
+        const on = !e.currentTarget.classList.contains('on');
         document.documentElement.style.setProperty('--font',
           on ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
              : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
@@ -2206,14 +2110,12 @@ function openSettingsModal(){
     });
 }
 
-/* ============================================================
-   MODAL: INVITE / HELP / ABOUT / CHAT INFO
-   ============================================================ */
+/* INVITE / HELP / ABOUT / CHAT INFO */
 function openInviteModal(){
   const link = location.href.split('#')[0] + '?invite=' + State.me.id;
   openModal(`
     <h2>${esc(t('invite.title'))}</h2>
-    <div style="background:var(--glass-bg-2);padding:14px;border-radius:14px;font-family:ui-monospace,Menlo,monospace;font-size:13px;word-break:break-all;margin-bottom:14px;border:1px solid var(--glass-border)">${esc(link)}</div>
+    <div style="background:var(--surface2);padding:14px;border-radius:14px;font-family:ui-monospace,Menlo,monospace;font-size:13px;word-break:break-all;margin-bottom:14px">${esc(link)}</div>
     <div class="row" style="gap:10px">
       <button class="btn btn-2" id="ivClose">${esc(t('profile.close'))}</button>
       <button class="btn" id="ivCopy">${esc(t('invite.copy'))}</button>
@@ -2240,18 +2142,18 @@ function openAboutModal(){
       <div style="font-size:26px;font-weight:800;letter-spacing:5px;margin-top:12px">VEXA</div>
       <div style="color:var(--text2);font-size:13px;margin-top:4px">${esc(t('welcome.slogan'))}</div>
     </div>
-    <div class="modal-row"><div class="lbl-block"><div>${esc(t('about.version'))}</div></div><div style="color:var(--text2)">1.1.0</div></div>
-    <div class="modal-row"><div class="lbl-block"><div>${esc(t('about.build'))}</div></div><div style="color:var(--text2)">iOS 26 glass</div></div>
+    <div class="modal-row"><div class="lbl-block"><div>${esc(t('about.version'))}</div></div><div style="color:var(--text2)">1.2.0</div></div>
+    <div class="modal-row"><div class="lbl-block"><div>${esc(t('about.build'))}</div></div><div style="color:var(--text2)">Telegram-style</div></div>
     <button class="btn" style="margin-top:18px" onclick="closeModal()">${esc(t('settings.close'))}</button>`);
 }
 function openChatInfo(){
   const c = State.activeChat; if (!c) return;
-  const members = c.members.map(id => DB.findUserById(id)).filter(Boolean);
+  const members = (c.members||[]).map(id => DB.findUserById(id)).filter(Boolean);
   openModal(`
     <h2>${esc(t('chat.info'))}</h2>
     <div style="text-align:center;padding:8px 0 14px">
       <div class="avatar av-96" style="margin:0 auto;${c.type==='saved' ? 'background:linear-gradient(135deg,#22C55E,#16A34A);' : ''}">
-        ${c.type === 'saved' ? '★' : esc((c.title||'?')[0].toUpperCase())}
+        ${c.type === 'saved' ? '★' : esc(((c.title||'?')[0]||'?').toUpperCase())}
       </div>
       <div style="font-weight:700;font-size:18px;margin-top:12px">${esc(chatTitle(c))}</div>
       ${c.description ? `<div style="color:var(--text2);font-size:13px;margin-top:4px">${esc(c.description)}</div>` : ''}
@@ -2275,7 +2177,7 @@ function openChatInfo(){
       const lv = b.querySelector('#ciLeave');
       if (lv) lv.onclick = () => {
         confirmDialog(t('chat.leave_confirm'), () => {
-          c.members = c.members.filter(id => id !== State.me.id);
+          c.members = (c.members||[]).filter(id => id !== State.me.id);
           if (!c.members.length) DB.deleteChat(c.id);
           else DB.persist();
           closeModal(); closeChat();
@@ -2284,9 +2186,7 @@ function openChatInfo(){
     });
 }
 
-/* ============================================================
-   LOGOUT
-   ============================================================ */
+/* LOGOUT */
 function doLogout(){
   confirmDialog(t('confirm.logout'), () => {
     DB.clearSession();
@@ -2297,14 +2197,10 @@ function doLogout(){
   });
 }
 
-/* ============================================================
-   HEADER BUTTONS
-   ============================================================ */
+/* HEADER */
 document.getElementById('btnSearch').onclick = openNewChatModal;
 
-/* ============================================================
-   ESC
-   ============================================================ */
+/* ESC */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){
     closeContext();
@@ -2314,9 +2210,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ============================================================
-   BOOT
-   ============================================================ */
+/* BOOT */
 (function boot(){
   applyLang();
   const sid = DB.getSession();
