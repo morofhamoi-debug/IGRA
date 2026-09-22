@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="format-detection" content="telephone=no"/>
 <meta name="theme-color" content="#6C5CE7"/>
-<title>VEXA — Messenger</title>
+<title>VEXA</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236C5CE7'/><stop offset='1' stop-color='%238E7BFF'/></linearGradient></defs><rect width='100' height='100' rx='24' fill='url(%23g)'/><text x='50' y='68' font-size='60' font-weight='800' fill='white' text-anchor='middle' font-family='Arial'>V</text></svg>"/>
 <style>
 :root{
@@ -19,32 +19,28 @@
   --bubble-me:linear-gradient(135deg,#6C5CE7,#8E7BFF);
   --bubble-me-text:#fff;--bubble-other:#F2F3F8;
 
-  --glass-bg:rgba(255,255,255,0.78);
-  --glass-bg-2:rgba(255,255,255,0.6);
+  --glass-bg:rgba(255,255,255,0.72);
+  --glass-bg-2:rgba(255,255,255,0.55);
   --glass-border:rgba(255,255,255,0.7);
   --glass-shadow:0 8px 32px rgba(20,20,50,0.10);
-  --glass-blur:blur(28px) saturate(180%);
+  --glass-blur:blur(32px) saturate(180%);
 
   --font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --anim:1;
 }
 [data-theme="dark"]{
   --bg:#0E1621;
   --surface:#0E1621;--surface2:#17212B;--surface3:#1E2A38;
   --text:#E8EAF2;--text2:#8A91A6;--border:#232B3A;--divider:#1E2733;
   --bubble-other:#182533;
-
-  --glass-bg:rgba(20,28,42,0.78);
-  --glass-bg-2:rgba(20,28,42,0.6);
+  --glass-bg:rgba(20,28,42,0.72);
+  --glass-bg-2:rgba(20,28,42,0.55);
   --glass-border:rgba(255,255,255,0.08);
   --glass-shadow:0 8px 32px rgba(0,0,0,0.5);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:pan-x pan-y;height:100%}
 body{
-  height:100%;font:var(--font);
-  color:var(--text);overflow:hidden;
+  height:100%;font:var(--font);color:var(--text);overflow:hidden;
   touch-action:pan-x pan-y;overscroll-behavior:none;
   background:
     radial-gradient(circle at 15% 0%, rgba(140,120,255,.13) 0%, transparent 45%),
@@ -54,8 +50,8 @@ body{
 }
 [data-theme="dark"] body{
   background:
-    radial-gradient(circle at 15% 0%, rgba(108,92,231,.16) 0%, transparent 45%),
-    radial-gradient(circle at 85% 100%, rgba(70,50,180,.14) 0%, transparent 45%),
+    radial-gradient(circle at 15% 0%, rgba(108,92,231,.18) 0%, transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(70,50,180,.15) 0%, transparent 45%),
     var(--bg);
 }
 button,input,textarea,select{font-family:inherit;color:inherit;background:none;border:0;outline:none;touch-action:manipulation}
@@ -64,14 +60,12 @@ button{cursor:pointer}
 a{color:var(--accent);text-decoration:none;cursor:pointer}
 svg{display:block}
 
-/* Screens */
 .screen{position:fixed;inset:0;display:none;flex-direction:column;overflow:hidden}
 .screen.active{display:flex;animation:fs .25s ease}
 @keyframes fs{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* Buttons */
-.btn{width:100%;padding:15px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;font-size:16px;transition:transform .1s,opacity .15s;box-shadow:0 8px 22px rgba(108,92,231,.35)}
-.btn:active:not(:disabled){transform:scale(.98)}
+.btn{width:100%;padding:15px;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:600;font-size:16px;transition:transform .15s cubic-bezier(.2,.9,.3,1),opacity .15s;box-shadow:0 8px 22px rgba(108,92,231,.35)}
+.btn:active:not(:disabled){transform:scale(.96)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn-2{background:var(--surface2);color:var(--text);box-shadow:none}
 .btn-danger{background:var(--danger);box-shadow:0 8px 22px rgba(239,68,68,.35)}
@@ -99,8 +93,7 @@ svg{display:block}
 .slogan{color:var(--text2);margin-top:6px;font-size:15px}
 .welcome-box{width:100%;max-width:400px;margin-top:36px}
 .welcome-box .btn{padding:17px;font-size:17px}
-.lang-toggle{display:inline-flex;gap:4px;margin-top:22px;padding:4px;border-radius:14px}
-.lang-toggle.glass{background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border)}
+.lang-toggle{display:inline-flex;gap:4px;margin-top:22px;padding:4px;border-radius:14px;background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border)}
 .lang-toggle button{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;color:var(--text2)}
 .lang-toggle button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .legal{color:var(--text2);font-size:12px;margin-top:20px;max-width:360px;line-height:1.5}
@@ -123,11 +116,10 @@ svg{display:block}
 .code-banner{background:rgba(108,92,231,.08);border:1px dashed var(--accent);color:var(--text);padding:12px;border-radius:14px;margin-top:14px;font-size:13px;line-height:1.5}
 .code-banner strong{color:var(--accent);letter-spacing:2px;font-size:16px}
 
-/* App shell */
+/* App */
 #app{flex-direction:column;background:transparent}
 #app.active{display:flex}
 
-/* Header */
 .app-header{
   position:relative;z-index:20;
   display:flex;align-items:center;gap:6px;
@@ -136,61 +128,31 @@ svg{display:block}
   backdrop-filter:var(--glass-blur);
   background:var(--glass-bg);
   border-bottom:1px solid var(--glass-border);
-  box-shadow:0 1px 0 rgba(255,255,255,.4) inset;
 }
 .logo-mini{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0;box-shadow:0 6px 16px rgba(108,92,231,.4)}
 .brand-mini{font-weight:800;letter-spacing:3px;font-size:15px;margin-left:4px}
 
 #appMain{flex:1;overflow:hidden;position:relative;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
 .panel{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;padding-top:4px}
-.panel.active{display:flex;animation:panelIn .28s cubic-bezier(.2,.9,.3,1)}
+.panel.active{display:flex;animation:panelIn .3s cubic-bezier(.2,.9,.3,1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px}
 .panel-header h2{font-size:26px;font-weight:700;letter-spacing:-.4px}
 
-/* Tabs */
 .tabs{display:flex;gap:6px;padding:6px 12px 10px;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .tabs::-webkit-scrollbar{display:none}
-.tab{
-  padding:7px 14px;border-radius:20px;font-size:13.5px;font-weight:500;
-  color:var(--text2);white-space:nowrap;transition:all .18s;
-  background:var(--glass-bg-2);
-  -webkit-backdrop-filter:blur(18px);
-  backdrop-filter:blur(18px);
-  border:1px solid var(--glass-border);
-}
+.tab{padding:7px 14px;border-radius:20px;font-size:13.5px;font-weight:500;color:var(--text2);white-space:nowrap;transition:all .22s;background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border)}
 .tab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(108,92,231,.35)}
 
-/* List — Telegram style */
 .list{flex:1;overflow-y:auto;padding:0;scroll-behavior:smooth}
 .list::-webkit-scrollbar{width:0}
 
-/* ==== CHAT ROW — плоский, с разделителем ==== */
-.chat-row{
-  display:flex;gap:12px;
-  padding:9px 16px;
-  cursor:pointer;align-items:center;
-  position:relative;
-  background:transparent;
-  transition:background .12s;
-}
+.chat-row{display:flex;gap:12px;padding:9px 16px;cursor:pointer;align-items:center;position:relative;background:transparent;transition:background .15s}
 .chat-row:hover{background:rgba(120,120,140,.06)}
 .chat-row:active{background:rgba(120,120,140,.12)}
-.chat-row.active{background:rgba(108,92,231,.09)}
-/* разделитель снизу — не доходит до краёв */
-.chat-row::after{
-  content:"";
-  position:absolute;
-  left:82px;
-  right:16px;
-  bottom:0;
-  height:1px;
-  background:var(--divider);
-  pointer-events:none;
-}
+.chat-row::after{content:"";position:absolute;left:82px;right:16px;bottom:0;height:1px;background:var(--divider);pointer-events:none}
 .chat-row:last-child::after{display:none}
-
 .chat-meta{flex:1;min-width:0}
 .chat-name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
 .chat-preview{color:var(--text2);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
@@ -203,195 +165,248 @@ svg{display:block}
 .chat-empty h3{color:var(--text);font-size:17px;font-weight:600;margin-bottom:8px}
 .chat-empty p{font-size:14px;max-width:280px;margin-bottom:20px;line-height:1.5}
 
-/* ==== CONTACTS / CALLS rows — тоже плоские с разделителем ==== */
-.p-item{
-  display:flex;gap:14px;
-  padding:10px 16px;
-  cursor:pointer;align-items:center;
-  position:relative;
-  background:transparent;
-  transition:background .12s;
-}
+.p-item{display:flex;gap:14px;padding:10px 16px;cursor:pointer;align-items:center;position:relative;background:transparent;transition:background .15s}
 .p-item:hover{background:rgba(120,120,140,.06)}
 .p-item:active{background:rgba(120,120,140,.12)}
-.p-item::after{
-  content:"";
-  position:absolute;
-  left:82px;
-  right:16px;
-  bottom:0;
-  height:1px;
-  background:var(--divider);
-  pointer-events:none;
-}
+.p-item::after{content:"";position:absolute;left:82px;right:16px;bottom:0;height:1px;background:var(--divider);pointer-events:none}
 .p-item:last-child::after{display:none}
 
 /* ME panel */
-.me-hero{
-  margin:12px;padding:24px;border-radius:28px;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-  background:linear-gradient(135deg,rgba(108,92,231,.22),rgba(142,123,255,.12));
-  -webkit-backdrop-filter:blur(28px) saturate(180%);
-  backdrop-filter:blur(28px) saturate(180%);
-  border:1px solid var(--glass-border);
-  box-shadow:var(--glass-shadow);
-}
+.me-hero{margin:12px;padding:24px;border-radius:28px;display:flex;flex-direction:column;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(108,92,231,.22),rgba(142,123,255,.12));-webkit-backdrop-filter:blur(32px) saturate(180%);backdrop-filter:blur(32px) saturate(180%);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);cursor:pointer;transition:transform .2s cubic-bezier(.2,.9,.3,1)}
+.me-hero:active{transform:scale(.98)}
 .me-name{font-size:22px;font-weight:700;letter-spacing:-.3px}
 .me-username{color:var(--text2);font-size:14px}
-.me-menu{
-  margin:8px 12px 20px;border-radius:24px;overflow:hidden;
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:var(--glass-blur);
-  backdrop-filter:var(--glass-blur);
-  border:1px solid var(--glass-border);
-  box-shadow:var(--glass-shadow);
-}
-.me-menu button{display:flex;align-items:center;gap:14px;width:100%;padding:15px 18px;text-align:left;font-size:15px;transition:background .12s}
-.me-menu button + button{border-top:1px solid var(--glass-border)}
-.me-menu button:hover{background:rgba(120,120,140,.08)}
+.me-menu{margin:8px 12px 20px;border-radius:24px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.me-menu button{display:flex;align-items:center;gap:14px;width:100%;padding:15px 18px;text-align:left;font-size:15px;transition:background .15s;position:relative}
+.me-menu button + button::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
+.me-menu button:active{background:rgba(120,120,140,.12)}
 .me-menu button svg{color:var(--text2);flex-shrink:0}
 .me-menu button.danger{color:var(--danger)}
 .me-menu button.danger svg{color:var(--danger)}
 
-/* Bottom nav (стеклянная овальная) */
+/* Bottom nav with slider */
 .bottom-nav{
-  position:fixed;
-  left:50%;transform:translateX(-50%);
+  position:fixed;left:50%;transform:translateX(-50%);
   bottom:calc(14px + env(safe-area-inset-bottom));
   display:flex;gap:2px;padding:6px;border-radius:999px;z-index:40;
   background:var(--glass-bg);
-  -webkit-backdrop-filter:blur(30px) saturate(190%);
-  backdrop-filter:blur(30px) saturate(190%);
+  -webkit-backdrop-filter:blur(34px) saturate(200%);
+  backdrop-filter:blur(34px) saturate(200%);
   border:1px solid var(--glass-border);
   box-shadow:var(--glass-shadow), 0 1px 0 rgba(255,255,255,.5) inset;
   max-width:calc(100vw - 32px);
+  touch-action:none;user-select:none;
+  transition:box-shadow .3s;
 }
+.bottom-nav.dragging{box-shadow:0 12px 44px rgba(108,92,231,.35), 0 1px 0 rgba(255,255,255,.5) inset}
+.nav-indicator{
+  position:absolute;top:6px;bottom:6px;left:0;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 8px 20px rgba(108,92,231,.45);
+  pointer-events:none;z-index:0;
+  transition:left .3s cubic-bezier(.2,.9,.3,1), width .3s cubic-bezier(.2,.9,.3,1);
+  will-change:left,width;
+}
+.bottom-nav.dragging .nav-indicator{transition:none}
 .bottom-nav button{
+  position:relative;z-index:1;
   display:flex;flex-direction:column;align-items:center;gap:2px;
   padding:8px 18px;border-radius:999px;
   font-size:10.5px;font-weight:600;letter-spacing:.2px;
   color:var(--text2);
-  transition:all .22s cubic-bezier(.2,.9,.3,1);
+  transition:color .25s;
   white-space:nowrap;
 }
-.bottom-nav button svg{width:22px;height:22px;stroke-width:2;transition:transform .22s}
-.bottom-nav button.on{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;
-  box-shadow:0 8px 20px rgba(108,92,231,.45);
-}
-.bottom-nav button.on svg{transform:scale(1.06)}
+.bottom-nav button svg{width:22px;height:22px;stroke-width:2;transition:transform .3s cubic-bezier(.2,.9,.3,1)}
+.bottom-nav button.on{color:#fff}
+.bottom-nav button.on svg{transform:scale(1.08)}
 
-/* Chat overlay */
-.chat-overlay{
-  position:fixed;inset:0;z-index:55;
+/* PAGE (slides from right) */
+.page{
+  position:fixed;inset:0;z-index:70;
   background:var(--bg);
-  display:none;flex-direction:column;
-  animation:slideIn .3s cubic-bezier(.2,.9,.3,1);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.2,.9,.3,1);
+  will-change:transform;
+  box-shadow:-12px 0 32px rgba(0,0,0,.12);
+  touch-action:pan-y;
 }
-.chat-overlay.open{display:flex}
-@keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
-
-.chat-top{
-  display:flex;align-items:center;gap:10px;
-  padding:max(10px,env(safe-area-inset-top)) 10px 10px;
+.page.open{transform:translateX(0);box-shadow:-12px 0 40px rgba(0,0,0,.18)}
+.page.dragging{transition:none}
+.page.dark-glass{background:var(--bg)}
+.page-header{
+  display:flex;align-items:center;gap:8px;
+  padding:max(10px,env(safe-area-inset-top)) 12px 10px;
   background:var(--glass-bg);
   -webkit-backdrop-filter:var(--glass-blur);
   backdrop-filter:var(--glass-blur);
   border-bottom:1px solid var(--glass-border);
-  box-shadow:0 1px 0 rgba(255,255,255,.4) inset;
+  position:relative;
 }
+.page-header h2{font-size:17px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.page-body{flex:1;overflow-y:auto;padding:16px 0 40px}
+.page-body::-webkit-scrollbar{width:0}
+
+/* Hero profile page */
+.profile-hero{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.profile-hero .avatar{box-shadow:0 16px 40px rgba(108,92,231,.35)}
+.profile-hero .name{font-size:24px;font-weight:700;letter-spacing:-.4px}
+.profile-hero .status{color:var(--text2);font-size:13.5px}
+.profile-hero .username{color:var(--accent);font-size:14px;font-weight:500}
+
+.info-block{margin:12px;border-radius:20px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.info-row{display:flex;align-items:center;gap:14px;padding:14px 18px;font-size:15px;position:relative}
+.info-row + .info-row::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
+.info-row svg{color:var(--text2);flex-shrink:0}
+.info-row .val{margin-left:auto;color:var(--text2);font-size:14px}
+
+/* stories */
+.stories-strip{padding:0 16px 12px;display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+.stories-strip::-webkit-scrollbar{display:none}
+.story-circle{width:72px;height:72px;border-radius:50%;padding:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));flex-shrink:0;cursor:pointer;transition:transform .2s}
+.story-circle:active{transform:scale(.94)}
+.story-circle>div{width:100%;height:100%;border-radius:50%;background:var(--surface2);border:2px solid var(--bg);display:grid;place-items:center;color:#fff;font-weight:700;overflow:hidden}
+.section-title{padding:16px 22px 6px;font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+
+/* Settings list rows */
+.set-list{margin:12px;border-radius:20px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.set-row{display:flex;align-items:center;gap:14px;padding:14px 18px;font-size:15px;position:relative;cursor:pointer;transition:background .15s}
+.set-row:active{background:rgba(120,120,140,.10)}
+.set-row + .set-row::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
+.set-row svg{color:var(--text2);flex-shrink:0}
+.set-row .val{margin-left:auto;color:var(--text2);font-size:13.5px;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Chat overlay */
+.chat-overlay{
+  position:fixed;inset:0;z-index:55;background:var(--bg);
+  display:none;flex-direction:column;
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.9,.3,1);
+  will-change:transform;
+}
+.chat-overlay.open{display:flex;transform:translateX(0)}
+.chat-overlay.dragging{transition:none}
+.chat-top{display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) 10px 10px;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-bottom:1px solid var(--glass-border)}
 .chat-top-info{flex:1;min-width:0;cursor:pointer}
 .chat-top-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chat-top-status{font-size:12px;color:var(--text2)}
-.msgs{flex:1;overflow-y:auto;padding:16px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.chat-top-status{font-size:12px;color:var(--text2);transition:color .3s}
+.chat-top-status.online{color:var(--accent)}
+.msgs{flex:1;overflow-y:auto;padding:16px 12px 12px;display:flex;flex-direction:column;gap:4px;overscroll-behavior:contain}
 .msgs::-webkit-scrollbar{width:0}
 .day-sep{align-self:center;font-size:11px;color:var(--text2);background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);padding:4px 12px;border-radius:12px;margin:10px 0;text-transform:uppercase;letter-spacing:.5px;border:1px solid var(--glass-border)}
-.msg{max-width:min(74%,480px);padding:8px 12px;border-radius:16px;font-size:14.5px;line-height:1.42;word-wrap:break-word;position:relative;align-self:flex-start;background:var(--bubble-other);color:var(--text)}
-.msg.me{align-self:flex-end;background:var(--bubble-me);color:var(--bubble-me-text)}
+
+/* message wrapper for swipe */
+.msg-wrap{position:relative;display:flex;align-self:flex-start;max-width:100%;transition:transform .3s cubic-bezier(.2,.9,.3,1)}
+.msg-wrap.me{align-self:flex-end}
+.msg-wrap.dragging{transition:none}
+.msg-wrap .reply-hint{
+  position:absolute;left:-42px;top:50%;transform:translateY(-50%) scale(.6);
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  display:grid;place-items:center;
+  opacity:0;transition:opacity .2s,transform .3s cubic-bezier(.2,.9,.3,1);
+  pointer-events:none;
+}
+.msg-wrap.pulled .reply-hint{opacity:1;transform:translateY(-50%) scale(1)}
+.msg-wrap.triggered .reply-hint{transform:translateY(-50%) scale(1.2)}
+
+.msg{max-width:100%;padding:8px 12px;border-radius:16px;font-size:14.5px;line-height:1.42;word-wrap:break-word;position:relative;background:var(--bubble-other);color:var(--text);transition:transform .18s cubic-bezier(.2,.9,.3,1),box-shadow .2s}
+.msg.me{background:var(--bubble-me);color:var(--bubble-me-text)}
+.msg.pressing{transform:scale(1.04);box-shadow:0 12px 32px rgba(0,0,0,.25)}
 .msg .quote{font-size:12px;opacity:.85;border-left:2px solid currentColor;padding:2px 8px;margin-bottom:4px;border-radius:4px;background:rgba(255,255,255,.15)}
 .msg .meta{font-size:10.5px;opacity:.75;margin-top:4px;text-align:right;display:flex;justify-content:flex-end;gap:6px;align-items:center}
 .msg .meta .edited{font-style:italic}
 .msg .reactions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
-.msg .react{background:rgba(255,255,255,.2);padding:3px 8px;border-radius:12px;font-size:12px;display:flex;gap:3px;align-items:center;cursor:pointer;border:1px solid transparent}
+.msg .react{background:rgba(255,255,255,.2);padding:3px 8px;border-radius:12px;font-size:12px;display:flex;gap:3px;align-items:center;cursor:pointer;border:1px solid transparent;transition:transform .12s}
+.msg .react:active{transform:scale(.92)}
 .msg:not(.me) .react{background:var(--surface2);color:var(--text)}
 .msg .react.mine{border-color:var(--accent)}
-.msg.actions-open .msg-actions{display:flex}
-.msg-actions{position:absolute;top:-14px;right:8px;display:none;gap:2px;background:var(--glass-bg);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:22px;padding:3px;box-shadow:0 8px 20px rgba(20,20,50,.15);z-index:5}
-.msg.me .msg-actions{right:auto;left:8px}
-.msg-actions button{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--text2)}
-.msg-actions button:hover{background:rgba(120,120,140,.15);color:var(--text)}
+.msg img.attach{max-width:240px;max-height:280px;border-radius:12px;margin-top:4px;display:block;object-fit:cover;cursor:pointer}
+.msg video.attach{max-width:240px;border-radius:12px;margin-top:4px;display:block}
+.msg .file-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.15);border-radius:10px;margin-top:6px;font-size:13px}
+.msg:not(.me) .file-row{background:var(--surface2)}
+
 .empty-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:32px;text-align:center;color:var(--text2)}
 .empty-chat h3{color:var(--text);font-size:17px;margin:14px 0 8px;font-weight:600}
 .empty-chat p{font-size:14px;max-width:300px}
 
-.composer{
-  padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));
-  background:var(--glass-bg);
-  -webkit-backdrop-filter:var(--glass-blur);
-  backdrop-filter:var(--glass-blur);
-  border-top:1px solid var(--glass-border);
-}
-.reply-bar{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--glass-bg-2);border-radius:12px;margin-bottom:8px;font-size:13px;border:1px solid var(--glass-border)}
+.composer{padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-top:1px solid var(--glass-border)}
+.reply-bar{display:none;align-items:center;gap:10px;padding:6px 10px;background:var(--glass-bg-2);border-radius:12px;margin-bottom:8px;font-size:13px;border:1px solid var(--glass-border);animation:fs .2s}
 .reply-bar.on{display:flex}
 .composer-row{display:flex;gap:8px;align-items:flex-end}
-.composer textarea{flex:1;padding:12px 16px;background:var(--surface2);border-radius:22px;resize:none;max-height:140px;min-height:44px;font-size:16px;line-height:1.4;border:1px solid transparent;-webkit-appearance:none;appearance:none}
+.composer textarea{flex:1;padding:12px 16px;background:var(--surface2);border-radius:22px;resize:none;max-height:140px;min-height:44px;font-size:16px;line-height:1.4;border:1px solid transparent}
 .composer textarea:focus{border-color:var(--accent)}
-.send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;flex-shrink:0;box-shadow:0 6px 18px rgba(108,92,231,.4)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;flex-shrink:0;box-shadow:0 6px 18px rgba(108,92,231,.4);transition:transform .15s}
+.send-btn:active:not(:disabled){transform:scale(.92)}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 .side-btn{width:44px;height:44px;border-radius:50%;background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:grid;place-items:center;color:var(--text2);flex-shrink:0;border:1px solid var(--glass-border)}
-.side-btn:hover{background:var(--glass-bg);color:var(--text)}
+.side-btn:active{background:var(--glass-bg);color:var(--text)}
 
 /* Action Sheet */
 .sheet-bd{position:fixed;inset:0;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));animation:fs .2s ease}
 .sheet-bd.open{display:flex}
-.sheet{width:100%;max-width:480px;border-radius:28px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;animation:slideUp .35s cubic-bezier(.2,.9,.3,1)}
+.sheet{width:100%;max-width:480px;border-radius:28px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;animation:slideUp .35s cubic-bezier(.2,.9,.3,1);max-height:80vh;overflow-y:auto}
 @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .sheet-title{padding:18px 22px 10px;font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);font-weight:600;text-align:center}
-.sheet button.sheet-item{display:flex;align-items:center;gap:16px;width:100%;padding:16px 22px;text-align:left;font-size:16px;font-weight:500;transition:background .12s}
-.sheet button.sheet-item + button.sheet-item{border-top:1px solid var(--glass-border)}
-.sheet button.sheet-item:hover{background:rgba(120,120,140,.08)}
+.sheet button.sheet-item{display:flex;align-items:center;gap:16px;width:100%;padding:15px 22px;text-align:left;font-size:16px;font-weight:500;transition:background .15s;position:relative}
+.sheet button.sheet-item + button.sheet-item::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
 .sheet button.sheet-item:active{background:rgba(120,120,140,.15)}
 .sheet button.sheet-item .sheet-ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;flex-shrink:0;box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.sheet button.sheet-item.danger{color:var(--danger)}
+.sheet button.sheet-item.danger .sheet-ico{background:linear-gradient(135deg,#EF4444,#DC2626)}
 .sheet-ico.i-group{background:linear-gradient(135deg,#6C5CE7,#8E7BFF)}
 .sheet-ico.i-channel{background:linear-gradient(135deg,#22C55E,#16A34A)}
 .sheet-ico.i-find{background:linear-gradient(135deg,#F59E0B,#EF4444)}
+.sheet-ico.i-reply{background:linear-gradient(135deg,#3B82F6,#2563EB)}
+.sheet-ico.i-copy{background:linear-gradient(135deg,#8B5CF6,#6D28D9)}
+.sheet-ico.i-edit{background:linear-gradient(135deg,#F59E0B,#D97706)}
+.sheet-ico.i-trash{background:linear-gradient(135deg,#EF4444,#DC2626)}
+.sheet-ico.i-pin{background:linear-gradient(135deg,#10B981,#059669)}
 .sheet button.sheet-cancel{display:block;width:100%;text-align:center;padding:16px;font-size:16px;font-weight:600;color:var(--accent);border-top:1px solid var(--glass-border);margin-top:8px}
 
-/* Modals */
+/* Modal */
 .modal-bd{position:fixed;inset:0;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:120;padding:18px}
 .modal-bd.open{display:flex;animation:fs .2s}
-.modal{width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:22px;border-radius:28px;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;animation:slideUp .3s cubic-bezier(.2,.9,.3,1)}
-.modal h2{font-size:20px;font-weight:700;margin-bottom:18px;letter-spacing:-.2px}
+.modal{width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:22px;border-radius:28px;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35);animation:slideUp .3s cubic-bezier(.2,.9,.3,1)}
+.modal h2{font-size:20px;font-weight:700;margin-bottom:18px}
 .modal-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--glass-border);gap:12px}
 .modal-row:last-child{border-bottom:0}
-.modal-row .lbl-block{flex:1;min-width:0}
-.modal-row .lbl-block small{display:block;color:var(--text2);font-size:12px;margin-top:2px}
-.switch{width:46px;height:27px;border-radius:20px;background:var(--surface3);position:relative;transition:background .2s;flex-shrink:0}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.switch{width:46px;height:27px;border-radius:20px;background:var(--surface3);position:relative;transition:background .25s;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.2,.9,.3,1);box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .switch.on{background:var(--accent)}
 .switch.on::after{transform:translateX(19px)}
 .seg{display:flex;background:var(--glass-bg-2);border-radius:14px;padding:4px;gap:2px;border:1px solid var(--glass-border)}
-.seg button{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;color:var(--text2);transition:background .15s}
+.seg button{flex:1;padding:8px 10px;border-radius:10px;font-size:12.5px;font-weight:500;color:var(--text2);transition:background .18s}
 .seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .search-box{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--surface2);border-radius:16px;margin-bottom:12px}
 .search-box input{flex:1;font-size:16px}
-.result-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;cursor:pointer;transition:background .12s}
-.result-item:hover{background:rgba(120,120,140,.08)}
+.result-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;cursor:pointer;transition:background .15s}
+.result-item:active{background:rgba(120,120,140,.12)}
 
 /* Context menu */
-.ctx{position:fixed;z-index:140;display:none;min-width:200px;padding:6px;border-radius:18px;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,.3), 0 1px 0 rgba(255,255,255,.5) inset}
-.ctx.open{display:block;animation:fs .15s}
+.ctx{position:fixed;z-index:140;display:none;min-width:200px;padding:6px;border-radius:18px;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,.3);animation:fs .18s}
+.ctx.open{display:block}
 .ctx button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font-size:14px;text-align:left}
 .ctx button:hover{background:rgba(120,120,140,.12)}
 .ctx button.danger{color:var(--danger)}
-.ctx .drawer-sep{height:1px;background:var(--glass-border);margin:4px 8px}
 
 /* Toast */
 #toast{position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);padding:12px 20px;border-radius:16px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1);z-index:200;max-width:88vw;text-align:center;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);color:var(--text);box-shadow:0 16px 40px rgba(0,0,0,.25)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;border-color:transparent}
 #toast.ok{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;border-color:transparent}
+
+/* Fullscreen viewer */
+.viewer{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;animation:fs .2s}
+.viewer.open{display:flex}
+.viewer img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.viewer .close{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;display:grid;place-items:center}
+
+/* Edge back indicator */
+.edge-back-hint{position:fixed;left:0;top:0;bottom:0;width:22px;z-index:65;pointer-events:none}
+.edge-back-hint::after{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%) scaleY(0);width:4px;height:44px;border-radius:4px;background:var(--accent);transition:transform .2s}
+.edge-back-hint.active::after{transform:translateY(-50%) scaleY(1)}
 </style>
 </head>
 <body>
@@ -403,7 +418,7 @@ svg{display:block}
   <div class="slogan" data-i18n="welcome.slogan">Общение без границ</div>
   <div class="welcome-box">
     <button class="btn" id="btnStart" data-i18n="welcome.start">Начать</button>
-    <div class="lang-toggle glass" id="langWelcome">
+    <div class="lang-toggle" id="langWelcome">
       <button data-lang="ru" class="on">Русский</button>
       <button data-lang="en">English</button>
     </div>
@@ -417,12 +432,12 @@ svg{display:block}
     <button class="icon-btn" id="authBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="btn-2 btn-sm" id="authToLogin" data-i18n="auth.have">Уже есть аккаунт?</button>
   </div>
-  <h1 class="auth-title" id="authTitle" data-i18n="auth.title">Введите номер телефона</h1>
-  <p class="auth-sub" id="authSub" data-i18n="auth.sub">Мы отправим SMS с кодом</p>
+  <h1 class="auth-title" data-i18n="auth.title">Введите номер телефона</h1>
+  <p class="auth-sub" data-i18n="auth.sub">Мы отправим SMS с кодом</p>
   <label class="lbl" data-i18n="auth.phone">Номер телефона</label>
   <div class="phone-row">
     <button class="country-btn" id="countryBtn">🇷🇺 +7</button>
-    <input class="field" id="phoneInput" type="tel" inputmode="numeric" autocomplete="tel" placeholder="+7 (___) ___-__-__"/>
+    <input class="field" id="phoneInput" type="tel" inputmode="numeric" placeholder="+7 (___) ___-__-__"/>
   </div>
   <div class="hint" data-i18n="auth.hint">11 цифр, начиная с +7</div>
   <div class="err" id="phoneErr"></div>
@@ -468,7 +483,6 @@ svg{display:block}
 
 <!-- APP -->
 <section id="app" class="screen">
-
   <header class="app-header">
     <div class="logo-mini">V</div>
     <div class="brand-mini">VEXA</div>
@@ -503,20 +517,17 @@ svg{display:block}
     </div>
 
     <div class="panel" id="panel-calls">
-      <div class="panel-header">
-        <h2 data-i18n="nav.calls">Звонки</h2>
-      </div>
+      <div class="panel-header"><h2 data-i18n="nav.calls">Звонки</h2></div>
       <div class="list" id="callsList"></div>
     </div>
 
     <div class="panel" id="panel-me">
-      <div class="me-hero">
+      <div class="me-hero" id="meHero">
         <div class="avatar av-96" id="meAvatar">?</div>
         <div style="text-align:center">
           <div class="me-name" id="meName">—</div>
           <div class="me-username" id="meUsername">@—</div>
         </div>
-        <button class="btn btn-sm" id="meEditBtn" style="width:auto;padding:9px 20px" data-i18n="profile.edit">Редактировать</button>
       </div>
       <div class="me-menu" id="meMenu">
         <button data-action="saved">
@@ -526,6 +537,10 @@ svg{display:block}
         <button data-action="settings">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.7 1.7 0 008 19.4a1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H2a2 2 0 110-4h.1A1.7 1.7 0 003.6 8a1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H8a1.7 1.7 0 001-1.5V2a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V8a1.7 1.7 0 001.5 1H22a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
           <span data-i18n="menu.settings">Настройки</span>
+        </button>
+        <button data-action="privacy">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span data-i18n="menu.privacy">Приватность</span>
         </button>
         <button data-action="invite">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11h-6M19 8v6"/></svg>
@@ -548,6 +563,7 @@ svg{display:block}
   </main>
 
   <nav class="bottom-nav" id="bottomNav">
+    <div class="nav-indicator" id="navIndicator"></div>
     <button data-nav="chats" class="on">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       <span data-i18n="nav.chats">Чаты</span>
@@ -581,7 +597,7 @@ svg{display:block}
         <button class="side-btn" id="btnAttach" title="Attach">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.4 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
         </button>
-        <button class="side-btn" id="btnEmoji" title="Emoji">
+        <button class="side-btn" id="btnEmoji">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
         </button>
         <textarea id="msgInput" placeholder="Сообщение..." rows="1" maxlength="4000"></textarea>
@@ -593,14 +609,18 @@ svg{display:block}
   </div>
 </section>
 
+<!-- PAGES CONTAINER -->
+<div id="pagesContainer"></div>
+
 <div class="sheet-bd" id="sheetBd"><div class="sheet" id="sheetBody"></div></div>
 <div class="modal-bd" id="modalBd"><div class="modal" id="modalBody"></div></div>
 <div class="ctx" id="ctxMenu"></div>
+<div class="viewer" id="imgViewer"><button class="close" id="viewerClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
 <div id="toast"></div>
 
 <script>
 /* ============================================================
-   VEXA — Telegram-style + fixed channels
+   VEXA — v2 with swipe, drag nav, privacy, pages
    ============================================================ */
 
 (function preventZoom(){
@@ -618,17 +638,29 @@ svg{display:block}
   });
 })();
 
-/* ---------- DB ---------- */
+/* ============================================================
+   DB
+   ============================================================ */
 const DB = (() => {
-  const KEY = 'vexa.db.v1';
+  const KEY = 'vexa.db.v2';
   let cache = null;
+  const DEFAULT_PRIVACY = {
+    phone: 'everyone', find: 'everyone', lastSeen: 'everyone',
+    online: 'everyone', avatar: 'everyone', bio: 'everyone',
+    groups: 'everyone', calls: 'everyone', forwards: 'everyone'
+  };
   const load = () => {
     if (cache) return cache;
     try { cache = JSON.parse(localStorage.getItem(KEY)) || null; } catch { cache = null; }
     if (!cache) cache = { users:[], chats:[], messages:[], contacts:[], calls:[], settings:{}, session:null };
-    // MIGRATION: fix broken chats
-    cache.users = cache.users || [];
-    cache.chats = (cache.chats || []).map(c => ({
+    cache.users = (cache.users||[]).map(u => ({
+      ...u,
+      privacy: { ...DEFAULT_PRIVACY, ...(u.privacy||{}) },
+      lastSeen: u.lastSeen || Date.now(),
+      birthday: u.birthday || null,
+      stories: u.stories || []
+    }));
+    cache.chats = (cache.chats||[]).map(c => ({
       id: c.id || ('fix' + Math.random().toString(36).slice(2,10)),
       createdAt: c.createdAt || Date.now(),
       type: c.type || (c.title ? 'group' : 'personal'),
@@ -653,7 +685,7 @@ const DB = (() => {
   return {
     get data(){ return load(); },
     persist: save, uid,
-    createUser(d){ const u={id:uid(),createdAt:Date.now(),...d}; load().users.push(u); save(); return u; },
+    createUser(d){ const u={id:uid(),createdAt:Date.now(),lastSeen:Date.now(),privacy:{...DEFAULT_PRIVACY},stories:[],birthday:null,...d}; load().users.push(u); save(); return u; },
     findUserByPhone(p){ return load().users.find(u => u.phone === p); },
     findUserByUsername(u){ if(!u) return null; u=u.toLowerCase(); return load().users.find(x => (x.username||'').toLowerCase()===u); },
     findUserById(id){ return load().users.find(u => u.id === id); },
@@ -675,133 +707,89 @@ const DB = (() => {
     removeContact(o,c){ const d=load(); d.contacts=d.contacts.filter(x=>!(x.ownerId===o&&x.contactId===c)); save(); },
     contactsOf(u){ return load().contacts.filter(c=>c.ownerId===u).map(c=>this.findUserById(c.contactId)).filter(Boolean); },
     isContact(o,c){ return !!load().contacts.find(x=>x.ownerId===o&&x.contactId===c); },
-    createCall(d){ const c={id:uid(),createdAt:Date.now(),...d}; load().calls.push(c); save(); return c; },
     callsOf(u){ return load().calls.filter(c=>c.from===u||c.to===u).sort((a,b)=>b.createdAt-a.createdAt); },
     getSettings(u){ const d=load(); if(!d.settings[u]) d.settings[u]={theme:'system',lang:null,animations:true,compact:false}; return d.settings[u]; },
     setSettings(u, patch){ const s=this.getSettings(u); Object.assign(s,patch); save(); return s; }
   };
 })();
 
-/* ---------- i18n ---------- */
+/* ============================================================
+   i18n (сокращено — только то, что используется)
+   ============================================================ */
 const STR = {
-  ru: {
+  ru:{
     'welcome.slogan':'Общение без границ','welcome.start':'Начать',
     'welcome.legal':'Продолжая, вы принимаете условия использования и политику конфиденциальности.',
     'auth.title':'Введите номер телефона','auth.sub':'Мы отправим SMS с кодом','auth.phone':'Номер телефона',
     'auth.hint':'11 цифр, начиная с +7','auth.continue':'Продолжить','auth.have':'Уже есть аккаунт?',
     'otp.title':'Введите код','otp.sub':'Мы отправили SMS на','otp.change':'Изменить номер',
-    'otp.resend':'Отправить снова через','otp.confirm':'Подтвердить','otp.banner':'SMS-провайдер не подключён. Ваш код:',
+    'otp.resend':'Отправить снова через','otp.confirm':'Подтвердить','otp.banner':'Ваш код:',
     'name.title':'Как вас зовут?','name.sub':'Это увидят другие пользователи VEXA',
     'name.first':'Имя *','name.last':'Фамилия','name.user':'Username','name.create':'Создать аккаунт',
     'tab.all':'Все','tab.personal':'Личные','tab.groups':'Группы','tab.channels':'Каналы','tab.unread':'Непрочитанные','tab.saved':'Избранное',
     'nav.chats':'Чаты','nav.contacts':'Контакты','nav.calls':'Звонки','nav.me':'Вы',
-    'empty.chats':'У вас пока нет чатов','empty.chats_sub':'Начните общение — создайте чат или группу.',
-    'empty.start':'Новый чат','empty.cat':'В этой категории пусто','empty.cat_sub':'Здесь появятся ваши чаты.',
-    'chat.pick':'Выберите чат','chat.pick_sub':'Откройте существующий диалог или начните новый',
-    'chat.no_msgs':'Сообщений пока нет','chat.no_msgs_sub':'Отправьте первое сообщение, чтобы начать беседу.',
+    'empty.chats':'У вас пока нет чатов','empty.chats_sub':'Начните общение.',
+    'empty.cat':'В этой категории пусто','empty.cat_sub':'Здесь появятся ваши чаты.','empty.start':'Новый чат',
+    'chat.no_msgs':'Сообщений пока нет','chat.no_msgs_sub':'Отправьте первое сообщение.',
     'chat.input_ph':'Сообщение...',
-    'menu.profile':'Мой профиль','menu.new':'Новое сообщение','menu.group':'Создать группу',
-    'menu.channel':'Создать канал','menu.contacts':'Контакты','menu.calls':'Звонки','menu.saved':'Избранное',
-    'menu.settings':'Настройки','menu.invite':'Пригласить друзей','menu.help':'Помощь',
-    'menu.about':'О приложении','menu.logout':'Выйти',
-    'settings.title':'Настройки','settings.theme':'Тема','settings.theme_hint':'Светлая, тёмная или системная',
-    'settings.light':'Светлая','settings.dark':'Тёмная','settings.system':'Системная',
-    'settings.lang':'Язык','settings.anim':'Анимации','settings.anim_hint':'Плавные переходы',
-    'settings.compact':'Компактный режим','settings.compact_hint':'Меньше отступов','settings.close':'Готово',
-    'profile.title':'Мой профиль','profile.edit':'Редактировать','profile.save':'Сохранить',
-    'profile.first':'Имя','profile.last':'Фамилия','profile.user':'Username','profile.bio':'О себе',
-    'profile.phone':'Телефон','profile.close':'Закрыть',
-    'newchat.title':'Новый чат','newchat.search':'Поиск по username или имени',
-    'newchat.no_results':'Никого не найдено','newchat.hint':'Начните вводить имя или username',
-    'group.title':'Создать группу','group.name':'Название','group.desc':'Описание',
-    'group.members':'Участники','group.create':'Создать','group.no_contacts':'Нет доступных пользователей',
-    'channel.title':'Создать канал','channel.name':'Название','channel.desc':'Описание',
-    'channel.public':'Публичный','channel.create':'Создать',
-    'contacts.title':'Контакты','contacts.empty':'Контактов пока нет',
-    'contacts.empty_sub':'Найдите пользователя, чтобы добавить его в контакты.',
-    'contacts.find':'Найти пользователя','contacts.add':'Добавить','contacts.remove':'Удалить','contacts.write':'Написать',
-    'calls.title':'Звонки','calls.empty':'Звонков пока нет','calls.empty_sub':'Здесь появится история ваших звонков.',
-    'calls.unavailable':'Звонки требуют WebRTC-сервер. В single-file сборке недоступны.',
-    'saved.title':'Избранное','saved.empty':'Здесь пока пусто','saved.empty_sub':'Сохраняйте сюда заметки, ссылки и файлы.',
-    'invite.title':'Пригласить друзей','invite.link':'Ваша ссылка-приглашение:','invite.copy':'Скопировать','invite.copied':'Ссылка скопирована',
-    'help.title':'Помощь','about.title':'О приложении','about.version':'Версия','about.build':'Сборка',
-    'confirm.title':'Подтверждение','confirm.delete_chat':'Удалить чат? Действие необратимо.',
-    'confirm.delete_msg':'Удалить сообщение?','confirm.logout':'Выйти из аккаунта?',
-    'confirm.cancel':'Отмена','confirm.yes':'Удалить',
-    'ctx.open':'Открыть','ctx.pin':'Закрепить','ctx.unpin':'Открепить','ctx.read':'Прочитано','ctx.unread':'Непрочитано',
-    'ctx.mute':'Отключить уведомления','ctx.unmute':'Включить уведомления','ctx.delete':'Удалить чат',
-    'ctx.reply':'Ответить','ctx.edit':'Изменить','ctx.delete_msg':'Удалить','ctx.copy':'Копировать','ctx.info':'Информация',
-    'msg.edited':'изменено','msg.deleted':'Сообщение удалено','msg.you':'Вы',
-    'toast.lang_switched':'Язык изменён','toast.theme':'Тема сохранена','toast.logged_out':'Вы вышли из аккаунта',
-    'toast.welcome':'Добро пожаловать в VEXA!','toast.profile_saved':'Профиль сохранён',
-    'toast.username_taken':'Этот username занят','toast.username_free':'Свободно','toast.username_short':'Минимум 3 символа',
-    'toast.copied':'Скопировано','toast.contact_added':'Контакт добавлен','toast.contact_removed':'Контакт удалён',
-    'toast.chat_created':'Чат создан','toast.group_created':'Группа создана','toast.channel_created':'Канал создан',
-    'toast.fill_name':'Введите имя','toast.select_members':'Выберите хотя бы одного участника',
-    'err.phone':'Введите корректный номер (11 цифр, +7...)','err.otp':'Неверный код. Попробуйте снова.',
-    'chat.info':'Информация о чате','chat.members':'Участники','chat.leave':'Покинуть чат','chat.leave_confirm':'Покинуть этот чат?',
+    'menu.saved':'Избранное','menu.settings':'Настройки','menu.privacy':'Приватность',
+    'menu.invite':'Пригласить друзей','menu.help':'Помощь','menu.about':'О приложении','menu.logout':'Выйти',
+    'contacts.empty':'Контактов пока нет','contacts.empty_sub':'Найдите пользователя.','contacts.add':'Добавить','contacts.remove':'Удалить','contacts.write':'Написать','contacts.search':'Поиск',
+    'calls.empty':'Звонков пока нет','calls.empty_sub':'Здесь появится история звонков.','calls.unavailable':'Звонки требуют WebRTC-сервер.',
+    'profile.edit':'Редактировать','profile.save':'Сохранить','profile.first':'Имя','profile.last':'Фамилия','profile.user':'Username','profile.bio':'О себе','profile.phone':'Телефон','profile.birthday':'Дата рождения','profile.close':'Закрыть','profile.delete':'Удалить чат',
+    'settings.title':'Настройки','settings.theme':'Тема','settings.light':'Светлая','settings.dark':'Тёмная','settings.system':'Системная',
+    'settings.lang':'Язык','settings.anim':'Анимации','settings.compact':'Компактный режим','settings.accent':'Акцентный цвет',
+    'privacy.title':'Приватность','privacy.phone':'Кто видит мой номер','privacy.find':'Кто может найти по номеру','privacy.lastSeen':'Кто видит время посещения','privacy.online':'Кто видит, что я в сети','privacy.avatar':'Кто видит моё фото','privacy.bio':'Кто видит описание','privacy.groups':'Кто может добавлять в группы','privacy.calls':'Кто может звонить мне','privacy.forwards':'Ссылка на профиль при пересылке',
+    'privacy.everyone':'Все','privacy.contacts':'Мои контакты','privacy.nobody':'Никто',
+    'find.title':'Найти по номеру','find.hint':'Введите номер телефона','find.notfound':'Не найден','find.self':'Это ваш номер','find.search':'Найти',
+    'group.title':'Создать группу','group.name':'Название','group.desc':'Описание','group.members':'Участники','group.create':'Создать','group.no_contacts':'Нет пользователей',
+    'channel.title':'Создать канал','channel.name':'Название','channel.desc':'Описание','channel.public':'Публичный','channel.create':'Создать',
     'sheet.title':'Создать','sheet.group':'Создать группу','sheet.channel':'Создать канал','sheet.find':'Найти по номеру','sheet.cancel':'Отмена',
-    'find.title':'Найти по номеру','find.hint':'Введите номер телефона, чтобы найти пользователя',
-    'find.notfound':'Пользователь с таким номером не найден','find.self':'Это ваш собственный номер','find.search':'Найти'
+    'confirm.title':'Подтверждение','confirm.delete_chat':'Удалить чат?','confirm.delete_msg':'Удалить сообщение?','confirm.logout':'Выйти?','confirm.cancel':'Отмена','confirm.yes':'Удалить','confirm.delete_msg_all':'Удалить у всех?','confirm.delete_msg_me':'Удалить у себя?','confirm.delete_msg_all_text':'Сообщение будет удалено у всех участников.',
+    'msg.edited':'изменено','msg.deleted':'Сообщение удалено','msg.you':'Вы',
+    'toast.lang_switched':'Язык изменён','toast.theme':'Тема сохранена','toast.logged_out':'Вы вышли',
+    'toast.welcome':'Добро пожаловать!','toast.profile_saved':'Профиль сохранён','toast.username_taken':'Username занят','toast.username_free':'Свободно',
+    'toast.copied':'Скопировано','toast.contact_added':'Контакт добавлен','toast.contact_removed':'Контакт удалён','toast.chat_created':'Чат создан',
+    'toast.group_created':'Группа создана','toast.channel_created':'Канал создан','toast.fill_name':'Введите имя','toast.select_members':'Выберите участников',
+    'toast.file_sent':'Файл отправлен','toast.file_big':'Файл слишком большой (макс 3 МБ)','toast.msg_deleted_all':'Удалено у всех','toast.msg_deleted_me':'Удалено',
+    'err.phone':'Некорректный номер','err.otp':'Неверный код',
+    'status.online':'в сети','status.recently':'был недавно','status.just_now':'был только что','status.min_ago':'мин назад','status.hour_ago':'ч назад',
+    'status.was_at':'Был в','status.was_yesterday':'Был вчера в','status.hidden':'был недавно',
+    'profile.info':'Информация','profile.stories':'Истории','profile.no_stories':'Нет историй','profile.add_contact':'Добавить в контакты','profile.remove_contact':'Убрать из контактов','profile.send_msg':'Написать','profile.block':'Заблокировать','profile.report':'Пожаловаться','profile.share':'Поделиться'
   },
-  en: {
+  en:{
     'welcome.slogan':'Communication without borders','welcome.start':'Get started',
     'welcome.legal':'By continuing you accept our terms of service and privacy policy.',
     'auth.title':'Enter your phone number','auth.sub':"We'll send an SMS with a code",'auth.phone':'Phone number',
     'auth.hint':'11 digits starting with +7','auth.continue':'Continue','auth.have':'Already have an account?',
     'otp.title':'Enter the code','otp.sub':'We sent an SMS to','otp.change':'Change number',
-    'otp.resend':'Resend in','otp.confirm':'Confirm','otp.banner':'SMS provider not connected. Your code:',
+    'otp.resend':'Resend in','otp.confirm':'Confirm','otp.banner':'Your code:',
     'name.title':"What's your name?",'name.sub':'Other VEXA users will see this',
     'name.first':'First name *','name.last':'Last name','name.user':'Username','name.create':'Create account',
     'tab.all':'All','tab.personal':'Personal','tab.groups':'Groups','tab.channels':'Channels','tab.unread':'Unread','tab.saved':'Saved',
     'nav.chats':'Chats','nav.contacts':'Contacts','nav.calls':'Calls','nav.me':'You',
-    'empty.chats':"You don't have any chats yet",'empty.chats_sub':'Start chatting — create a chat or group.',
-    'empty.start':'New chat','empty.cat':'Nothing here','empty.cat_sub':'Your chats will appear here.',
-    'chat.pick':'Select a chat','chat.pick_sub':'Open an existing conversation or start a new one',
-    'chat.no_msgs':'No messages yet','chat.no_msgs_sub':'Send the first message to start the conversation.',
-    'chat.input_ph':'Message...',
-    'menu.profile':'My profile','menu.new':'New message','menu.group':'Create group',
-    'menu.channel':'Create channel','menu.contacts':'Contacts','menu.calls':'Calls','menu.saved':'Saved',
-    'menu.settings':'Settings','menu.invite':'Invite friends','menu.help':'Help','menu.about':'About','menu.logout':'Log out',
-    'settings.title':'Settings','settings.theme':'Theme','settings.theme_hint':'Light, dark or system',
-    'settings.light':'Light','settings.dark':'Dark','settings.system':'System',
-    'settings.lang':'Language','settings.anim':'Animations','settings.anim_hint':'Smooth transitions',
-    'settings.compact':'Compact mode','settings.compact_hint':'Less padding','settings.close':'Done',
-    'profile.title':'My profile','profile.edit':'Edit','profile.save':'Save',
-    'profile.first':'First name','profile.last':'Last name','profile.user':'Username','profile.bio':'About',
-    'profile.phone':'Phone','profile.close':'Close',
-    'newchat.title':'New chat','newchat.search':'Search by username or name',
-    'newchat.no_results':'No one found','newchat.hint':'Start typing a name or username',
-    'group.title':'New group','group.name':'Name','group.desc':'Description',
-    'group.members':'Members','group.create':'Create','group.no_contacts':'No users available',
-    'channel.title':'New channel','channel.name':'Name','channel.desc':'Description',
-    'channel.public':'Public','channel.create':'Create',
-    'contacts.title':'Contacts','contacts.empty':'No contacts yet',
-    'contacts.empty_sub':'Find a user to add them to contacts.',
-    'contacts.find':'Find user','contacts.add':'Add','contacts.remove':'Remove','contacts.write':'Message',
-    'calls.title':'Calls','calls.empty':'No calls yet','calls.empty_sub':'Your call history will appear here.',
-    'calls.unavailable':'Calls require a WebRTC server. Not available in single-file build.',
-    'saved.title':'Saved messages','saved.empty':'Nothing here yet','saved.empty_sub':'Save notes, links and files here.',
-    'invite.title':'Invite friends','invite.link':'Your invite link:','invite.copy':'Copy','invite.copied':'Link copied',
-    'help.title':'Help','about.title':'About','about.version':'Version','about.build':'Build',
-    'confirm.title':'Confirm','confirm.delete_chat':'Delete chat? This cannot be undone.',
-    'confirm.delete_msg':'Delete message?','confirm.logout':'Log out of account?',
-    'confirm.cancel':'Cancel','confirm.yes':'Delete',
-    'ctx.open':'Open','ctx.pin':'Pin','ctx.unpin':'Unpin','ctx.read':'Mark read','ctx.unread':'Mark unread',
-    'ctx.mute':'Mute','ctx.unmute':'Unmute','ctx.delete':'Delete chat',
-    'ctx.reply':'Reply','ctx.edit':'Edit','ctx.delete_msg':'Delete','ctx.copy':'Copy','ctx.info':'Info',
-    'msg.edited':'edited','msg.deleted':'Message deleted','msg.you':'You',
-    'toast.lang_switched':'Language changed','toast.theme':'Theme saved','toast.logged_out':'Signed out',
-    'toast.welcome':'Welcome to VEXA!','toast.profile_saved':'Profile saved',
-    'toast.username_taken':'Username taken','toast.username_free':'Available','toast.username_short':'Min 3 chars',
-    'toast.copied':'Copied','toast.contact_added':'Contact added','toast.contact_removed':'Contact removed',
-    'toast.chat_created':'Chat created','toast.group_created':'Group created','toast.channel_created':'Channel created',
-    'toast.fill_name':'Enter a name','toast.select_members':'Select at least one member',
-    'err.phone':'Enter a valid phone (11 digits, +7...)','err.otp':'Wrong code. Try again.',
-    'chat.info':'Chat info','chat.members':'Members','chat.leave':'Leave chat','chat.leave_confirm':'Leave this chat?',
+    'empty.chats':'No chats yet','empty.chats_sub':'Start a conversation.','empty.cat':'Nothing here','empty.cat_sub':'Chats will appear here.','empty.start':'New chat',
+    'chat.no_msgs':'No messages yet','chat.no_msgs_sub':'Send the first message.','chat.input_ph':'Message...',
+    'menu.saved':'Saved','menu.settings':'Settings','menu.privacy':'Privacy','menu.invite':'Invite friends',
+    'menu.help':'Help','menu.about':'About','menu.logout':'Log out',
+    'contacts.empty':'No contacts yet','contacts.empty_sub':'Find a user.','contacts.add':'Add','contacts.remove':'Remove','contacts.write':'Message','contacts.search':'Search',
+    'calls.empty':'No calls yet','calls.empty_sub':'Call history appears here.','calls.unavailable':'Calls require a WebRTC server.',
+    'profile.edit':'Edit','profile.save':'Save','profile.first':'First name','profile.last':'Last name','profile.user':'Username','profile.bio':'About','profile.phone':'Phone','profile.birthday':'Birthday','profile.close':'Close','profile.delete':'Delete chat',
+    'settings.title':'Settings','settings.theme':'Theme','settings.light':'Light','settings.dark':'Dark','settings.system':'System',
+    'settings.lang':'Language','settings.anim':'Animations','settings.compact':'Compact','settings.accent':'Accent',
+    'privacy.title':'Privacy','privacy.phone':'Who sees my phone','privacy.find':'Who can find me by phone','privacy.lastSeen':'Who sees my last seen','privacy.online':'Who sees my online status','privacy.avatar':'Who sees my photo','privacy.bio':'Who sees my bio','privacy.groups':'Who can add me to groups','privacy.calls':'Who can call me','privacy.forwards':'Profile link in forwards',
+    'privacy.everyone':'Everyone','privacy.contacts':'My contacts','privacy.nobody':'Nobody',
+    'find.title':'Find by number','find.hint':'Enter a phone number','find.notfound':'Not found','find.self':'This is your number','find.search':'Search',
+    'group.title':'New group','group.name':'Name','group.desc':'Description','group.members':'Members','group.create':'Create','group.no_contacts':'No users',
+    'channel.title':'New channel','channel.name':'Name','channel.desc':'Description','channel.public':'Public','channel.create':'Create',
     'sheet.title':'Create','sheet.group':'Create group','sheet.channel':'Create channel','sheet.find':'Find by number','sheet.cancel':'Cancel',
-    'find.title':'Find by number','find.hint':'Enter a phone number to find a user',
-    'find.notfound':'No user with this number','find.self':'That is your own number','find.search':'Search'
+    'confirm.title':'Confirm','confirm.delete_chat':'Delete chat?','confirm.delete_msg':'Delete message?','confirm.logout':'Log out?','confirm.cancel':'Cancel','confirm.yes':'Delete','confirm.delete_msg_all':'Delete for everyone?','confirm.delete_msg_me':'Delete for me?','confirm.delete_msg_all_text':'Message will be deleted for all members.',
+    'msg.edited':'edited','msg.deleted':'Message deleted','msg.you':'You',
+    'toast.lang_switched':'Language changed','toast.theme':'Theme saved','toast.logged_out':'Signed out','toast.welcome':'Welcome!','toast.profile_saved':'Profile saved','toast.username_taken':'Username taken','toast.username_free':'Available','toast.copied':'Copied','toast.contact_added':'Contact added','toast.contact_removed':'Contact removed','toast.chat_created':'Chat created','toast.group_created':'Group created','toast.channel_created':'Channel created','toast.fill_name':'Enter a name','toast.select_members':'Select members','toast.file_sent':'File sent','toast.file_big':'File too large (max 3 MB)','toast.msg_deleted_all':'Deleted for everyone','toast.msg_deleted_me':'Deleted',
+    'err.phone':'Invalid phone','err.otp':'Wrong code',
+    'status.online':'online','status.recently':'last seen recently','status.just_now':'last seen just now','status.min_ago':'min ago','status.hour_ago':'h ago',
+    'status.was_at':'Last seen at','status.was_yesterday':'Last seen yesterday at','status.hidden':'last seen recently',
+    'profile.info':'Info','profile.stories':'Stories','profile.no_stories':'No stories','profile.add_contact':'Add to contacts','profile.remove_contact':'Remove from contacts','profile.send_msg':'Message','profile.block':'Block','profile.report':'Report','profile.share':'Share'
   }
 };
 let LANG = localStorage.getItem('vexa.ui.lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
@@ -818,10 +806,10 @@ function applyLang(){
 function setLang(l){
   LANG = l; localStorage.setItem('vexa.ui.lang', l); applyLang();
   const sid = DB.getSession(); if (sid) DB.setSettings(sid, {lang:l});
-  if (State.me) { renderChats(); renderContactsList(); renderCallsList(); updateMePanel(); }
+  if (State.me){ renderChats(); renderContactsList(); renderCallsList(); updateMePanel(); }
 }
 
-/* ---------- phone ---------- */
+/* phone helpers */
 function digitsOf(s){ return (s||'').replace(/\D/g,''); }
 function normalizePhone(raw){
   let d = digitsOf(raw); if (!d) return '';
@@ -841,7 +829,7 @@ function formatPhone(raw){
 }
 function phoneValid(v){ return digitsOf(v).length === 11; }
 
-/* ---------- helpers ---------- */
+/* helpers */
 let toastTimer;
 function toast(msg, kind){
   const el = document.getElementById('toast');
@@ -849,7 +837,7 @@ function toast(msg, kind){
   if (kind) el.classList.add(kind);
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
 }
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id)); }
 function initials(u){ if (!u) return '?'; const a=(u.firstName||'')[0]||'', b=(u.lastName||'')[0]||''; return ((a+b)||(u.username||'')[0]||'?').toUpperCase(); }
@@ -864,13 +852,48 @@ function fmtDay(ts){
   if (d.toDateString() === y.toDateString()) return LANG==='ru' ? 'Вчера' : 'Yesterday';
   return d.toLocaleDateString(LANG === 'ru' ? 'ru-RU' : 'en-GB', {day:'2-digit', month:'short'});
 }
+function fmtDate(ts){
+  if (!ts) return '';
+  const d = new Date(ts);
+  return d.toLocaleDateString(LANG==='ru'?'ru-RU':'en-GB',{day:'2-digit',month:'long',year:'numeric'});
+}
 
-/* ---------- theme ---------- */
+/* privacy check */
+function canSee(viewerId, ownerId, field){
+  if (viewerId === ownerId) return true;
+  const owner = DB.findUserById(ownerId);
+  if (!owner) return true;
+  const val = (owner.privacy && owner.privacy[field]) || 'everyone';
+  if (val === 'everyone') return true;
+  if (val === 'nobody') return false;
+  if (val === 'contacts') return DB.isContact(ownerId, viewerId);
+  return true;
+}
+
+/* last seen text */
+function lastSeenText(u){
+  if (!u) return '';
+  const now = Date.now();
+  const isOnline = u.lastSeen && (now - u.lastSeen < 60_000);
+  if (isOnline && canSee(State.me.id, u.id, 'online')) return t('status.online');
+  if (!canSee(State.me.id, u.id, 'lastSeen')) return t('status.hidden');
+  if (!u.lastSeen) return t('status.recently');
+  const diff = now - u.lastSeen;
+  if (diff < 60_000) return t('status.just_now');
+  if (diff < 3_600_000) return `${Math.floor(diff/60_000)} ${t('status.min_ago')}`;
+  const d = new Date(u.lastSeen);
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (d >= today) return `${t('status.was_at')} ${fmtTime(u.lastSeen)}`;
+  const yest = new Date(today); yest.setDate(yest.getDate()-1);
+  if (d >= yest) return `${t('status.was_yesterday')} ${fmtTime(u.lastSeen)}`;
+  return `${t('status.was_at')} ${d.toLocaleDateString(LANG==='ru'?'ru-RU':'en-GB',{day:'2-digit',month:'short'})} ${fmtTime(u.lastSeen)}`;
+}
+
+/* theme */
 function applyTheme(mode){
   let th = mode;
   if (mode === 'system') th = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', th);
-  document.querySelectorAll('#segTheme button').forEach(b => b.classList.toggle('on', b.dataset.theme === mode));
 }
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   const sid = DB.getSession(); if (!sid) return;
@@ -882,8 +905,134 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
    ============================================================ */
 const State = {
   me: null, activeChat: null, activeTab: 'all', activeNav: 'chats',
-  replyTo: null, editing: null, tempOtp: null, tempPhone: null
+  replyTo: null, editing: null, tempOtp: null, tempPhone: null,
+  pageStack: []
 };
+
+/* ============================================================
+   PAGES — slide from right
+   ============================================================ */
+function openPage({ title, bodyHtml, onMount, onClose, backBtn = true }){
+  const container = document.getElementById('pagesContainer');
+  const page = el(`
+    <div class="page">
+      <div class="page-header">
+        ${backBtn ? `<button class="icon-btn page-back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>` : ''}
+        <h2>${esc(title)}</h2>
+      </div>
+      <div class="page-body">${bodyHtml}</div>
+    </div>`);
+  container.appendChild(page);
+  requestAnimationFrame(() => page.classList.add('open'));
+  const record = { el: page, onClose };
+  State.pageStack.push(record);
+  page.querySelector('.page-back')?.addEventListener('click', () => closeTopPage());
+  if (onMount) onMount(page);
+  return page;
+}
+function closeTopPage(){
+  const rec = State.pageStack.pop();
+  if (!rec) return;
+  rec.el.classList.remove('open');
+  setTimeout(() => { rec.el.remove(); }, 400);
+  if (rec.onClose) rec.onClose();
+}
+function closeAllPages(){ while (State.pageStack.length) closeTopPage(); }
+
+/* ============================================================
+   BOTTOM NAV with drag slider
+   ============================================================ */
+const bottomNav = document.getElementById('bottomNav');
+const navIndicator = document.getElementById('navIndicator');
+const navButtons = [...bottomNav.querySelectorAll('button')];
+
+function positionIndicator(btn, animate = true){
+  if (!btn) return;
+  const navRect = bottomNav.getBoundingClientRect();
+  const btnRect = btn.getBoundingClientRect();
+  if (!animate) navIndicator.style.transition = 'none';
+  navIndicator.style.left = (btnRect.left - navRect.left) + 'px';
+  navIndicator.style.width = btnRect.width + 'px';
+  if (!animate){ navIndicator.offsetHeight; navIndicator.style.transition = ''; }
+}
+function currentNavBtn(){ return navButtons.find(b => b.classList.contains('on')); }
+
+function switchNav(name){
+  State.activeNav = name;
+  navButtons.forEach(b => b.classList.toggle('on', b.dataset.nav === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-'+name));
+  positionIndicator(currentNavBtn());
+  if (name === 'contacts') renderContactsList();
+  if (name === 'calls') renderCallsList();
+  if (name === 'me') updateMePanel();
+}
+
+/* Drag the indicator */
+let navDrag = null;
+bottomNav.addEventListener('pointerdown', e => {
+  if (e.target.closest('button')?.dataset.nav) {
+    // still allow drag if user moves
+  }
+  navDrag = {
+    startX: e.clientX,
+    startBtn: currentNavBtn(),
+    moved: false,
+    pointerId: e.pointerId
+  };
+  bottomNav.setPointerCapture(e.pointerId);
+});
+bottomNav.addEventListener('pointermove', e => {
+  if (!navDrag) return;
+  const dx = e.clientX - navDrag.startX;
+  if (!navDrag.moved && Math.abs(dx) < 4) return;
+  if (!navDrag.moved){
+    navDrag.moved = true;
+    bottomNav.classList.add('dragging');
+    navIndicator.style.transition = 'none';
+  }
+  // move indicator under finger
+  const navRect = bottomNav.getBoundingClientRect();
+  const width = navIndicator.offsetWidth || 80;
+  let left = (navDrag.startBtn ? navDrag.startBtn.offsetLeft : 0) + dx;
+  left = Math.max(6, Math.min(left, navRect.width - width - 6));
+  navIndicator.style.left = left + 'px';
+
+  // highlight nearest
+  const centerX = navRect.left + left + width/2;
+  let nearest = null, minD = Infinity;
+  navButtons.forEach(b => {
+    const r = b.getBoundingClientRect();
+    const d = Math.abs(r.left + r.width/2 - centerX);
+    if (d < minD){ minD = d; nearest = b; }
+  });
+  navButtons.forEach(b => b.classList.toggle('on', b === nearest));
+});
+bottomNav.addEventListener('pointerup', e => {
+  if (!navDrag) return;
+  const wasMoving = navDrag.moved;
+  bottomNav.releasePointerCapture(e.pointerId);
+  bottomNav.classList.remove('dragging');
+  const btn = navButtons.find(b => b.classList.contains('on')) || navDrag.startBtn;
+  if (btn) switchNav(btn.dataset.nav);
+  navDrag = null;
+  if (!wasMoving){
+    // simple click fallback
+  }
+});
+bottomNav.addEventListener('pointercancel', () => {
+  if (!navDrag) return;
+  bottomNav.classList.remove('dragging');
+  navDrag = null;
+  positionIndicator(currentNavBtn());
+});
+// Fallback click for accessibility
+navButtons.forEach(b => {
+  b.addEventListener('click', () => {
+    if (navDrag) return;
+    switchNav(b.dataset.nav);
+  });
+});
+window.addEventListener('resize', () => positionIndicator(currentNavBtn(), false));
 
 /* ============================================================
    WELCOME / AUTH
@@ -900,17 +1049,16 @@ document.querySelectorAll('#langWelcome button').forEach(b => {
 const phoneInput = document.getElementById('phoneInput');
 const btnSendCode = document.getElementById('btnSendCode');
 const phoneErr = document.getElementById('phoneErr');
-
 phoneInput.addEventListener('focus', () => { if (!phoneInput.value) phoneInput.value = '+7 '; });
 phoneInput.addEventListener('blur', () => { if (digitsOf(phoneInput.value).length <= 1) phoneInput.value = ''; refreshSend(); });
 phoneInput.addEventListener('input', e => {
   const inp = e.target;
-  const cursorBefore = inp.selectionStart;
-  const digitsBefore = digitsOf(inp.value.slice(0, cursorBefore)).length;
+  const cur = inp.selectionStart;
+  const before = digitsOf(inp.value.slice(0, cur)).length;
   const formatted = formatPhone(inp.value);
   inp.value = formatted;
   let pos=0, cnt=0;
-  while (pos < formatted.length && cnt < digitsBefore) { if (/\d/.test(formatted[pos])) cnt++; pos++; }
+  while (pos < formatted.length && cnt < before){ if (/\d/.test(formatted[pos])) cnt++; pos++; }
   inp.setSelectionRange(pos, pos);
   refreshSend();
 });
@@ -948,22 +1096,16 @@ const btnVerify = document.getElementById('btnVerify');
 const otpResend = document.getElementById('otpResend');
 const otpTimer = document.getElementById('otpTimer');
 let resendInterval;
-
 function otpValue(){ return otpCells.map(c => c.value).join(''); }
 function refreshVerify(){ btnVerify.disabled = otpValue().length !== 6; }
-
 otpCells.forEach((cell, i) => {
   cell.addEventListener('input', e => {
     let v = e.target.value.replace(/\D/g,'');
     if (v.length > 1){
       const arr = v.split('');
       for (let k=0;k<arr.length && i+k<6;k++) otpCells[i+k].value = arr[k];
-      const next = Math.min(5, i+arr.length);
-      otpCells[next].focus();
-    } else {
-      cell.value = v;
-      if (v && i < 5) otpCells[i+1].focus();
-    }
+      otpCells[Math.min(5, i+arr.length)].focus();
+    } else { cell.value = v; if (v && i < 5) otpCells[i+1].focus(); }
     refreshVerify();
   });
   cell.addEventListener('keydown', e => {
@@ -979,7 +1121,6 @@ otpCells.forEach((cell, i) => {
     refreshVerify();
   });
 });
-
 function startResend(){
   let left = 60; otpResend.classList.add('disabled'); otpTimer.textContent = left;
   clearInterval(resendInterval);
@@ -1005,16 +1146,13 @@ btnVerify.onclick = () => {
   else { showScreen('nameScreen'); document.getElementById('inpName').focus(); }
 };
 
-/* NAME */
 const inpName = document.getElementById('inpName');
 const inpSurname = document.getElementById('inpSurname');
 const inpUsername = document.getElementById('inpUsername');
 const btnCreate = document.getElementById('btnCreate');
 const usernameHint = document.getElementById('usernameHint');
-
 function refreshCreate(){ btnCreate.disabled = !inpName.value.trim(); }
 inpName.addEventListener('input', refreshCreate);
-
 let unameTimer;
 inpUsername.addEventListener('input', () => {
   inpUsername.value = inpUsername.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
@@ -1022,17 +1160,17 @@ inpUsername.addEventListener('input', () => {
   const v = inpUsername.value;
   usernameHint.textContent = ''; usernameHint.style.color = '';
   if (!v) return;
-  if (v.length < 3){ usernameHint.textContent = t('toast.username_short'); usernameHint.style.color = 'var(--danger)'; return; }
+  if (v.length < 3){ usernameHint.textContent = t('toast.username_short'); usernameHint.style.color='var(--danger)'; return; }
   unameTimer = setTimeout(() => {
-    if (DB.findUserByUsername(v)){ usernameHint.textContent = t('toast.username_taken'); usernameHint.style.color = 'var(--danger)'; }
-    else { usernameHint.textContent = t('toast.username_free'); usernameHint.style.color = 'var(--ok)'; }
+    if (DB.findUserByUsername(v)){ usernameHint.textContent = t('toast.username_taken'); usernameHint.style.color='var(--danger)'; }
+    else { usernameHint.textContent = t('toast.username_free'); usernameHint.style.color='var(--ok)'; }
   }, 300);
 });
 btnCreate.onclick = () => {
   const name = inpName.value.trim();
-  if (!name) { toast(t('toast.fill_name'), 'err'); return; }
+  if (!name){ toast(t('toast.fill_name'), 'err'); return; }
   const uname = inpUsername.value.trim() || null;
-  if (uname && DB.findUserByUsername(uname)) { toast(t('toast.username_taken'), 'err'); return; }
+  if (uname && DB.findUserByUsername(uname)){ toast(t('toast.username_taken'), 'err'); return; }
   const user = DB.createUser({
     phone: State.tempPhone, firstName: name,
     lastName: inpSurname.value.trim() || null,
@@ -1047,7 +1185,7 @@ btnCreate.onclick = () => {
 };
 
 /* ============================================================
-   BOOT USER
+   BOOT
    ============================================================ */
 function bootUser(userId){
   const u = DB.findUserById(userId);
@@ -1055,45 +1193,40 @@ function bootUser(userId){
   State.me = u;
   const st = DB.getSettings(u.id);
   if (st.lang) LANG = st.lang;
-  applyLang();
-  applyTheme(st.theme);
-  document.documentElement.setAttribute('data-anim', st.animations ? '1' : '0');
+  applyLang(); applyTheme(st.theme);
   document.documentElement.style.setProperty('--font',
-    st.compact
-      ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
-      : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
-  );
+    st.compact ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
+               : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
   updateMePanel();
-  renderChats();
-  renderContactsList();
-  renderCallsList();
+  renderChats(); renderContactsList(); renderCallsList();
   State.activeChat = null;
   document.getElementById('chatOverlay').classList.remove('open');
   switchNav('chats');
   showScreen('app');
+  setTimeout(() => positionIndicator(currentNavBtn(), false), 60);
+  // heart beat
+  clearInterval(window.__hb);
+  window.__hb = setInterval(() => {
+    const me = DB.findUserById(State.me.id);
+    if (me){ me.lastSeen = Date.now(); DB.persist(); }
+  }, 20_000);
+  DB.updateUser(State.me.id, { lastSeen: Date.now() });
+  // periodically refresh header status of open chat
+  clearInterval(window.__statusT);
+  window.__statusT = setInterval(() => {
+    if (State.activeChat) renderChatTop();
+  }, 30_000);
 }
+window.addEventListener('beforeunload', () => {
+  if (State.me) DB.updateUser(State.me.id, { lastSeen: Date.now() });
+});
 
 function updateMePanel(){
   const u = State.me; if (!u) return;
-  const av = document.getElementById('meAvatar'); if (av) av.textContent = initials(u);
-  const nm = document.getElementById('meName'); if (nm) nm.textContent = displayName(u);
-  const un = document.getElementById('meUsername'); if (un) un.textContent = u.username ? '@'+u.username : '@—';
+  document.getElementById('meAvatar').textContent = initials(u);
+  document.getElementById('meName').textContent = displayName(u);
+  document.getElementById('meUsername').textContent = u.username ? '@'+u.username : '@—';
 }
-
-/* ============================================================
-   NAV
-   ============================================================ */
-function switchNav(name){
-  State.activeNav = name;
-  document.querySelectorAll('#bottomNav button').forEach(b => b.classList.toggle('on', b.dataset.nav === name));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-'+name));
-  if (name === 'contacts') renderContactsList();
-  if (name === 'calls') renderCallsList();
-  if (name === 'me') updateMePanel();
-}
-document.querySelectorAll('#bottomNav button').forEach(b => {
-  b.onclick = () => switchNav(b.dataset.nav);
-});
 
 /* ============================================================
    CHAT LIST
@@ -1134,6 +1267,12 @@ function chatPreview(chat){
   if (last.deleted) return t('msg.deleted');
   const sender = DB.findUserById(last.senderId);
   const prefix = (chat.type === 'group' || chat.type === 'channel') && sender ? displayName(sender).split(' ')[0] + ': ' : '';
+  if (last.attachments && last.attachments.length){
+    const att = last.attachments[0];
+    if ((att.type||'').startsWith('image/')) return prefix + '📷 Фото';
+    if ((att.type||'').startsWith('video/')) return prefix + '🎬 Видео';
+    return prefix + '📎 ' + (att.name||'file');
+  }
   return prefix + (last.text || '').slice(0, 60);
 }
 
@@ -1148,21 +1287,17 @@ function renderChats(){
     const bt = bm.length ? bm[bm.length-1].createdAt : b.createdAt;
     return bt - at;
   });
-
   if (!chats.length){
-    const empty = el(`
+    list.innerHTML = `
       <div class="chat-empty">
         <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
         <h3>${esc(State.activeTab === 'all' ? t('empty.chats') : t('empty.cat'))}</h3>
         <p>${esc(State.activeTab === 'all' ? t('empty.chats_sub') : t('empty.cat_sub'))}</p>
         ${State.activeTab === 'all' ? `<button class="btn btn-sm" id="emptyNewBtn">${esc(t('empty.start'))}</button>` : ''}
-      </div>`);
-    list.appendChild(empty);
-    const nb = document.getElementById('emptyNewBtn');
-    if (nb) nb.onclick = () => openActionSheet();
+      </div>`;
+    document.getElementById('emptyNewBtn')?.addEventListener('click', openActionSheet);
     return;
   }
-
   chats.forEach(c => {
     const row = el(`
       <div class="chat-row" data-id="${c.id}">
@@ -1187,13 +1322,11 @@ function renderChats(){
     const msgs = DB.getMessages(c.id);
     const last = msgs[msgs.length-1];
     row.querySelector('.chat-time').textContent = last ? fmtTime(last.createdAt) : '';
-    if (State.activeChat && State.activeChat.id === c.id) row.classList.add('active');
     row.onclick = () => openChat(c.id);
     row.oncontextmenu = e => { e.preventDefault(); openChatContext(e, c.id); };
     list.appendChild(row);
   });
 }
-
 document.querySelectorAll('#tabs .tab').forEach(tb => {
   tb.onclick = () => {
     document.querySelectorAll('#tabs .tab').forEach(x => x.classList.remove('on'));
@@ -1204,7 +1337,7 @@ document.querySelectorAll('#tabs .tab').forEach(tb => {
 });
 
 /* ============================================================
-   CONTACTS
+   CONTACTS / CALLS
    ============================================================ */
 function renderContactsList(){
   if (!State.me) return;
@@ -1220,7 +1353,7 @@ function renderContactsList(){
         <p>${esc(t('contacts.empty_sub'))}</p>
         <button class="btn btn-sm" id="ctEmptyAdd">${esc(t('contacts.add'))}</button>
       </div>`;
-    document.getElementById('ctEmptyAdd').onclick = openAddContactModal;
+    document.getElementById('ctEmptyAdd').onclick = openAddContactPage;
     return;
   }
   cs.forEach(u => {
@@ -1229,37 +1362,15 @@ function renderContactsList(){
         <div class="avatar av-54">${esc(initials(u))}</div>
         <div style="flex:1;min-width:0">
           <div style="font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(displayName(u))}</div>
-          <div style="color:var(--text2);font-size:13px;margin-top:1px">${u.username ? '@'+esc(u.username) : esc(u.phone||'')}</div>
+          <div style="color:var(--text2);font-size:13px;margin-top:1px">${lastSeenText(u)}</div>
         </div>
       </div>`);
-    r.onclick = () => {
-      let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
-      if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, u.id]});
-      openChat(chat.id);
-    };
-    r.oncontextmenu = e => {
-      e.preventDefault();
-      openContext(e.clientX, e.clientY, [
-        {label: t('contacts.write'), fn: () => {
-          let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
-          if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, u.id]});
-          openChat(chat.id);
-        }},
-        {label: t('contacts.remove'), danger:true, fn: () => {
-          DB.removeContact(State.me.id, u.id);
-          toast(t('toast.contact_removed'));
-          renderContactsList();
-        }}
-      ]);
-    };
+    r.onclick = () => openUserProfile(u.id);
     box.appendChild(r);
   });
 }
-document.getElementById('ctAddBtn').onclick = openAddContactModal;
+document.getElementById('ctAddBtn').onclick = openAddContactPage;
 
-/* ============================================================
-   CALLS
-   ============================================================ */
 function renderCallsList(){
   if (!State.me) return;
   const box = document.getElementById('callsList');
@@ -1291,62 +1402,416 @@ function renderCallsList(){
 }
 
 /* ============================================================
-   ME PANEL
+   ME panel actions → pages
    ============================================================ */
-document.getElementById('meEditBtn').onclick = openProfileModal;
+document.getElementById('meHero').onclick = () => openProfilePage();
 document.querySelectorAll('#meMenu button').forEach(b => {
-  b.onclick = () => handleMeAction(b.dataset.action);
+  b.onclick = () => {
+    switch(b.dataset.action){
+      case 'saved':    openSavedChat(); break;
+      case 'settings': openSettingsPage(); break;
+      case 'privacy':  openPrivacyPage(); break;
+      case 'invite':   openInvitePage(); break;
+      case 'help':     openHelpPage(); break;
+      case 'about':    openAboutPage(); break;
+      case 'logout':   doLogout(); break;
+    }
+  };
 });
-function handleMeAction(a){
-  switch(a){
-    case 'saved':    openSavedChat(); break;
-    case 'settings': openSettingsModal(); break;
-    case 'invite':   openInviteModal(); break;
-    case 'help':     openHelpModal(); break;
-    case 'about':    openAboutModal(); break;
-    case 'logout':   doLogout(); break;
-  }
+
+/* ============================================================
+   PAGES: MY PROFILE
+   ============================================================ */
+function openProfilePage(){
+  const u = State.me;
+  const page = openPage({
+    title: t('profile.edit'),
+    bodyHtml: `
+      <div class="profile-hero">
+        <div class="avatar av-96">${esc(initials(u))}</div>
+      </div>
+      <div class="set-list">
+        <label class="lbl" style="padding:12px 18px 0">${esc(t('profile.first'))}</label>
+        <div class="set-row" style="padding:0 18px 12px">
+          <input class="field" id="pfFirst" value="${esc(u.firstName||'')}"/>
+        </div>
+        <label class="lbl" style="padding:0 18px 0">${esc(t('profile.last'))}</label>
+        <div class="set-row" style="padding:0 18px 12px">
+          <input class="field" id="pfLast" value="${esc(u.lastName||'')}"/>
+        </div>
+        <label class="lbl" style="padding:0 18px 0">${esc(t('profile.user'))}</label>
+        <div class="set-row" style="padding:0 18px 12px">
+          <input class="field" id="pfUser" value="${esc(u.username||'')}"/>
+        </div>
+        <label class="lbl" style="padding:0 18px 0">${esc(t('profile.bio'))}</label>
+        <div class="set-row" style="padding:0 18px 12px">
+          <input class="field" id="pfBio" value="${esc(u.bio||'')}"/>
+        </div>
+        <label class="lbl" style="padding:0 18px 0">${esc(t('profile.birthday'))}</label>
+        <div class="set-row" style="padding:0 18px 12px">
+          <input class="field" id="pfBday" type="date" value="${u.birthday ? new Date(u.birthday).toISOString().slice(0,10) : ''}"/>
+        </div>
+        <label class="lbl" style="padding:0 18px 0">${esc(t('profile.phone'))}</label>
+        <div class="set-row" style="padding:0 18px 12px">
+          <input class="field" value="${esc(u.phone||'')}" disabled style="opacity:.6"/>
+        </div>
+      </div>
+      <div style="padding:0 16px 30px">
+        <button class="btn" id="pfSave">${esc(t('profile.save'))}</button>
+      </div>`,
+    onMount: p => {
+      p.querySelector('#pfSave').onclick = () => {
+        const first = p.querySelector('#pfFirst').value.trim();
+        const last = p.querySelector('#pfLast').value.trim() || null;
+        const un = p.querySelector('#pfUser').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'') || null;
+        const bio = p.querySelector('#pfBio').value.trim() || null;
+        const bdayVal = p.querySelector('#pfBday').value;
+        const birthday = bdayVal ? new Date(bdayVal).getTime() : null;
+        if (!first){ toast(t('toast.fill_name'), 'err'); return; }
+        if (un){
+          const ex = DB.findUserByUsername(un);
+          if (ex && ex.id !== State.me.id){ toast(t('toast.username_taken'), 'err'); return; }
+        }
+        DB.updateUser(State.me.id, {firstName:first, lastName:last, username:un, bio, birthday});
+        State.me = DB.findUserById(State.me.id);
+        updateMePanel();
+        toast(t('toast.profile_saved'), 'ok');
+        closeTopPage();
+      };
+    }
+  });
 }
 
 /* ============================================================
-   ACTION SHEET (+) — открывается из хедера
+   PAGES: SETTINGS
+   ============================================================ */
+function openSettingsPage(){
+  const s = DB.getSettings(State.me.id);
+  openPage({
+    title: t('settings.title'),
+    bodyHtml: `
+      <div class="section-title">${esc(t('settings.theme'))}</div>
+      <div class="set-list">
+        <div class="set-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>
+          <span>${esc(t('settings.theme'))}</span>
+          <div class="seg" id="themeSeg" style="margin-left:auto;width:auto">
+            <button data-th="light">${esc(t('settings.light'))}</button>
+            <button data-th="dark">${esc(t('settings.dark'))}</button>
+            <button data-th="system">${esc(t('settings.system'))}</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20"/></svg>
+          <span>${esc(t('settings.lang'))}</span>
+          <div class="seg" id="langSeg" style="margin-left:auto;width:auto">
+            <button data-lg="ru">RU</button>
+            <button data-lg="en">EN</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6l3-3M12 2v6l-3-3"/><circle cx="12" cy="14" r="8"/></svg>
+          <span>${esc(t('settings.anim'))}</span>
+          <div class="switch${s.animations ? ' on' : ''}" id="swAnim" style="margin-left:auto"></div>
+        </div>
+        <div class="set-row">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          <span>${esc(t('settings.compact'))}</span>
+          <div class="switch${s.compact ? ' on' : ''}" id="swCompact" style="margin-left:auto"></div>
+        </div>
+      </div>`,
+    onMount: p => {
+      p.querySelectorAll('#themeSeg button').forEach(b => {
+        b.classList.toggle('on', b.dataset.th === s.theme);
+        b.onclick = () => {
+          p.querySelectorAll('#themeSeg button').forEach(x => x.classList.remove('on'));
+          b.classList.add('on');
+          DB.setSettings(State.me.id, {theme: b.dataset.th});
+          applyTheme(b.dataset.th);
+          toast(t('toast.theme'), 'ok');
+        };
+      });
+      p.querySelectorAll('#langSeg button').forEach(b => {
+        b.classList.toggle('on', b.dataset.lg === LANG);
+        b.onclick = () => {
+          setLang(b.dataset.lg);
+          closeAllPages();
+          openSettingsPage();
+          toast(t('toast.lang_switched'), 'ok');
+        };
+      });
+      p.querySelector('#swAnim').onclick = e => {
+        const on = !e.currentTarget.classList.contains('on');
+        e.currentTarget.classList.toggle('on', on);
+        DB.setSettings(State.me.id, {animations: on});
+      };
+      p.querySelector('#swCompact').onclick = e => {
+        const on = !e.currentTarget.classList.contains('on');
+        e.currentTarget.classList.toggle('on', on);
+        document.documentElement.style.setProperty('--font',
+          on ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
+             : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
+        DB.setSettings(State.me.id, {compact: on});
+      };
+    }
+  });
+}
+
+/* ============================================================
+   PAGES: PRIVACY
+   ============================================================ */
+function openPrivacyPage(){
+  const me = DB.findUserById(State.me.id);
+  const pv = me.privacy;
+  const FIELDS = [
+    { key:'phone',    icon:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>' },
+    { key:'find',     icon:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>' },
+    { key:'lastSeen', icon:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>' },
+    { key:'online',   icon:'<circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9"/>' },
+    { key:'avatar',   icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>' },
+    { key:'bio',      icon:'<path d="M4 6h16M4 12h16M4 18h10"/>' },
+    { key:'groups',   icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>' },
+    { key:'calls',    icon:'<path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6"/>' },
+    { key:'forwards', icon:'<path d="M4 4l16 8-16 8z"/>' }
+  ];
+  const rowsHtml = FIELDS.map(f => `
+    <div class="set-row">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${f.icon}</svg>
+      <span>${esc(t('privacy.'+f.key))}</span>
+      <span class="val" data-key="${f.key}">${esc(t('privacy.'+pv[f.key]))}</span>
+    </div>`).join('');
+
+  openPage({
+    title: t('privacy.title'),
+    bodyHtml: `<div class="set-list">${rowsHtml}</div>`,
+    onMount: p => {
+      p.querySelectorAll('.set-row').forEach((row, i) => {
+        const key = FIELDS[i].key;
+        row.onclick = () => {
+          openPrivacyChoice(key, () => {
+            // refresh page in-place
+            closeTopPage();
+            openPrivacyPage();
+          });
+        };
+      });
+    }
+  });
+}
+function openPrivacyChoice(key, onDone){
+  const me = DB.findUserById(State.me.id);
+  const cur = me.privacy[key] || 'everyone';
+  openPage({
+    title: t('privacy.'+key),
+    bodyHtml: `
+      <div class="set-list">
+        ${['everyone','contacts','nobody'].map(v => `
+          <div class="set-row" data-v="${v}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 6-7"/></svg>
+            <span>${esc(t('privacy.'+v))}</span>
+            ${cur === v ? '<svg style="margin-left:auto;color:var(--accent)" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+          </div>`).join('')}
+      </div>`,
+    onMount: p => {
+      p.querySelectorAll('.set-row').forEach(row => {
+        row.onclick = () => {
+          const v = row.dataset.v;
+          me.privacy[key] = v;
+          DB.persist();
+          closeTopPage();
+          if (onDone) onDone();
+        };
+      });
+    }
+  });
+}
+
+/* ============================================================
+   PAGES: INVITE / HELP / ABOUT
+   ============================================================ */
+function openInvitePage(){
+  const link = location.href.split('#')[0] + '?invite=' + State.me.id;
+  openPage({
+    title: t('menu.invite'),
+    bodyHtml: `
+      <div class="info-block">
+        <div class="info-row" style="font-family:ui-monospace,Menlo,monospace;font-size:13px;word-break:break-all">${esc(link)}</div>
+      </div>
+      <div style="padding:0 16px 30px">
+        <button class="btn" id="ivCopy">${esc(t('invite.copy'))}</button>
+      </div>`,
+    onMount: p => {
+      p.querySelector('#ivCopy').onclick = () => {
+        navigator.clipboard?.writeText(link);
+        toast(t('invite.copied'), 'ok');
+      };
+    }
+  });
+}
+function openHelpPage(){
+  openPage({
+    title: t('menu.help'),
+    bodyHtml: `
+      <div class="info-block">
+        <div class="info-row" style="display:block;line-height:1.6;color:var(--text2)">
+          ${LANG==='ru'
+            ? 'VEXA — современный мессенджер. Свайп влево по сообщению — ответить. Свайп от левого края — назад. Long-press на сообщении — меню действий. В нижней панели можно двигать индикатор пальцем.'
+            : 'VEXA is a modern messenger. Swipe left on a message to reply. Swipe from left edge to go back. Long-press a message for actions. Drag the bottom-nav indicator with your finger.'}
+        </div>
+      </div>`
+  });
+}
+function openAboutPage(){
+  openPage({
+    title: t('menu.about'),
+    bodyHtml: `
+      <div class="profile-hero">
+        <div style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-grid;place-items:center;color:#fff;font-size:42px;font-weight:800;box-shadow:0 14px 34px rgba(108,92,231,.45)">V</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:5px;margin-top:8px">VEXA</div>
+        <div style="color:var(--text2);font-size:13px">${esc(t('welcome.slogan'))}</div>
+      </div>
+      <div class="info-block">
+        <div class="info-row"><span>Версия</span><span class="val">2.0.0</span></div>
+        <div class="info-row"><span>Сборка</span><span class="val">Telegram-style · iOS-glass</span></div>
+      </div>`
+  });
+}
+
+/* ============================================================
+   PAGES: USER PROFILE
+   ============================================================ */
+function openUserProfile(userId){
+  if (userId === State.me.id){ openProfilePage(); return; }
+  const u = DB.findUserById(userId);
+  if (!u) return;
+  const phoneAllowed = canSee(State.me.id, u.id, 'phone');
+  const bdayAllowed = u.birthday && canSee(State.me.id, u.id, 'bio');
+  const stories = u.stories || [];
+
+  const storiesHtml = stories.length
+    ? stories.map(s => `
+        <div class="story-circle" data-sid="${s.id}">
+          <div style="background:linear-gradient(135deg,#6C5CE7,#8E7BFF)">
+            ${s.thumb ? `<img src="${esc(s.thumb)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>` : '📸'}
+          </div>
+        </div>`).join('')
+    : `<div style="color:var(--text2);font-size:13px;padding:0 22px">${esc(t('profile.no_stories'))}</div>`;
+
+  const isContact = DB.isContact(State.me.id, u.id);
+
+  openPage({
+    title: displayName(u),
+    bodyHtml: `
+      <div class="profile-hero">
+        <div class="avatar av-96">${esc(initials(u))}</div>
+        <div class="name">${esc(displayName(u))}</div>
+        <div class="status">${esc(lastSeenText(u))}</div>
+        ${u.username ? `<div class="username">@${esc(u.username)}</div>` : ''}
+      </div>
+
+      <div class="section-title">${esc(t('profile.stories'))}</div>
+      <div class="stories-strip">${storiesHtml}</div>
+
+      <div class="info-block">
+        ${u.bio && canSee(State.me.id, u.id, 'bio') ? `
+          <div class="info-row" style="display:block">
+            <div style="color:var(--text2);font-size:12.5px;margin-bottom:4px">${esc(t('profile.bio'))}</div>
+            <div>${esc(u.bio)}</div>
+          </div>` : ''}
+        ${phoneAllowed && u.phone ? `
+          <div class="info-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6"/></svg>
+            <span>${esc(u.phone)}</span>
+          </div>` : ''}
+        ${u.username ? `
+          <div class="info-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>@${esc(u.username)}</span>
+          </div>` : ''}
+        ${bdayAllowed ? `
+          <div class="info-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span>${esc(fmtDate(u.birthday))}</span>
+          </div>` : ''}
+      </div>
+
+      <div class="set-list">
+        <div class="set-row" id="upSend">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <span>${esc(t('profile.send_msg'))}</span>
+        </div>
+        <div class="set-row" id="upContact">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11h-6M19 8v6"/></svg>
+          <span>${isContact ? esc(t('profile.remove_contact')) : esc(t('profile.add_contact'))}</span>
+        </div>
+        <div class="set-row" id="upShare">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v15"/></svg>
+          <span>${esc(t('profile.share'))}</span>
+        </div>
+      </div>
+      <div style="height:20px"></div>`,
+    onMount: p => {
+      p.querySelector('#upSend').onclick = () => {
+        closeAllPages();
+        let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
+        if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, u.id]});
+        setTimeout(() => openChat(chat.id), 250);
+      };
+      p.querySelector('#upContact').onclick = () => {
+        if (DB.isContact(State.me.id, u.id)){
+          DB.removeContact(State.me.id, u.id);
+          toast(t('toast.contact_removed'));
+        } else {
+          DB.addContact(State.me.id, u.id);
+          toast(t('toast.contact_added'), 'ok');
+        }
+        renderContactsList();
+        closeTopPage();
+        openUserProfile(u.id);
+      };
+      p.querySelector('#upShare').onclick = () => {
+        const link = location.href.split('#')[0] + '?u=' + u.id;
+        navigator.clipboard?.writeText(link);
+        toast(t('toast.copied'), 'ok');
+      };
+      p.querySelectorAll('.story-circle').forEach(c => {
+        c.onclick = () => toast(LANG==='ru'?'Просмотр историй появится позже':'Story viewer coming soon');
+      });
+    }
+  });
+}
+
+/* ============================================================
+   ACTION SHEET (+)
    ============================================================ */
 document.getElementById('btnPlus').onclick = openActionSheet;
-
 function openActionSheet(){
   const bd = document.getElementById('sheetBd');
   const body = document.getElementById('sheetBody');
   body.innerHTML = `
     <div class="sheet-title">${esc(t('sheet.title'))}</div>
     <button class="sheet-item" data-a="group">
-      <div class="sheet-ico i-group">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13A4 4 0 0119 7a4 4 0 01-3 3.87"/></svg>
-      </div>
+      <div class="sheet-ico i-group"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
       <span>${esc(t('sheet.group'))}</span>
     </button>
     <button class="sheet-item" data-a="channel">
-      <div class="sheet-ico i-channel">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg>
-      </div>
+      <div class="sheet-ico i-channel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg></div>
       <span>${esc(t('sheet.channel'))}</span>
     </button>
     <button class="sheet-item" data-a="find">
-      <div class="sheet-ico i-find">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      </div>
+      <div class="sheet-ico i-find"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></div>
       <span>${esc(t('sheet.find'))}</span>
     </button>
     <button class="sheet-cancel" data-a="cancel">${esc(t('sheet.cancel'))}</button>`;
   bd.classList.add('open');
-
   body.querySelectorAll('button[data-a]').forEach(btn => {
     btn.onclick = () => {
       const a = btn.dataset.a;
       closeActionSheet();
       setTimeout(() => {
-        if (a === 'group')   openCreateGroupModal();
+        if (a === 'group') openCreateGroupModal();
         else if (a === 'channel') openCreateChannelModal();
-        else if (a === 'find')    openFindByNumber();
+        else if (a === 'find') openFindByNumber();
       }, 120);
     };
   });
@@ -1357,7 +1822,7 @@ document.getElementById('sheetBd').addEventListener('click', e => {
 });
 
 /* ============================================================
-   OPEN CHAT
+   CHAT — open/close with slide
    ============================================================ */
 function openChat(chatId){
   const chat = DB.getChat(chatId);
@@ -1368,64 +1833,77 @@ function openChat(chatId){
   chat.unread = 0;
   DB.persist();
   const ov = document.getElementById('chatOverlay');
-  if (ov) ov.classList.add('open');
+  ov.classList.add('open');
   renderChatTop();
   renderMessages();
   renderChats();
-  setTimeout(() => { const mi = document.getElementById('msgInput'); if (mi) mi.focus(); }, 60);
+  setTimeout(() => { const mi = document.getElementById('msgInput'); if (mi) mi.focus(); }, 80);
 }
 function closeChat(){
   const ov = document.getElementById('chatOverlay');
-  if (ov) ov.classList.remove('open');
-  State.activeChat = null;
-  renderChats();
+  ov.classList.remove('open');
+  setTimeout(() => {
+    State.activeChat = null;
+    renderChats();
+  }, 350);
 }
-
 function renderChatTop(){
   const c = State.activeChat; if (!c) return;
   const top = document.getElementById('chatTop');
   if (!top) return;
   const otherU = chatAvatarUser(c);
   const name = chatTitle(c);
-  let status = '';
-  if (c.type === 'personal') status = otherU ? '@'+(otherU.username||'—') : '';
-  else if (c.type === 'group') status = (c.members||[]).length + ' ' + (LANG==='ru'?'участников':'members');
-  else if (c.type === 'channel') status = (LANG==='ru'?'канал':'channel');
-  else status = (LANG==='ru'?'ваши сохранённые сообщения':'your saved messages');
+  let statusText = '';
+  let onlineClass = '';
+  if (c.type === 'personal'){
+    if (otherU){
+      statusText = lastSeenText(otherU);
+      const isOnline = otherU.lastSeen && (Date.now() - otherU.lastSeen < 60_000);
+      if (isOnline && canSee(State.me.id, otherU.id, 'online')) onlineClass = 'online';
+    }
+  } else if (c.type === 'group'){
+    statusText = (c.members||[]).length + ' ' + (LANG==='ru'?'участников':'members');
+  } else if (c.type === 'channel'){
+    statusText = (LANG==='ru'?'канал':'channel');
+  } else {
+    statusText = (LANG==='ru'?'ваши сохранённые сообщения':'your saved messages');
+  }
 
   top.innerHTML = `
-    <button class="icon-btn" id="chatBackBtn" aria-label="Back">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <div class="avatar av-40" id="chatTopAv"></div>
+    <button class="icon-btn" id="chatBackBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="avatar av-40" id="chatTopAv" ${c.type === 'personal' ? 'style="cursor:pointer"' : ''}></div>
     <div class="chat-top-info" id="chatTopInfo">
       <div class="chat-top-name">${esc(name)}</div>
-      <div class="chat-top-status">${esc(status)}</div>
+      <div class="chat-top-status ${onlineClass}">${esc(statusText)}</div>
     </div>
-    <button class="icon-btn" id="chatCallBtn" title="Call">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.4 1.8.7 2.6a2 2 0 01-.5 2.1L8 9.7a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5c.8.3 1.7.6 2.6.7a2 2 0 011.7 2z"/></svg>
+    <button class="icon-btn" id="chatCallBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.4 1.8.7 2.6a2 2 0 01-.5 2.1L8 9.7a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5c.8.3 1.7.6 2.6.7a2 2 0 011.7 2z"/></svg>
     </button>
-    <button class="icon-btn" id="chatMoreBtn" title="More">
+    <button class="icon-btn" id="chatMoreBtn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
     </button>`;
 
   const av = document.getElementById('chatTopAv');
-  if (av){
-    if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
-    else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
-    else if (otherU) av.textContent = initials(otherU);
-    else av.textContent = ((c.title||'?')[0] || '?').toUpperCase();
-  }
+  if (c.type === 'saved'){ av.style.background = 'linear-gradient(135deg,#22C55E,#16A34A)'; av.textContent = '★'; }
+  else if (c.avatar) av.innerHTML = `<img src="${esc(c.avatar)}" alt=""/>`;
+  else if (otherU) av.textContent = initials(otherU);
+  else av.textContent = ((c.title||'?')[0] || '?').toUpperCase();
 
   document.getElementById('chatBackBtn').onclick = closeChat;
   document.getElementById('chatCallBtn').onclick = () => toast(t('calls.unavailable'));
-  document.getElementById('chatTopInfo').onclick = () => openChatInfo();
+  document.getElementById('chatTopInfo').onclick = () => {
+    if (c.type === 'personal' && otherU) openUserProfile(otherU.id);
+    else openChatInfoPage();
+  };
+  if (c.type === 'personal' && otherU){
+    av.onclick = () => openUserProfile(otherU.id);
+  }
   document.getElementById('chatMoreBtn').onclick = e => {
     const r = e.currentTarget.getBoundingClientRect();
     openContext(r.left - 180, r.bottom + 6, [
-      {label: t('chat.info'), fn: openChatInfo},
-      {sep:true},
-      {label: t('ctx.delete'), danger:true, fn: () => confirmDialog(t('confirm.delete_chat'), () => {
+      { label: t('profile.edit') === 'Edit' ? 'Info' : 'Информация', fn: openChatInfoPage },
+      { sep: true },
+      { label: 'Удалить чат', danger: true, fn: () => confirmDialog(t('confirm.delete_chat'), () => {
         DB.deleteChat(State.activeChat.id);
         closeChat();
       })}
@@ -1433,6 +1911,49 @@ function renderChatTop(){
   };
 }
 
+function openChatInfoPage(){
+  const c = State.activeChat; if (!c) return;
+  const members = (c.members||[]).map(id => DB.findUserById(id)).filter(Boolean);
+  openPage({
+    title: chatTitle(c),
+    bodyHtml: `
+      <div class="profile-hero">
+        <div class="avatar av-96" style="margin:0 auto;${c.type==='saved'?'background:linear-gradient(135deg,#22C55E,#16A34A)':''}">
+          ${c.type === 'saved' ? '★' : esc(((c.title||'?')[0]||'?').toUpperCase())}
+        </div>
+        <div class="name">${esc(chatTitle(c))}</div>
+        ${c.description ? `<div class="status">${esc(c.description)}</div>` : ''}
+      </div>
+      <div class="set-list">
+        ${members.map(u => `
+          <div class="set-row" data-uid="${u.id}">
+            <div class="avatar av-40">${esc(initials(u))}</div>
+            <span>${esc(displayName(u))}${u.id===State.me.id ? ' ('+esc(t('msg.you'))+')' : ''}</span>
+          </div>`).join('')}
+      </div>
+      ${c.type !== 'saved' ? `
+        <div style="padding:16px">
+          <button class="btn btn-danger" id="ciLeave">${LANG==='ru'?'Покинуть чат':'Leave chat'}</button>
+        </div>` : ''}`,
+    onMount: p => {
+      p.querySelectorAll('.set-row').forEach(r => {
+        r.onclick = () => { const id = r.dataset.uid; if (id !== State.me.id) openUserProfile(id); };
+      });
+      const lv = p.querySelector('#ciLeave');
+      if (lv) lv.onclick = () => confirmDialog(LANG==='ru'?'Покинуть чат?':'Leave?', () => {
+        c.members = (c.members||[]).filter(id => id !== State.me.id);
+        if (!c.members.length) DB.deleteChat(c.id);
+        else DB.persist();
+        closeAllPages();
+        closeChat();
+      });
+    }
+  });
+}
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
 function renderMessages(){
   const box = document.getElementById('msgs');
   if (!box) return;
@@ -1441,7 +1962,7 @@ function renderMessages(){
   const list = DB.getMessages(c.id).sort((a,b) => a.createdAt - b.createdAt);
   if (!list.length){
     box.innerHTML = `
-      <div class="empty-chat" style="flex:1">
+      <div class="empty-chat">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
         <h3>${esc(t('chat.no_msgs'))}</h3>
         <p>${esc(t('chat.no_msgs_sub'))}</p>
@@ -1459,66 +1980,68 @@ function renderMessages(){
 
 function renderMessage(m){
   const me = m.senderId === State.me.id;
-  const node = el(`<div class="msg${me ? ' me' : ''}" data-id="${m.id}"></div>`);
+  const wrap = el(`<div class="msg-wrap${me ? ' me' : ''}">
+    <div class="reply-hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg>
+    </div>
+    <div class="msg${me ? ' me' : ''}" data-id="${m.id}"></div>
+  </div>`);
+  const node = wrap.querySelector('.msg');
+
   const sender = DB.findUserById(m.senderId);
   const c = State.activeChat;
   const showSender = !me && c && (c.type === 'group' || c.type === 'channel');
+
   let inner = '';
   if (showSender && sender) inner += `<div style="font-weight:600;font-size:12.5px;margin-bottom:3px;color:var(--accent)">${esc(displayName(sender))}</div>`;
   if (m.replyTo){
     const orig = DB.getMessage(m.replyTo);
-    if (orig) inner += `<div class="quote">${esc((orig.text||'').slice(0,80))}</div>`;
+    if (orig) inner += `<div class="quote">${esc((orig.text||'').slice(0,80) || '📎')}</div>`;
   }
   if (m.deleted){
     inner += `<div style="opacity:.7;font-style:italic">${esc(t('msg.deleted'))}</div>`;
   } else {
-    inner += `<div style="white-space:pre-wrap">${linkify(esc(m.text || ''))}</div>`;
+    if (m.text) inner += `<div style="white-space:pre-wrap">${linkify(esc(m.text))}</div>`;
     if (m.attachments && m.attachments.length){
-      inner += `<div style="margin-top:6px;font-size:13px;opacity:.9">📎 ${esc(m.attachments[0].name || 'attachment')}</div>`;
+      m.attachments.forEach(a => {
+        if ((a.type||'').startsWith('image/')){
+          inner += `<img class="attach" src="${esc(a.data)}" alt=""/>`;
+        } else if ((a.type||'').startsWith('video/')){
+          inner += `<video class="attach" src="${esc(a.data)}" controls></video>`;
+        } else {
+          inner += `<div class="file-row">📎 <span>${esc(a.name||'file')}</span></div>`;
+        }
+      });
     }
   }
   inner += `<div class="meta">${m.edited && !m.deleted ? `<span class="edited">${esc(t('msg.edited'))}</span>` : ''}<span>${fmtTime(m.createdAt)}</span>${me ? '<span>✓</span>' : ''}</div>`;
   node.innerHTML = inner;
 
+  // image click → viewer
+  node.querySelectorAll('img.attach').forEach(img => {
+    img.onclick = e => { e.stopPropagation(); openViewer(img.src); };
+  });
+
+  // reactions
   if (!m.deleted && m.reactions && Object.keys(m.reactions).length){
     const rbox = el(`<div class="reactions"></div>`);
     Object.entries(m.reactions).forEach(([emoji, users]) => {
       const r = el(`<span class="react${users.includes(State.me.id) ? ' mine' : ''}">${emoji} ${users.length}</span>`);
-      r.onclick = () => toggleReaction(m.id, emoji);
+      r.onclick = e => { e.stopPropagation(); toggleReaction(m.id, emoji); };
       rbox.appendChild(r);
     });
     node.appendChild(rbox);
   }
 
-  const actions = el(`
-    <div class="msg-actions">
-      <button data-a="reply">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg>
-      </button>
-      <button data-a="react">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
-      </button>
-      <button data-a="more">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-      </button>
-    </div>`);
-  node.appendChild(actions);
+  // Long-press to open context menu (Telegram-style)
+  attachLongPress(wrap, m.id);
 
-  node.oncontextmenu = e => { e.preventDefault(); openMessageContext(e, m.id); };
-  node.onclick = e => {
-    const btn = e.target.closest('.msg-actions button');
-    if (btn){
-      e.stopPropagation();
-      const a = btn.dataset.a;
-      if (a === 'reply') setReply(m.id);
-      else if (a === 'react') toggleReaction(m.id, '👍');
-      else if (a === 'more'){ const r = btn.getBoundingClientRect(); openMessageContext({clientX:r.left, clientY:r.bottom}, m.id); }
-      return;
-    }
-    document.querySelectorAll('.msg.actions-open').forEach(x => { if (x !== node) x.classList.remove('actions-open'); });
-    node.classList.toggle('actions-open');
-  };
-  return node;
+  // Swipe left → reply
+  attachSwipeReply(wrap, m.id);
+
+  node.oncontextmenu = e => { e.preventDefault(); openMessageActions(m.id); };
+
+  return wrap;
 }
 function linkify(s){ return s.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
 function toggleReaction(msgId, emoji){
@@ -1532,6 +2055,205 @@ function toggleReaction(msgId, emoji){
   DB.persist(); renderMessages();
 }
 
+/* SWIPE-REPLY */
+function attachSwipeReply(wrap, msgId){
+  let startX = 0, startY = 0, dx = 0, active = false, pulled = false, triggered = false;
+  const MSGS = wrap.closest('.msgs');
+  wrap.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dx = 0; active = true; pulled = false; triggered = false;
+    wrap.classList.remove('dragging');
+  }, { passive: true });
+  wrap.addEventListener('touchmove', e => {
+    if (!active) return;
+    const t0 = e.touches[0];
+    const mx = t0.clientX - startX;
+    const my = t0.clientY - startY;
+    if (Math.abs(my) > Math.abs(mx) + 6 && !pulled){ active = false; return; }
+    dx = mx;
+    if (dx > 0 && !pulled){
+      // allow vertical scroll pass-through when swiping down
+      if (Math.abs(my) > 20){ active = false; return; }
+    }
+    if (dx > 0){
+      e.preventDefault();
+      wrap.classList.add('dragging');
+      const capped = Math.min(80, dx);
+      // rubber band
+      const eased = dx < 60 ? dx * 0.9 : 54 + (capped - 60) * 0.3;
+      wrap.style.transform = `translateX(${eased}px)`;
+      if (!pulled) { pulled = true; wrap.classList.add('pulled'); }
+      if (dx >= 55 && !triggered){ triggered = true; wrap.classList.add('triggered'); }
+      else if (dx < 55 && triggered){ triggered = false; wrap.classList.remove('triggered'); }
+    }
+  }, { passive: false });
+  const end = () => {
+    if (!active) return;
+    wrap.classList.remove('dragging');
+    if (triggered){
+      // Animate back and set reply
+      wrap.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1)';
+      wrap.style.transform = 'translateX(0)';
+      wrap.classList.remove('pulled','triggered');
+      setTimeout(() => { wrap.style.transition = ''; wrap.style.transform = ''; }, 320);
+      if (navigator.vibrate) navigator.vibrate(15);
+      setReply(msgId);
+    } else {
+      wrap.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1)';
+      wrap.style.transform = 'translateX(0)';
+      wrap.classList.remove('pulled','triggered');
+      setTimeout(() => { wrap.style.transition = ''; wrap.style.transform = ''; }, 320);
+    }
+    active = false; pulled = false; triggered = false;
+  };
+  wrap.addEventListener('touchend', end);
+  wrap.addEventListener('touchcancel', end);
+}
+
+/* LONG PRESS */
+function attachLongPress(node, msgId){
+  let timer = null;
+  let moved = false;
+  let startX = 0, startY = 0;
+  let pressTarget = null;
+  const start = e => {
+    if (e.touches && e.touches.length > 1) return;
+    const t0 = (e.touches && e.touches[0]) || e;
+    startX = t0.clientX; startY = t0.clientY;
+    moved = false;
+    pressTarget = node.querySelector('.msg');
+    timer = setTimeout(() => {
+      if (moved) return;
+      if (navigator.vibrate) navigator.vibrate(20);
+      pressTarget?.classList.add('pressing');
+      setTimeout(() => pressTarget?.classList.remove('pressing'), 180);
+      openMessageActions(msgId);
+    }, 480);
+  };
+  const move = e => {
+    const t0 = (e.touches && e.touches[0]) || e;
+    const dx = t0.clientX - startX;
+    const dy = t0.clientY - startY;
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8){ moved = true; clearTimeout(timer); }
+  };
+  const end = () => { clearTimeout(timer); };
+  node.addEventListener('touchstart', start, { passive: true });
+  node.addEventListener('touchmove', move, { passive: true });
+  node.addEventListener('touchend', end);
+  node.addEventListener('touchcancel', end);
+  node.addEventListener('mousedown', start);
+  node.addEventListener('mousemove', move);
+  node.addEventListener('mouseup', end);
+  node.addEventListener('mouseleave', end);
+}
+
+/* MESSAGE ACTIONS SHEET */
+function openMessageActions(msgId){
+  const m = DB.getMessage(msgId); if (!m) return;
+  const mine = m.senderId === State.me.id;
+  const bd = document.getElementById('sheetBd');
+  const body = document.getElementById('sheetBody');
+  const items = [];
+
+  items.push(`
+    <button class="sheet-item" data-a="reply">
+      <div class="sheet-ico i-reply"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg></div>
+      <span>${esc(t('ctx.reply'))}</span>
+    </button>`);
+
+  items.push(`
+    <button class="sheet-item" data-a="react">
+      <div class="sheet-ico" style="background:linear-gradient(135deg,#F59E0B,#F97316)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
+      <span>Реакция</span>
+    </button>`);
+
+  items.push(`
+    <button class="sheet-item" data-a="copy">
+      <div class="sheet-ico i-copy"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div>
+      <span>${esc(t('ctx.copy'))}</span>
+    </button>`);
+
+  if (mine && !m.deleted){
+    items.push(`
+      <button class="sheet-item" data-a="edit">
+        <div class="sheet-ico i-edit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></div>
+        <span>${esc(t('ctx.edit'))}</span>
+      </button>`);
+  }
+
+  if (mine && !m.deleted){
+    items.push(`
+      <button class="sheet-item danger" data-a="delall">
+        <div class="sheet-ico i-trash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/></svg></div>
+        <span>Удалить у всех</span>
+      </button>`);
+  }
+
+  if (!m.deleted){
+    items.push(`
+      <button class="sheet-item danger" data-a="delme">
+        <div class="sheet-ico i-trash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/></svg></div>
+        <span>Удалить у себя</span>
+      </button>`);
+  }
+
+  body.innerHTML = `
+    <div class="sheet-title">${esc(LANG==='ru'?'Действия':'Actions')}</div>
+    ${items.join('')}
+    <button class="sheet-cancel" data-a="cancel">${esc(t('sheet.cancel'))}</button>`;
+  bd.classList.add('open');
+
+  body.querySelectorAll('button[data-a]').forEach(btn => {
+    btn.onclick = () => {
+      const a = btn.dataset.a;
+      closeActionSheet();
+      setTimeout(() => {
+        if (a === 'reply') setReply(msgId);
+        else if (a === 'copy'){ navigator.clipboard?.writeText(m.text || ''); toast(t('toast.copied'), 'ok'); }
+        else if (a === 'react') showReactionPicker(msgId);
+        else if (a === 'edit'){
+          State.editing = msgId;
+          msgInput.value = m.text || '';
+          msgInput.dispatchEvent(new Event('input'));
+          replyText.textContent = t('ctx.edit') + ': ' + (m.text||'').slice(0,60);
+          replyBar.classList.add('on');
+          msgInput.focus();
+        }
+        else if (a === 'delall'){
+          confirmDialog(t('confirm.delete_msg_all_text'), () => {
+            DB.deleteMessage(msgId, true);
+            renderMessages(); renderChats();
+            toast(t('toast.msg_deleted_all'), 'ok');
+          });
+        }
+        else if (a === 'delme'){
+          DB.deleteMessage(msgId, false);
+          renderMessages(); renderChats();
+          toast(t('toast.msg_deleted_me'), 'ok');
+        }
+      }, 120);
+    };
+  });
+}
+function showReactionPicker(msgId){
+  const bd = document.getElementById('sheetBd');
+  const body = document.getElementById('sheetBody');
+  const emojis = ['👍','❤️','😂','🔥','😮','😢','🙏','🎉'];
+  body.innerHTML = `
+    <div class="sheet-title">Реакция</div>
+    <div style="display:flex;gap:6px;justify-content:center;padding:14px 16px 20px;flex-wrap:wrap">
+      ${emojis.map(e => `<button data-e="${e}" style="font-size:32px;width:56px;height:56px;border-radius:16px;background:var(--surface2);display:grid;place-items:center">${e}</button>`).join('')}
+    </div>
+    <button class="sheet-cancel" data-a="cancel">${esc(t('sheet.cancel'))}</button>`;
+  bd.classList.add('open');
+  body.querySelectorAll('button[data-e]').forEach(b => {
+    b.onclick = () => { closeActionSheet(); toggleReaction(msgId, b.dataset.e); };
+  });
+  body.querySelector('button[data-a="cancel"]').onclick = closeActionSheet;
+}
+
 /* ============================================================
    COMPOSER
    ============================================================ */
@@ -1539,7 +2261,6 @@ const msgInput = document.getElementById('msgInput');
 const btnSend = document.getElementById('btnSend');
 const replyBar = document.getElementById('replyBar');
 const replyText = document.getElementById('replyText');
-
 msgInput.addEventListener('input', () => {
   btnSend.disabled = !msgInput.value.trim();
   msgInput.style.height = 'auto';
@@ -1553,7 +2274,7 @@ msgInput.addEventListener('keydown', e => {
 function setReply(msgId){
   State.replyTo = msgId;
   const m = DB.getMessage(msgId); if (!m) return;
-  replyText.textContent = (m.text || '').slice(0, 80);
+  replyText.textContent = (m.text || '📎').slice(0, 80);
   replyBar.classList.add('on');
   msgInput.focus();
 }
@@ -1583,12 +2304,15 @@ document.getElementById('btnAttach').onclick = () => {
   inp.accept = 'image/*,video/*,application/*';
   inp.onchange = () => {
     const f = inp.files[0]; if (!f) return;
-    if (f.size > 3 * 1024 * 1024){ toast(LANG==='ru'?'Файл слишком большой (макс 3 МБ)':'File too large (max 3 MB)', 'err'); return; }
+    if (f.size > 3 * 1024 * 1024){ toast(t('toast.file_big'), 'err'); return; }
     const reader = new FileReader();
     reader.onload = () => {
-      DB.createMessage({chatId:State.activeChat.id, senderId:State.me.id, text:'', attachments:[{name:f.name, type:f.type, size:f.size, data:reader.result}]});
+      DB.createMessage({
+        chatId: State.activeChat.id, senderId: State.me.id, text: '',
+        attachments: [{ name: f.name, type: f.type, size: f.size, data: reader.result }]
+      });
       renderMessages(); renderChats();
-      toast(LANG==='ru'?'Файл отправлен':'File sent', 'ok');
+      toast(t('toast.file_sent'), 'ok');
     };
     reader.readAsDataURL(f);
   };
@@ -1607,56 +2331,25 @@ document.getElementById('btnEmoji').onclick = () => {
 };
 
 /* ============================================================
-   CONTEXT MENUS
+   CONTEXT MENU (simple text menu)
    ============================================================ */
-function openMessageContext(e, msgId){
-  const m = DB.getMessage(msgId); if (!m) return;
-  const mine = m.senderId === State.me.id;
-  const items = [
-    {label: t('ctx.reply'), fn: () => setReply(msgId)},
-    {label: t('ctx.copy'), fn: () => {
-      navigator.clipboard?.writeText(m.text || '');
-      toast(t('toast.copied'), 'ok');
-    }},
-    {sep:true},
-    {emoji:'👍', label:'👍', fn: () => toggleReaction(msgId, '👍')},
-    {emoji:'❤️', label:'❤️', fn: () => toggleReaction(msgId, '❤️')},
-    {emoji:'🔥', label:'🔥', fn: () => toggleReaction(msgId, '🔥')},
-    {emoji:'😂', label:'😂', fn: () => toggleReaction(msgId, '😂')}
-  ];
-  if (mine && !m.deleted){
-    items.push({sep:true});
-    items.push({label: t('ctx.edit'), fn: () => {
-      State.editing = msgId;
-      msgInput.value = m.text;
-      msgInput.dispatchEvent(new Event('input'));
-      replyText.textContent = t('ctx.edit') + ': ' + (m.text||'').slice(0,60);
-      replyBar.classList.add('on');
-      msgInput.focus();
-    }});
-    items.push({label: t('ctx.delete_msg'), danger:true, fn: () => {
-      confirmDialog(t('confirm.delete_msg'), () => { DB.deleteMessage(msgId, false); renderMessages(); renderChats(); });
-    }});
-  }
-  openContext(e.clientX || 0, e.clientY || 0, items);
-}
 function openChatContext(e, chatId){
   const c = DB.getChat(chatId); if (!c) return;
   openContext(e.clientX, e.clientY, [
-    {label: t('ctx.open'), fn: () => openChat(chatId)},
-    {label: c.pinned ? t('ctx.unpin') : t('ctx.pin'), fn: () => { DB.updateChat(chatId, {pinned: !c.pinned}); renderChats(); }},
-    {label: c.unread ? t('ctx.read') : t('ctx.unread'), fn: () => { DB.updateChat(chatId, {unread: c.unread ? 0 : 1}); renderChats(); }},
-    {label: c.muted ? t('ctx.unmute') : t('ctx.mute'), fn: () => { DB.updateChat(chatId, {muted: !c.muted}); renderChats(); }},
-    {sep:true},
-    {label: t('ctx.delete'), danger:true, fn: () => confirmDialog(t('confirm.delete_chat'), () => { DB.deleteChat(chatId); renderChats(); })}
+    { label: t('ctx.open') || 'Открыть', fn: () => openChat(chatId) },
+    { label: c.pinned ? 'Открепить' : 'Закрепить', fn: () => { DB.updateChat(chatId, {pinned: !c.pinned}); renderChats(); } },
+    { label: c.unread ? 'Прочитано' : 'Непрочитано', fn: () => { DB.updateChat(chatId, {unread: c.unread ? 0 : 1}); renderChats(); } },
+    { label: c.muted ? 'Включить увед.' : 'Отключить увед.', fn: () => { DB.updateChat(chatId, {muted: !c.muted}); renderChats(); } },
+    { sep: true },
+    { label: 'Удалить чат', danger: true, fn: () => confirmDialog(t('confirm.delete_chat'), () => { DB.deleteChat(chatId); renderChats(); }) }
   ]);
 }
 function openContext(x, y, items){
   const ctx = document.getElementById('ctxMenu');
   ctx.innerHTML = '';
   items.forEach(it => {
-    if (it.sep){ ctx.appendChild(el('<div class="drawer-sep"></div>')); return; }
-    const b = el(`<button${it.danger ? ' class="danger"' : ''}>${it.emoji ? `<span style="font-size:16px">${it.emoji}</span>` : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`}<span>${esc(it.label)}</span></button>`);
+    if (it.sep){ ctx.appendChild(el('<div style="height:1px;background:var(--glass-border);margin:4px 8px"></div>')); return; }
+    const b = el(`<button${it.danger ? ' class="danger"' : ''}>${it.emoji ? `<span style="font-size:16px">${it.emoji}</span>` : ''}<span>${esc(it.label)}</span></button>`);
     b.onclick = () => { closeContext(); it.fn(); };
     ctx.appendChild(b);
   });
@@ -1667,13 +2360,10 @@ function openContext(x, y, items){
   ctx.style.top = Math.max(10, Math.min(y, maxY)) + 'px';
 }
 function closeContext(){ document.getElementById('ctxMenu').classList.remove('open'); }
-document.addEventListener('click', e => {
-  if (!e.target.closest('#ctxMenu')) closeContext();
-  if (!e.target.closest('.msg')) document.querySelectorAll('.msg.actions-open').forEach(x => x.classList.remove('actions-open'));
-});
+document.addEventListener('click', e => { if (!e.target.closest('#ctxMenu')) closeContext(); });
 
 /* ============================================================
-   MODAL
+   MODALS (small)
    ============================================================ */
 function openModal(html, setup){
   const bd = document.getElementById('modalBd');
@@ -1699,99 +2389,7 @@ function confirmDialog(text, onYes){
     });
 }
 
-/* PROFILE */
-function openProfileModal(){
-  const u = State.me;
-  openModal(`
-    <h2>${esc(t('profile.title'))}</h2>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:20px">
-      <div class="avatar av-96">${esc(initials(u))}</div>
-      <div style="text-align:center">
-        <div style="font-weight:700;font-size:18px">${esc(displayName(u))}</div>
-        <div style="color:var(--text2);font-size:14px">${u.username ? '@'+esc(u.username) : '@—'}</div>
-      </div>
-    </div>
-    <label class="lbl">${esc(t('profile.first'))}</label>
-    <input class="field" id="pfFirst" value="${esc(u.firstName || '')}" style="margin-bottom:10px"/>
-    <label class="lbl">${esc(t('profile.last'))}</label>
-    <input class="field" id="pfLast" value="${esc(u.lastName || '')}" style="margin-bottom:10px"/>
-    <label class="lbl">${esc(t('profile.user'))}</label>
-    <input class="field" id="pfUser" value="${esc(u.username || '')}" style="margin-bottom:10px"/>
-    <label class="lbl">${esc(t('profile.bio'))}</label>
-    <input class="field" id="pfBio" value="${esc(u.bio || '')}" style="margin-bottom:10px"/>
-    <label class="lbl">${esc(t('profile.phone'))}</label>
-    <input class="field" value="${esc(u.phone || '')}" disabled style="margin-bottom:20px;opacity:.6"/>
-    <div class="row" style="gap:10px">
-      <button class="btn btn-2" id="pfClose">${esc(t('profile.close'))}</button>
-      <button class="btn" id="pfSave">${esc(t('profile.save'))}</button>
-    </div>`,
-    b => {
-      b.querySelector('#pfClose').onclick = closeModal;
-      b.querySelector('#pfSave').onclick = () => {
-        const first = b.querySelector('#pfFirst').value.trim();
-        const last = b.querySelector('#pfLast').value.trim() || null;
-        const un = b.querySelector('#pfUser').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'') || null;
-        const bio = b.querySelector('#pfBio').value.trim() || null;
-        if (!first){ toast(t('toast.fill_name'), 'err'); return; }
-        if (un){
-          const existing = DB.findUserByUsername(un);
-          if (existing && existing.id !== State.me.id){ toast(t('toast.username_taken'), 'err'); return; }
-        }
-        DB.updateUser(State.me.id, {firstName:first, lastName:last, username:un, bio});
-        State.me = DB.findUserById(State.me.id);
-        updateMePanel();
-        closeModal();
-        toast(t('toast.profile_saved'), 'ok');
-      };
-    });
-}
-
-/* NEW CHAT search */
-function openNewChatModal(){
-  openModal(`
-    <h2>${esc(t('newchat.title'))}</h2>
-    <div class="search-box">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text2)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="ncSearch" placeholder="${esc(t('newchat.search'))}" autofocus/>
-    </div>
-    <div id="ncResults" style="max-height:400px;overflow-y:auto"></div>`,
-    b => {
-      const inp = b.querySelector('#ncSearch');
-      const res = b.querySelector('#ncResults');
-      const render = () => {
-        const q = inp.value.trim().toLowerCase();
-        res.innerHTML = '';
-        if (!q){ res.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:16px;text-align:center">${esc(t('newchat.hint'))}</div>`; return; }
-        const users = DB.data.users.filter(u =>
-          u.id !== State.me.id &&
-          ((u.username||'').toLowerCase().includes(q) || (u.firstName||'').toLowerCase().includes(q) || (u.lastName||'').toLowerCase().includes(q))
-        );
-        if (!users.length){ res.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:16px;text-align:center">${esc(t('newchat.no_results'))}</div>`; return; }
-        users.forEach(u => {
-          const r = el(`
-            <div class="result-item">
-              <div class="avatar av-40">${esc(initials(u))}</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-weight:600">${esc(displayName(u))}</div>
-                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
-              </div>
-            </div>`);
-          r.onclick = () => {
-            let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
-            if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, u.id]});
-            closeModal();
-            toast(t('toast.chat_created'), 'ok');
-            openChat(chat.id);
-          };
-          res.appendChild(r);
-        });
-      };
-      inp.addEventListener('input', render);
-      render();
-    });
-}
-
-/* FIND BY NUMBER */
+/* Find by number */
 function openFindByNumber(){
   openModal(`
     <h2>${esc(t('find.title'))}</h2>
@@ -1808,14 +2406,13 @@ function openFindByNumber(){
       const errEl = b.querySelector('#findErr');
       const res = b.querySelector('#findResults');
       const btn = b.querySelector('#findBtn');
-
       const setVal = raw => {
         const cur = inp.selectionStart;
         const before = digitsOf(inp.value.slice(0, cur)).length;
         const formatted = formatPhone(raw);
         inp.value = formatted;
         let pos = 0, cnt = 0;
-        while (pos < formatted.length && cnt < before) { if (/\d/.test(formatted[pos])) cnt++; pos++; }
+        while (pos < formatted.length && cnt < before){ if (/\d/.test(formatted[pos])) cnt++; pos++; }
         inp.setSelectionRange(pos, pos);
       };
       inp.addEventListener('focus', () => { if (!inp.value) inp.value = '+7 '; });
@@ -1825,9 +2422,7 @@ function openFindByNumber(){
         btn.disabled = !ok;
         errEl.textContent = inp.value && !ok ? t('err.phone') : '';
       });
-      inp.addEventListener('keydown', e => {
-        if (e.key === 'Backspace' && digitsOf(inp.value).length <= 1) e.preventDefault();
-      });
+      inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && digitsOf(inp.value).length <= 1) e.preventDefault(); });
 
       const search = () => {
         if (!phoneValid(inp.value)) return;
@@ -1842,6 +2437,11 @@ function openFindByNumber(){
           res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">${esc(t('find.notfound'))}</div>`;
           return;
         }
+        // check user's privacy for find
+        if (!canSee(State.me.id, user.id, 'find') && !DB.isContact(State.me.id, user.id)){
+          res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">${esc(t('find.notfound'))}</div>`;
+          return;
+        }
         const r = el(`
           <div class="result-item">
             <div class="avatar av-54">${esc(initials(user))}</div>
@@ -1851,11 +2451,8 @@ function openFindByNumber(){
             </div>
           </div>`);
         r.onclick = () => {
-          let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(user.id));
-          if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, user.id]});
           closeModal();
-          toast(t('toast.chat_created'), 'ok');
-          openChat(chat.id);
+          openUserProfile(user.id);
         };
         res.appendChild(r);
       };
@@ -1864,7 +2461,64 @@ function openFindByNumber(){
     });
 }
 
-/* CREATE GROUP */
+/* Add contact */
+function openAddContactPage(){
+  openPage({
+    title: t('contacts.add'),
+    bodyHtml: `
+      <div style="padding:14px 16px 6px">
+        <div class="search-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text2)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="acSearch" placeholder="${esc(t('contacts.search'))}" autofocus/>
+        </div>
+      </div>
+      <div id="acRes" style="padding:0 6px 30px"></div>`,
+    onMount: p => {
+      const inp = p.querySelector('#acSearch');
+      const res = p.querySelector('#acRes');
+      const render = () => {
+        const q = inp.value.trim().toLowerCase();
+        res.innerHTML = '';
+        if (!q) return;
+        const users = DB.data.users.filter(u =>
+          u.id !== State.me.id &&
+          ((u.username||'').toLowerCase().includes(q) || (u.firstName||'').toLowerCase().includes(q) || (u.lastName||'').toLowerCase().includes(q))
+        );
+        if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">${esc(t('newchat.no_results')||'Не найдено')}</div>`; return; }
+        users.forEach(u => {
+          const inContacts = DB.isContact(State.me.id, u.id);
+          const r = el(`
+            <div class="result-item">
+              <div class="avatar av-40">${esc(initials(u))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(u))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
+              </div>
+              <button class="btn btn-sm${inContacts ? ' btn-2' : ''}">${inContacts ? esc(t('contacts.remove')) : esc(t('contacts.add'))}</button>
+            </div>`);
+          r.querySelector('button').onclick = e => {
+            e.stopPropagation();
+            if (DB.isContact(State.me.id, u.id)){
+              DB.removeContact(State.me.id, u.id);
+              toast(t('toast.contact_removed'));
+            } else {
+              DB.addContact(State.me.id, u.id);
+              toast(t('toast.contact_added'), 'ok');
+            }
+            render();
+            renderContactsList();
+          };
+          r.onclick = () => openUserProfile(u.id);
+          res.appendChild(r);
+        });
+      };
+      inp.addEventListener('input', render);
+      setTimeout(() => inp.focus(), 200);
+    }
+  });
+}
+
+/* Create group / channel */
 function openCreateGroupModal(){
   const contacts = DB.contactsOf(State.me.id);
   const allUsers = DB.data.users.filter(u => u.id !== State.me.id);
@@ -1913,7 +2567,6 @@ function openCreateGroupModal(){
         const chat = DB.createChat({type:'group', title:name, description:desc, ownerId:State.me.id, members:[State.me.id, ...selected]});
         closeModal();
         toast(t('toast.group_created'), 'ok');
-        // force tab to all
         State.activeTab = 'all';
         document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
         switchNav('chats');
@@ -1922,8 +2575,6 @@ function openCreateGroupModal(){
       };
     });
 }
-
-/* CREATE CHANNEL */
 function openCreateChannelModal(){
   openModal(`
     <h2>${esc(t('channel.title'))}</h2>
@@ -1956,10 +2607,7 @@ function openCreateChannelModal(){
         const name = b.querySelector('#chName').value.trim();
         const desc = b.querySelector('#chDesc').value.trim();
         if (!name){ toast(t('toast.fill_name'), 'err'); return; }
-        const chat = DB.createChat({
-          type:'channel', title:name, description:desc, isPublic,
-          ownerId:State.me.id, members:[State.me.id]
-        });
+        const chat = DB.createChat({type:'channel', title:name, description:desc, isPublic, ownerId:State.me.id, members:[State.me.id]});
         closeModal();
         toast(t('toast.channel_created'), 'ok');
         State.activeTab = 'all';
@@ -1971,57 +2619,7 @@ function openCreateChannelModal(){
     });
 }
 
-/* ADD CONTACT */
-function openAddContactModal(){
-  openModal(`
-    <h2>${esc(t('contacts.add'))}</h2>
-    <div class="search-box">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text2)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="acSearch" placeholder="${esc(t('newchat.search'))}" autofocus/>
-    </div>
-    <div id="acRes" style="max-height:360px;overflow-y:auto"></div>`,
-    b => {
-      const inp = b.querySelector('#acSearch');
-      const res = b.querySelector('#acRes');
-      const render = () => {
-        const q = inp.value.trim().toLowerCase();
-        res.innerHTML = '';
-        if (!q) return;
-        const users = DB.data.users.filter(u =>
-          u.id !== State.me.id &&
-          ((u.username||'').toLowerCase().includes(q) || (u.firstName||'').toLowerCase().includes(q) || (u.lastName||'').toLowerCase().includes(q))
-        );
-        if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">${esc(t('newchat.no_results'))}</div>`; return; }
-        users.forEach(u => {
-          const inContacts = DB.isContact(State.me.id, u.id);
-          const r = el(`
-            <div class="result-item">
-              <div class="avatar av-40">${esc(initials(u))}</div>
-              <div style="flex:1;min-width:0">
-                <div style="font-weight:600">${esc(displayName(u))}</div>
-                <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
-              </div>
-              <button class="btn btn-sm${inContacts ? ' btn-2' : ''}">${inContacts ? esc(t('contacts.remove')) : esc(t('contacts.add'))}</button>
-            </div>`);
-          r.querySelector('button').onclick = () => {
-            if (DB.isContact(State.me.id, u.id)){
-              DB.removeContact(State.me.id, u.id);
-              toast(t('toast.contact_removed'));
-            } else {
-              DB.addContact(State.me.id, u.id);
-              toast(t('toast.contact_added'), 'ok');
-            }
-            render();
-            renderContactsList();
-          };
-          res.appendChild(r);
-        });
-      };
-      inp.addEventListener('input', render);
-    });
-}
-
-/* SAVED */
+/* Saved */
 function openSavedChat(){
   let chat = DB.chatsOf(State.me.id).find(c => c.type === 'saved');
   if (!chat) chat = DB.createChat({type:'saved', ownerId:State.me.id, members:[State.me.id]});
@@ -2032,185 +2630,160 @@ function openSavedChat(){
   openChat(chat.id);
 }
 
-/* SETTINGS */
-function openSettingsModal(){
-  const s = DB.getSettings(State.me.id);
-  openModal(`
-    <h2>${esc(t('settings.title'))}</h2>
-
-    <div class="modal-row" style="flex-direction:column;align-items:stretch">
-      <div class="lbl-block" style="margin-bottom:8px">
-        <div style="font-weight:600">${esc(t('settings.theme'))}</div>
-        <small>${esc(t('settings.theme_hint'))}</small>
-      </div>
-      <div class="seg" id="segTheme">
-        <button data-theme="light" style="flex:1">${esc(t('settings.light'))}</button>
-        <button data-theme="dark" style="flex:1">${esc(t('settings.dark'))}</button>
-        <button data-theme="system" style="flex:1">${esc(t('settings.system'))}</button>
-      </div>
-    </div>
-
-    <div class="modal-row">
-      <div class="lbl-block"><div style="font-weight:600">${esc(t('settings.lang'))}</div></div>
-      <div class="seg" id="segLang">
-        <button data-lang="ru">RU</button>
-        <button data-lang="en">EN</button>
-      </div>
-    </div>
-
-    <div class="modal-row">
-      <div class="lbl-block">
-        <div style="font-weight:600">${esc(t('settings.anim'))}</div>
-        <small>${esc(t('settings.anim_hint'))}</small>
-      </div>
-      <div class="switch${s.animations ? ' on' : ''}" id="swAnim"></div>
-    </div>
-
-    <div class="modal-row">
-      <div class="lbl-block">
-        <div style="font-weight:600">${esc(t('settings.compact'))}</div>
-        <small>${esc(t('settings.compact_hint'))}</small>
-      </div>
-      <div class="switch${s.compact ? ' on' : ''}" id="swCompact"></div>
-    </div>
-
-    <button class="btn" id="setClose" style="margin-top:18px">${esc(t('settings.close'))}</button>`,
-    b => {
-      b.querySelectorAll('#segTheme button').forEach(btn => {
-        btn.classList.toggle('on', btn.dataset.theme === s.theme);
-        btn.onclick = () => {
-          DB.setSettings(State.me.id, {theme: btn.dataset.theme});
-          applyTheme(btn.dataset.theme);
-          b.querySelectorAll('#segTheme button').forEach(x => x.classList.toggle('on', x === btn));
-          toast(t('toast.theme'), 'ok');
-        };
-      });
-      b.querySelectorAll('#segLang button').forEach(btn => {
-        btn.classList.toggle('on', btn.dataset.lang === LANG);
-        btn.onclick = () => {
-          setLang(btn.dataset.lang);
-          openSettingsModal();
-          toast(t('toast.lang_switched'), 'ok');
-        };
-      });
-      b.querySelector('#swAnim').onclick = e => {
-        const on = !e.currentTarget.classList.contains('on');
-        e.currentTarget.classList.toggle('on', on);
-        document.documentElement.setAttribute('data-anim', on ? '1' : '0');
-        DB.setSettings(State.me.id, {animations: on});
-      };
-      b.querySelector('#swCompact').onclick = e => {
-        const on = !e.currentTarget.classList.contains('on');
-        document.documentElement.style.setProperty('--font',
-          on ? '13.5px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'
-             : '15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif');
-        DB.setSettings(State.me.id, {compact: on});
-      };
-      b.querySelector('#setClose').onclick = closeModal;
-    });
-}
-
-/* INVITE / HELP / ABOUT / CHAT INFO */
-function openInviteModal(){
-  const link = location.href.split('#')[0] + '?invite=' + State.me.id;
-  openModal(`
-    <h2>${esc(t('invite.title'))}</h2>
-    <div style="background:var(--surface2);padding:14px;border-radius:14px;font-family:ui-monospace,Menlo,monospace;font-size:13px;word-break:break-all;margin-bottom:14px">${esc(link)}</div>
-    <div class="row" style="gap:10px">
-      <button class="btn btn-2" id="ivClose">${esc(t('profile.close'))}</button>
-      <button class="btn" id="ivCopy">${esc(t('invite.copy'))}</button>
-    </div>`,
-    b => {
-      b.querySelector('#ivClose').onclick = closeModal;
-      b.querySelector('#ivCopy').onclick = () => { navigator.clipboard?.writeText(link); toast(t('invite.copied'), 'ok'); };
-    });
-}
-function openHelpModal(){
-  openModal(`
-    <h2>${esc(t('help.title'))}</h2>
-    <div style="color:var(--text2);font-size:14px;line-height:1.6;margin-bottom:16px">
-      ${LANG === 'ru'
-        ? 'VEXA — современный мессенджер. Создавайте личные чаты, группы и каналы, добавляйте контакты, находите пользователей по номеру телефона.'
-        : 'VEXA is a modern messenger. Create private chats, groups and channels, add contacts, find users by phone number.'}
-    </div>
-    <button class="btn" onclick="closeModal()">${esc(t('settings.close'))}</button>`);
-}
-function openAboutModal(){
-  openModal(`
-    <div style="text-align:center;padding:6px 0 16px">
-      <div style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-grid;place-items:center;color:#fff;font-size:42px;font-weight:800;box-shadow:0 14px 34px rgba(108,92,231,.45)">V</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:5px;margin-top:12px">VEXA</div>
-      <div style="color:var(--text2);font-size:13px;margin-top:4px">${esc(t('welcome.slogan'))}</div>
-    </div>
-    <div class="modal-row"><div class="lbl-block"><div>${esc(t('about.version'))}</div></div><div style="color:var(--text2)">1.2.0</div></div>
-    <div class="modal-row"><div class="lbl-block"><div>${esc(t('about.build'))}</div></div><div style="color:var(--text2)">Telegram-style</div></div>
-    <button class="btn" style="margin-top:18px" onclick="closeModal()">${esc(t('settings.close'))}</button>`);
-}
-function openChatInfo(){
-  const c = State.activeChat; if (!c) return;
-  const members = (c.members||[]).map(id => DB.findUserById(id)).filter(Boolean);
-  openModal(`
-    <h2>${esc(t('chat.info'))}</h2>
-    <div style="text-align:center;padding:8px 0 14px">
-      <div class="avatar av-96" style="margin:0 auto;${c.type==='saved' ? 'background:linear-gradient(135deg,#22C55E,#16A34A);' : ''}">
-        ${c.type === 'saved' ? '★' : esc(((c.title||'?')[0]||'?').toUpperCase())}
-      </div>
-      <div style="font-weight:700;font-size:18px;margin-top:12px">${esc(chatTitle(c))}</div>
-      ${c.description ? `<div style="color:var(--text2);font-size:13px;margin-top:4px">${esc(c.description)}</div>` : ''}
-    </div>
-    <div class="modal-row" style="flex-direction:column;align-items:stretch">
-      <div style="font-weight:600;margin-bottom:8px">${esc(t('chat.members'))} · ${members.length}</div>
-      <div style="max-height:240px;overflow-y:auto">
-        ${members.map(u => `
-          <div class="row" style="padding:8px 0">
-            <div class="avatar av-40">${esc(initials(u))}</div>
-            <div style="flex:1;min-width:0">
-              <div style="font-weight:500">${esc(displayName(u))}${u.id===State.me.id ? ' ('+esc(t('msg.you'))+')' : ''}</div>
-              <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
-            </div>
-          </div>`).join('')}
-      </div>
-    </div>
-    ${c.type !== 'saved' ? `<button class="btn btn-danger" id="ciLeave" style="margin-top:14px">${esc(t('chat.leave'))}</button>` : ''}
-    <button class="btn btn-2" style="margin-top:10px" onclick="closeModal()">${esc(t('settings.close'))}</button>`,
-    b => {
-      const lv = b.querySelector('#ciLeave');
-      if (lv) lv.onclick = () => {
-        confirmDialog(t('chat.leave_confirm'), () => {
-          c.members = (c.members||[]).filter(id => id !== State.me.id);
-          if (!c.members.length) DB.deleteChat(c.id);
-          else DB.persist();
-          closeModal(); closeChat();
-        });
-      };
-    });
-}
-
-/* LOGOUT */
+/* Logout */
 function doLogout(){
   confirmDialog(t('confirm.logout'), () => {
+    DB.updateUser(State.me.id, { lastSeen: Date.now() });
     DB.clearSession();
     State.me = null; State.activeChat = null;
     document.getElementById('chatOverlay').classList.remove('open');
+    closeAllPages();
     showScreen('welcome');
     toast(t('toast.logged_out'));
   });
 }
 
-/* HEADER */
-document.getElementById('btnSearch').onclick = openNewChatModal;
+/* image viewer */
+function openViewer(src){
+  const v = document.getElementById('imgViewer');
+  v.querySelectorAll('img').forEach(i => i.remove());
+  const img = document.createElement('img');
+  img.src = src;
+  v.appendChild(img);
+  v.classList.add('open');
+}
+document.getElementById('viewerClose').onclick = () => document.getElementById('imgViewer').classList.remove('open');
+document.getElementById('imgViewer').addEventListener('click', e => {
+  if (e.target.id === 'imgViewer') document.getElementById('imgViewer').classList.remove('open');
+});
+
+/* ============================================================
+   EDGE SWIPE TO GO BACK (iOS style)
+   ============================================================ */
+(function edgeBack(){
+  const EDGE = 28;
+  let startX = 0, startY = 0, active = null, dragging = false, pageEl = null;
+
+  document.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    const t0 = e.touches[0];
+    if (t0.clientX > EDGE) return;
+    // is there something to go back from?
+    const overlay = document.getElementById('chatOverlay');
+    const topPage = State.pageStack[State.pageStack.length-1];
+    if (topPage){
+      pageEl = topPage.el;
+    } else if (overlay.classList.contains('open')){
+      pageEl = overlay;
+    } else {
+      pageEl = null;
+    }
+    if (!pageEl) return;
+    active = true;
+    dragging = false;
+    startX = t0.clientX;
+    startY = t0.clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!active) return;
+    const t0 = e.touches[0];
+    const dx = t0.clientX - startX;
+    const dy = t0.clientY - startY;
+    if (!dragging){
+      if (Math.abs(dy) > Math.abs(dx) + 4){ active = false; return; }
+      if (dx > 6){ dragging = true; pageEl.classList.add('dragging'); }
+    }
+    if (dragging && dx > 0){
+      e.preventDefault();
+      pageEl.style.transform = `translateX(${dx}px)`;
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', e => {
+    if (!active) return;
+    active = false;
+    if (!dragging) return;
+    pageEl.classList.remove('dragging');
+    const cur = parseFloat((pageEl.style.transform.match(/-?\d+(\.\d+)?/) || [0])[0]) || 0;
+    const w = window.innerWidth;
+    if (cur > w * 0.3){
+      pageEl.style.transform = '';
+      // let CSS transition handle closure
+      if (pageEl.id === 'chatOverlay') closeChat();
+      else closeTopPage();
+    } else {
+      pageEl.style.transform = 'translateX(0)';
+      pageEl.style.transition = 'transform .25s cubic-bezier(.2,.9,.3,1)';
+      setTimeout(() => { pageEl.style.transition = ''; pageEl.style.transform = ''; }, 260);
+    }
+    pageEl = null; dragging = false;
+  });
+})();
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+document.getElementById('btnSearch').onclick = () => {
+  openNewChatModal();
+};
+function openNewChatModal(){
+  openPage({
+    title: t('contacts.search') || 'Search',
+    bodyHtml: `
+      <div style="padding:14px 16px 6px">
+        <div class="search-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text2)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="ncSearch" placeholder="${esc(t('contacts.search'))}" autofocus/>
+        </div>
+      </div>
+      <div id="ncRes" style="padding:0 6px 30px"></div>`,
+    onMount: p => {
+      const inp = p.querySelector('#ncSearch');
+      const res = p.querySelector('#ncRes');
+      const render = () => {
+        const q = inp.value.trim().toLowerCase();
+        res.innerHTML = '';
+        const users = DB.data.users.filter(u =>
+          u.id !== State.me.id &&
+          (!q || (u.username||'').toLowerCase().includes(q) || (u.firstName||'').toLowerCase().includes(q) || (u.lastName||'').toLowerCase().includes(q))
+        );
+        if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">Никого не найдено</div>`; return; }
+        users.forEach(u => {
+          const r = el(`
+            <div class="result-item">
+              <div class="avatar av-40">${esc(initials(u))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(u))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${lastSeenText(u)}</div>
+              </div>
+            </div>`);
+          r.onclick = () => {
+            closeAllPages();
+            setTimeout(() => openUserProfile(u.id), 120);
+          };
+          res.appendChild(r);
+        });
+      };
+      inp.addEventListener('input', render);
+      render();
+      setTimeout(() => inp.focus(), 200);
+    }
+  });
+}
 
 /* ESC */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){
-    closeContext();
-    closeModal();
-    closeActionSheet();
-    if (document.getElementById('chatOverlay').classList.contains('open')) closeChat();
+    closeContext(); closeModal(); closeActionSheet();
+    if (State.pageStack.length) closeTopPage();
+    else if (document.getElementById('chatOverlay').classList.contains('open')) closeChat();
   }
 });
 
-/* BOOT */
+/* ============================================================
+   BOOT
+   ============================================================ */
 (function boot(){
   applyLang();
   const sid = DB.getSession();
