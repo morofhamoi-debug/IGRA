@@ -138,7 +138,14 @@ svg{display:block}
 .panel.active{display:flex;animation:panelIn .3s cubic-bezier(.2,.9,.3,1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 
-#panel-me{overflow-y:auto !important;padding-bottom:calc(200px + env(safe-area-inset-bottom)) !important}
+/* ФИКС: запрещаем сжатие детей, разрешаем прокрутку */
+#panel-me{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  padding-bottom:calc(240px + env(safe-area-inset-bottom)) !important;
+  -webkit-overflow-scrolling:touch;
+}
+#panel-me > *{flex-shrink:0 !important}
 #panel-me::-webkit-scrollbar{width:0}
 
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px}
@@ -274,7 +281,7 @@ svg{display:block}
 .set-row:active{background:rgba(120,120,140,.10)}
 .set-row + .set-row::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
 .set-row svg{color:var(--text2);flex-shrink:0}
-.set-row .val{margin-left:auto;color:var(--text2);font-size:13.5px;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.set-row .val{margin-left:auto;color:var(--text2);font-size:13.5%;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .chat-overlay{
   position:fixed;inset:0;z-index:55;background:var(--bg);
