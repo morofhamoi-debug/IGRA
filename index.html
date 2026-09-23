@@ -137,6 +137,10 @@ svg{display:block}
 .panel.active{display:flex;animation:panelIn .3s cubic-bezier(.2,.9,.3,1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 
+/* Panel ME — прокручивается */
+#panel-me{overflow-y:auto !important;padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+#panel-me::-webkit-scrollbar{width:0}
+
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px}
 .panel-header h2{font-size:26px;font-weight:700;letter-spacing:-.4px}
 
@@ -558,6 +562,10 @@ svg{display:block}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
           <span data-i18n="menu.logout">Выйти</span>
         </button>
+        <button data-action="delete" class="danger">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/><path d="M10 11v6M14 11v6"/></svg>
+          <span data-i18n="menu.delete_account">Удалить аккаунт</span>
+        </button>
       </div>
     </div>
   </main>
@@ -641,7 +649,7 @@ const API = 'https://vexam.onrender.com';
 })();
 
 /* ============================================================
-   DB
+   DB (localStorage кэш)
    ============================================================ */
 const DB = (() => {
   const KEY = 'vexa.db.v2';
@@ -663,20 +671,25 @@ const DB = (() => {
       stories: u.stories || []
     }));
     cache.chats = (cache.chats||[]).map(c => ({
-      id: c.id || ('fix' + Math.random().toString(36).slice(2,10)),
+      id: String(c.id || ('fix' + Math.random().toString(36).slice(2,10))),
       createdAt: c.createdAt || Date.now(),
       type: c.type || (c.title ? 'group' : 'personal'),
       title: c.title || null,
       description: c.description || null,
       ownerId: c.ownerId || null,
-      members: Array.isArray(c.members) ? c.members : [],
+      members: Array.isArray(c.members) ? c.members.map(String) : [],
       avatar: c.avatar || null,
       unread: c.unread || 0,
       pinned: !!c.pinned,
       muted: !!c.muted,
       isPublic: !!c.isPublic
     }));
-    cache.messages = cache.messages || [];
+    cache.messages = (cache.messages||[]).map(m => ({
+      ...m,
+      id: String(m.id),
+      chatId: String(m.chatId),
+      senderId: String(m.senderId)
+    }));
     cache.contacts = cache.contacts || [];
     cache.calls = cache.calls || [];
     cache.settings = cache.settings || {};
@@ -687,7 +700,7 @@ const DB = (() => {
   return {
     get data(){ return load(); },
     persist: save, uid,
-    createUser(d){ const u={id:uid(),createdAt:Date.now(),lastSeen:Date.now(),privacy:{...DEFAULT_PRIVACY},stories:[],birthday:null,...d}; load().users.push(u); save(); return u; },
+    createUser(d){ const u={id:String(d.id||uid()),createdAt:Date.now(),lastSeen:Date.now(),privacy:{...DEFAULT_PRIVACY},stories:[],birthday:null,...d}; load().users.push(u); save(); return u; },
     findUserByPhone(p){ return load().users.find(u => u.phone === p); },
     findUserByUsername(u){ if(!u) return null; u=u.toLowerCase(); return load().users.find(x => (x.username||'').toLowerCase()===u); },
     findUserById(id){ return load().users.find(u => String(u.id) === String(id)); },
@@ -695,20 +708,21 @@ const DB = (() => {
     setSession(id){ load().session=id; save(); },
     getSession(){ return load().session; },
     clearSession(){ load().session=null; save(); },
-    createChat(d){ const c={id:uid(),createdAt:Date.now(),type:'personal',members:[],unread:0,pinned:false,muted:false,...d}; load().chats.push(c); save(); return c; },
-    getChat(id){ return load().chats.find(c => c.id===id); },
+    wipeAll(){ cache = null; localStorage.removeItem(KEY); },
+    createChat(d){ const c={id:String(d.id||uid()),createdAt:Date.now(),type:'personal',members:[],unread:0,pinned:false,muted:false,...d}; load().chats.push(c); save(); return c; },
+    getChat(id){ return load().chats.find(c => String(c.id)===String(id)); },
     updateChat(id, patch){ const c=this.getChat(id); if(!c) return; Object.assign(c,patch); save(); return c; },
-    deleteChat(id){ const d=load(); d.chats=d.chats.filter(c=>c.id!==id); d.messages=d.messages.filter(m=>m.chatId!==id); save(); },
-    chatsOf(u){ return load().chats.filter(c => Array.isArray(c.members) && c.members.includes(u)); },
-    createMessage(d){ const m={id:uid(),createdAt:Date.now(),reactions:{},deleted:false,edited:false,...d}; load().messages.push(m); save(); return m; },
-    getMessages(c){ return load().messages.filter(m => m.chatId===c); },
-    getMessage(id){ return load().messages.find(m => m.id===id); },
+    deleteChat(id){ const d=load(); d.chats=d.chats.filter(c=>String(c.id)!==String(id)); d.messages=d.messages.filter(m=>String(m.chatId)!==String(id)); save(); },
+    chatsOf(u){ return load().chats.filter(c => Array.isArray(c.members) && c.members.map(String).includes(String(u))); },
+    createMessage(d){ const m={id:String(d.id||uid()),createdAt:Date.now(),reactions:{},deleted:false,edited:false,...d}; load().messages.push(m); save(); return m; },
+    getMessages(c){ return load().messages.filter(m => String(m.chatId)===String(c)); },
+    getMessage(id){ return load().messages.find(m => String(m.id)===String(id)); },
     updateMessage(id, patch){ const m=this.getMessage(id); if(!m) return; Object.assign(m,patch); save(); return m; },
-    deleteMessage(id, all){ if(all) this.updateMessage(id,{deleted:true,text:'',attachments:[]}); else { const d=load(); d.messages=d.messages.filter(x=>x.id!==id); save(); } },
-    addContact(o,c){ const d=load(); if(d.contacts.find(x=>x.ownerId===o&&x.contactId===c)) return; d.contacts.push({ownerId:o,contactId:c,createdAt:Date.now()}); save(); },
-    removeContact(o,c){ const d=load(); d.contacts=d.contacts.filter(x=>!(x.ownerId===o&&x.contactId===c)); save(); },
-    contactsOf(u){ return load().contacts.filter(c=>c.ownerId===u).map(c=>this.findUserById(c.contactId)).filter(Boolean); },
-    isContact(o,c){ return !!load().contacts.find(x=>x.ownerId===o&&x.contactId===c); },
+    deleteMessage(id, all){ if(all) this.updateMessage(id,{deleted:true,text:'',attachments:[]}); else { const d=load(); d.messages=d.messages.filter(x=>String(x.id)!==String(id)); save(); } },
+    addContact(o,c){ const d=load(); if(d.contacts.find(x=>String(x.ownerId)===String(o)&&String(x.contactId)===String(c))) return; d.contacts.push({ownerId:String(o),contactId:String(c),createdAt:Date.now()}); save(); },
+    removeContact(o,c){ const d=load(); d.contacts=d.contacts.filter(x=>!(String(x.ownerId)===String(o)&&String(x.contactId)===String(c))); save(); },
+    contactsOf(u){ return load().contacts.filter(c=>String(c.ownerId)===String(u)).map(c=>this.findUserById(c.contactId)).filter(Boolean); },
+    isContact(o,c){ return !!load().contacts.find(x=>String(x.ownerId)===String(o)&&String(x.contactId)===String(c)); },
     callsOf(u){ return load().calls.filter(c=>c.from===u||c.to===u).sort((a,b)=>b.createdAt-a.createdAt); },
     getSettings(u){ const d=load(); if(!d.settings[u]) d.settings[u]={theme:'system',lang:null,animations:true,compact:false}; return d.settings[u]; },
     setSettings(u, patch){ const s=this.getSettings(u); Object.assign(s,patch); save(); return s; }
@@ -716,7 +730,7 @@ const DB = (() => {
 })();
 
 /* ============================================================
-   i18n (сокращено — только то, что используется)
+   i18n
    ============================================================ */
 const STR = {
   ru:{
@@ -736,6 +750,7 @@ const STR = {
     'chat.input_ph':'Сообщение...',
     'menu.saved':'Избранное','menu.settings':'Настройки','menu.privacy':'Приватность',
     'menu.invite':'Пригласить друзей','menu.help':'Помощь','menu.about':'О приложении','menu.logout':'Выйти',
+    'menu.delete_account':'Удалить аккаунт',
     'contacts.empty':'Контактов пока нет','contacts.empty_sub':'Найдите пользователя.','contacts.add':'Добавить','contacts.remove':'Удалить','contacts.write':'Написать','contacts.search':'Поиск',
     'calls.empty':'Звонков пока нет','calls.empty_sub':'Здесь появится история звонков.','calls.unavailable':'Звонки требуют WebRTC-сервер.',
     'profile.edit':'Редактировать','profile.save':'Сохранить','profile.first':'Имя','profile.last':'Фамилия','profile.user':'Username','profile.bio':'О себе','profile.phone':'Телефон','profile.birthday':'Дата рождения','profile.close':'Закрыть','profile.delete':'Удалить чат',
@@ -747,13 +762,14 @@ const STR = {
     'group.title':'Создать группу','group.name':'Название','group.desc':'Описание','group.members':'Участники','group.create':'Создать','group.no_contacts':'Нет пользователей',
     'channel.title':'Создать канал','channel.name':'Название','channel.desc':'Описание','channel.public':'Публичный','channel.create':'Создать',
     'sheet.title':'Создать','sheet.group':'Создать группу','sheet.channel':'Создать канал','sheet.find':'Найти по номеру','sheet.cancel':'Отмена',
-    'confirm.title':'Подтверждение','confirm.delete_chat':'Удалить чат?','confirm.delete_msg':'Удалить сообщение?','confirm.logout':'Выйти?','confirm.cancel':'Отмена','confirm.yes':'Удалить','confirm.delete_msg_all':'Удалить у всех?','confirm.delete_msg_me':'Удалить у себя?','confirm.delete_msg_all_text':'Сообщение будет удалено у всех участников.',
+    'confirm.title':'Подтверждение','confirm.delete_chat':'Удалить чат?','confirm.delete_msg':'Удалить сообщение?','confirm.logout':'Выйти?','confirm.delete_account':'Удалить аккаунт навсегда?','confirm.cancel':'Отмена','confirm.yes':'Удалить','confirm.delete_msg_all':'Удалить у всех?','confirm.delete_msg_me':'Удалить у себя?','confirm.delete_msg_all_text':'Сообщение будет удалено у всех участников.',
     'msg.edited':'изменено','msg.deleted':'Сообщение удалено','msg.you':'Вы',
-    'toast.lang_switched':'Язык изменён','toast.theme':'Тема сохранена','toast.logged_out':'Вы вышли',
+    'toast.lang_switched':'Язык изменён','toast.theme':'Тема сохранена','toast.logged_out':'Вы вышли','toast.account_deleted':'Аккаунт удалён',
     'toast.welcome':'Добро пожаловать!','toast.profile_saved':'Профиль сохранён','toast.username_taken':'Username занят','toast.username_free':'Свободно',
     'toast.copied':'Скопировано','toast.contact_added':'Контакт добавлен','toast.contact_removed':'Контакт удалён','toast.chat_created':'Чат создан',
     'toast.group_created':'Группа создана','toast.channel_created':'Канал создан','toast.fill_name':'Введите имя','toast.select_members':'Выберите участников',
     'toast.file_sent':'Файл отправлен','toast.file_big':'Файл слишком большой (макс 3 МБ)','toast.msg_deleted_all':'Удалено у всех','toast.msg_deleted_me':'Удалено',
+    'toast.server_error':'Ошибка сервера','toast.no_connection':'Нет связи с сервером. Подожди 30 сек',
     'err.phone':'Некорректный номер','err.otp':'Неверный код',
     'status.online':'в сети','status.recently':'был недавно','status.just_now':'был только что','status.min_ago':'мин назад','status.hour_ago':'ч назад',
     'status.was_at':'Был в','status.was_yesterday':'Был вчера в','status.hidden':'был недавно',
@@ -773,7 +789,7 @@ const STR = {
     'empty.chats':'No chats yet','empty.chats_sub':'Start a conversation.','empty.cat':'Nothing here','empty.cat_sub':'Chats will appear here.','empty.start':'New chat',
     'chat.no_msgs':'No messages yet','chat.no_msgs_sub':'Send the first message.','chat.input_ph':'Message...',
     'menu.saved':'Saved','menu.settings':'Settings','menu.privacy':'Privacy','menu.invite':'Invite friends',
-    'menu.help':'Help','menu.about':'About','menu.logout':'Log out',
+    'menu.help':'Help','menu.about':'About','menu.logout':'Log out','menu.delete_account':'Delete account',
     'contacts.empty':'No contacts yet','contacts.empty_sub':'Find a user.','contacts.add':'Add','contacts.remove':'Remove','contacts.write':'Message','contacts.search':'Search',
     'calls.empty':'No calls yet','calls.empty_sub':'Call history appears here.','calls.unavailable':'Calls require a WebRTC server.',
     'profile.edit':'Edit','profile.save':'Save','profile.first':'First name','profile.last':'Last name','profile.user':'Username','profile.bio':'About','profile.phone':'Phone','profile.birthday':'Birthday','profile.close':'Close','profile.delete':'Delete chat',
@@ -785,9 +801,10 @@ const STR = {
     'group.title':'New group','group.name':'Name','group.desc':'Description','group.members':'Members','group.create':'Create','group.no_contacts':'No users',
     'channel.title':'New channel','channel.name':'Name','channel.desc':'Description','channel.public':'Public','channel.create':'Create',
     'sheet.title':'Create','sheet.group':'Create group','sheet.channel':'Create channel','sheet.find':'Find by number','sheet.cancel':'Cancel',
-    'confirm.title':'Confirm','confirm.delete_chat':'Delete chat?','confirm.delete_msg':'Delete message?','confirm.logout':'Log out?','confirm.cancel':'Cancel','confirm.yes':'Delete','confirm.delete_msg_all':'Delete for everyone?','confirm.delete_msg_me':'Delete for me?','confirm.delete_msg_all_text':'Message will be deleted for all members.',
+    'confirm.title':'Confirm','confirm.delete_chat':'Delete chat?','confirm.delete_msg':'Delete message?','confirm.logout':'Log out?','confirm.delete_account':'Delete account permanently?','confirm.cancel':'Cancel','confirm.yes':'Delete','confirm.delete_msg_all':'Delete for everyone?','confirm.delete_msg_me':'Delete for me?','confirm.delete_msg_all_text':'Message will be deleted for all members.',
     'msg.edited':'edited','msg.deleted':'Message deleted','msg.you':'You',
-    'toast.lang_switched':'Language changed','toast.theme':'Theme saved','toast.logged_out':'Signed out','toast.welcome':'Welcome!','toast.profile_saved':'Profile saved','toast.username_taken':'Username taken','toast.username_free':'Available','toast.copied':'Copied','toast.contact_added':'Contact added','toast.contact_removed':'Contact removed','toast.chat_created':'Chat created','toast.group_created':'Group created','toast.channel_created':'Channel created','toast.fill_name':'Enter a name','toast.select_members':'Select members','toast.file_sent':'File sent','toast.file_big':'File too large (max 3 MB)','toast.msg_deleted_all':'Deleted for everyone','toast.msg_deleted_me':'Deleted',
+    'toast.lang_switched':'Language changed','toast.theme':'Theme saved','toast.logged_out':'Signed out','toast.account_deleted':'Account deleted','toast.welcome':'Welcome!','toast.profile_saved':'Profile saved','toast.username_taken':'Username taken','toast.username_free':'Available','toast.copied':'Copied','toast.contact_added':'Contact added','toast.contact_removed':'Contact removed','toast.chat_created':'Chat created','toast.group_created':'Group created','toast.channel_created':'Channel created','toast.fill_name':'Enter a name','toast.select_members':'Select members','toast.file_sent':'File sent','toast.file_big':'File too large (max 3 MB)','toast.msg_deleted_all':'Deleted for everyone','toast.msg_deleted_me':'Deleted',
+    'toast.server_error':'Server error','toast.no_connection':'No connection. Try again in 30 sec',
     'err.phone':'Invalid phone','err.otp':'Wrong code',
     'status.online':'online','status.recently':'last seen recently','status.just_now':'last seen just now','status.min_ago':'min ago','status.hour_ago':'h ago',
     'status.was_at':'Last seen at','status.was_yesterday':'Last seen yesterday at','status.hidden':'last seen recently',
@@ -862,7 +879,7 @@ function fmtDate(ts){
 
 /* privacy check */
 function canSee(viewerId, ownerId, field){
-  if (viewerId === ownerId) return true;
+  if (String(viewerId) === String(ownerId)) return true;
   const owner = DB.findUserById(ownerId);
   if (!owner) return true;
   const val = (owner.privacy && owner.privacy[field]) || 'everyone';
@@ -908,11 +925,11 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
 const State = {
   me: null, activeChat: null, activeTab: 'all', activeNav: 'chats',
   replyTo: null, editing: null, tempOtp: null, tempPhone: null,
-  pageStack: []
+  pageStack: [], lastSeenMsgId: null
 };
 
 /* ============================================================
-   PAGES — slide from right
+   PAGES
    ============================================================ */
 function openPage({ title, bodyHtml, onMount, onClose, backBtn = true }){
   const container = document.getElementById('pagesContainer');
@@ -942,7 +959,7 @@ function closeTopPage(){
 function closeAllPages(){ while (State.pageStack.length) closeTopPage(); }
 
 /* ============================================================
-   BOTTOM NAV with drag slider
+   BOTTOM NAV
    ============================================================ */
 const bottomNav = document.getElementById('bottomNav');
 const navIndicator = document.getElementById('navIndicator');
@@ -969,18 +986,9 @@ function switchNav(name){
   if (name === 'me') updateMePanel();
 }
 
-/* Drag the indicator */
 let navDrag = null;
 bottomNav.addEventListener('pointerdown', e => {
-  if (e.target.closest('button')?.dataset.nav) {
-    // still allow drag if user moves
-  }
-  navDrag = {
-    startX: e.clientX,
-    startBtn: currentNavBtn(),
-    moved: false,
-    pointerId: e.pointerId
-  };
+  navDrag = { startX: e.clientX, startBtn: currentNavBtn(), moved: false, pointerId: e.pointerId };
   bottomNav.setPointerCapture(e.pointerId);
 });
 bottomNav.addEventListener('pointermove', e => {
@@ -992,14 +1000,11 @@ bottomNav.addEventListener('pointermove', e => {
     bottomNav.classList.add('dragging');
     navIndicator.style.transition = 'none';
   }
-  // move indicator under finger
   const navRect = bottomNav.getBoundingClientRect();
   const width = navIndicator.offsetWidth || 80;
   let left = (navDrag.startBtn ? navDrag.startBtn.offsetLeft : 0) + dx;
   left = Math.max(6, Math.min(left, navRect.width - width - 6));
   navIndicator.style.left = left + 'px';
-
-  // highlight nearest
   const centerX = navRect.left + left + width/2;
   let nearest = null, minD = Infinity;
   navButtons.forEach(b => {
@@ -1011,15 +1016,11 @@ bottomNav.addEventListener('pointermove', e => {
 });
 bottomNav.addEventListener('pointerup', e => {
   if (!navDrag) return;
-  const wasMoving = navDrag.moved;
   bottomNav.releasePointerCapture(e.pointerId);
   bottomNav.classList.remove('dragging');
   const btn = navButtons.find(b => b.classList.contains('on')) || navDrag.startBtn;
   if (btn) switchNav(btn.dataset.nav);
   navDrag = null;
-  if (!wasMoving){
-    // simple click fallback
-  }
 });
 bottomNav.addEventListener('pointercancel', () => {
   if (!navDrag) return;
@@ -1027,7 +1028,6 @@ bottomNav.addEventListener('pointercancel', () => {
   navDrag = null;
   positionIndicator(currentNavBtn());
 });
-// Fallback click for accessibility
 navButtons.forEach(b => {
   b.addEventListener('click', () => {
     if (navDrag) return;
@@ -1140,12 +1140,39 @@ otpResend.onclick = () => {
   startResend();
   toast(t('toast.copied'), 'ok');
 };
-btnVerify.onclick = () => {
+btnVerify.onclick = async () => {
   if (otpValue() !== State.tempOtp){ toast(t('err.otp'), 'err'); return; }
   const phone = State.tempPhone;
-  const existing = DB.findUserByPhone(phone);
-  if (existing){ DB.setSession(existing.id); bootUser(existing.id); toast(t('toast.welcome'), 'ok'); }
-  else { showScreen('nameScreen'); document.getElementById('inpName').focus(); }
+  // Проверяем есть ли такой на сервере
+  try {
+    const r = await fetch(API + '/api/find-by-phone', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone })
+    });
+    const data = await r.json();
+    if (data.found){
+      const srv = data.user;
+      let localUser = DB.findUserById(srv.id);
+      if (!localUser){
+        localUser = DB.createUser({
+          id: String(srv.id),
+          phone: srv.phone,
+          firstName: srv.first_name,
+          lastName: srv.last_name,
+          username: srv.username,
+          bio: srv.bio || '',
+          avatar: srv.avatar || null
+        });
+      }
+      DB.setSession(localUser.id);
+      bootUser(localUser.id);
+      toast(t('toast.welcome'), 'ok');
+      return;
+    }
+  } catch(e){ console.error('check existing', e); }
+  showScreen('nameScreen');
+  document.getElementById('inpName').focus();
 };
 
 const inpName = document.getElementById('inpName');
@@ -1162,7 +1189,7 @@ inpUsername.addEventListener('input', () => {
   const v = inpUsername.value;
   usernameHint.textContent = ''; usernameHint.style.color = '';
   if (!v) return;
-  if (v.length < 3){ usernameHint.textContent = t('toast.username_short'); usernameHint.style.color='var(--danger)'; return; }
+  if (v.length < 3){ usernameHint.textContent = 'Минимум 3 символа'; usernameHint.style.color='var(--danger)'; return; }
   unameTimer = setTimeout(async () => {
     try {
       const r = await fetch(API + '/api/check-username/' + encodeURIComponent(v));
@@ -1200,7 +1227,7 @@ btnCreate.onclick = async () => {
       return;
     }
     if (!data.ok){
-      toast('Ошибка сервера', 'err');
+      toast(t('toast.server_error'), 'err');
       btnCreate.disabled = false;
       return;
     }
@@ -1220,16 +1247,13 @@ btnCreate.onclick = async () => {
       });
     }
     DB.setSession(localUser.id);
-    if (!DB.chatsOf(localUser.id).find(c => c.type === 'saved')){
-      DB.createChat({ type:'saved', ownerId:localUser.id, members:[localUser.id] });
-    }
     inpName.value = inpSurname.value = inpUsername.value = '';
     refreshCreate();
     bootUser(localUser.id);
     toast(t('toast.welcome'), 'ok');
   } catch (e) {
     console.error(e);
-    toast('Нет связи с сервером. Подожди 30 сек и попробуй снова', 'err');
+    toast(t('toast.no_connection'), 'err');
     btnCreate.disabled = false;
   }
 };
@@ -1237,7 +1261,7 @@ btnCreate.onclick = async () => {
 /* ============================================================
    BOOT
    ============================================================ */
-function bootUser(userId){
+async function bootUser(userId){
   const u = DB.findUserById(userId);
   if (!u){ showScreen('welcome'); return; }
   State.me = u;
@@ -1254,19 +1278,34 @@ function bootUser(userId){
   switchNav('chats');
   showScreen('app');
   setTimeout(() => positionIndicator(currentNavBtn(), false), 60);
-  // heart beat
+
+  // Синхронизируем чаты с сервером
+  await syncChatsFromServer();
+
+  // Инициализация lastSeenMsgId
+  if (!State.lastSeenMsgId){
+    State.lastSeenMsgId = parseInt(localStorage.getItem('vexa.lastMsgId') || '0', 10) || 0;
+  }
+
+  // Heartbeat каждые 20 сек
   clearInterval(window.__hb);
   window.__hb = setInterval(() => {
     const me = DB.findUserById(State.me.id);
     if (me){ me.lastSeen = Date.now(); DB.persist(); }
   }, 20_000);
-  DB.updateUser(State.me.id, { lastSeen: Date.now() });
-  // periodically refresh header status of open chat
-  clearInterval(window.__statusT);
-  window.__statusT = setInterval(() => {
-    if (State.activeChat) renderChatTop();
-  }, 30_000);
+
+  // Polling новых сообщений каждые 3 сек
+  clearInterval(window.__pollUpdates);
+  window.__pollUpdates = setInterval(checkNewMessages, 3000);
+
+  // Обновление списка чатов каждые 8 сек
+  clearInterval(window.__pollChats);
+  window.__pollChats = setInterval(syncChatsFromServer, 8000);
+
+  // Проверяем новые сообщения сразу
+  setTimeout(checkNewMessages, 800);
 }
+
 window.addEventListener('beforeunload', () => {
   if (State.me) DB.updateUser(State.me.id, { lastSeen: Date.now() });
 });
@@ -1276,6 +1315,169 @@ function updateMePanel(){
   document.getElementById('meAvatar').textContent = initials(u);
   document.getElementById('meName').textContent = displayName(u);
   document.getElementById('meUsername').textContent = u.username ? '@'+u.username : '@—';
+}
+
+/* ============================================================
+   СИНХРОНИЗАЦИЯ С СЕРВЕРОМ
+   ============================================================ */
+async function syncChatsFromServer(){
+  if (!State.me) return;
+  try {
+    const r = await fetch(API + '/api/chats/' + State.me.id);
+    const data = await r.json();
+    if (!data.ok) return;
+    const d = DB.data;
+    // Убираем чаты, где я участник (они придут с сервера заново)
+    d.chats = d.chats.filter(c => !(c.members||[]).map(String).includes(String(State.me.id)));
+    data.chats.forEach(c => {
+      const localChat = {
+        id: String(c.id),
+        type: c.type,
+        title: c.title,
+        description: c.description,
+        ownerId: c.owner_id ? String(c.owner_id) : null,
+        members: (c.members||[]).map(m => String(m.id)),
+        avatar: c.avatar || null,
+        unread: 0,
+        pinned: false,
+        muted: false,
+        isPublic: !!c.is_public,
+        createdAt: new Date(c.created_at).getTime()
+      };
+      d.chats.push(localChat);
+      // Кэшируем участников
+      (c.members||[]).forEach(m => {
+        if (!DB.findUserById(m.id)){
+          DB.createUser({
+            id: String(m.id),
+            phone: m.phone,
+            firstName: m.first_name,
+            lastName: m.last_name,
+            username: m.username,
+            avatar: m.avatar || null,
+            bio: '',
+            lastSeen: m.last_seen ? new Date(m.last_seen).getTime() : Date.now()
+          });
+        }
+      });
+    });
+    DB.persist();
+    renderChats();
+  } catch (e) { console.error('syncChats', e); }
+}
+
+async function syncMessagesFromServer(chatId){
+  try {
+    const r = await fetch(API + '/api/messages/' + chatId);
+    const data = await r.json();
+    if (!data.ok) return;
+    const d = DB.data;
+    d.messages = d.messages.filter(m => String(m.chatId) !== String(chatId));
+    data.messages.forEach(m => {
+      d.messages.push({
+        id: String(m.id),
+        chatId: String(m.chat_id),
+        senderId: String(m.sender_id),
+        text: m.text || '',
+        replyTo: m.reply_to ? String(m.reply_to) : null,
+        edited: !!m.edited,
+        deleted: !!m.deleted,
+        attachments: [],
+        reactions: {},
+        createdAt: new Date(m.created_at).getTime()
+      });
+    });
+    DB.persist();
+    if (State.activeChat && String(State.activeChat.id) === String(chatId)){
+      renderMessages();
+    }
+  } catch (e) { console.error('syncMsgs', e); }
+}
+
+async function checkNewMessages(){
+  if (!State.me) return;
+  const since = State.lastSeenMsgId || 0;
+  try {
+    const r = await fetch(API + '/api/updates/' + State.me.id + '?since=' + since);
+    const data = await r.json();
+    if (!data.ok || !data.messages.length) return;
+
+    let maxId = since;
+    let gotNew = false;
+
+    for (const m of data.messages){
+      if (m.id > maxId) maxId = m.id;
+
+      const chatId = String(m.chat_id);
+      const isMine = String(m.sender_id) === String(State.me.id);
+
+      // Сохраняем сообщение локально
+      const exists = DB.data.messages.find(x => String(x.id) === String(m.id));
+      if (!exists){
+        DB.data.messages.push({
+          id: String(m.id),
+          chatId: chatId,
+          senderId: String(m.sender_id),
+          text: m.text || '',
+          replyTo: null,
+          edited: false,
+          deleted: false,
+          attachments: [],
+          reactions: {},
+          createdAt: new Date(m.created_at).getTime()
+        });
+      }
+
+      // Кэшируем отправителя
+      if (!DB.findUserById(m.sender_id)){
+        const ur = await fetch(API + '/api/find-by-phone', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ phone: '' })
+        }).catch(() => null);
+        // если нет — просто заглушка
+        DB.createUser({
+          id: String(m.sender_id),
+          phone: null,
+          firstName: null,
+          lastName: null,
+          username: null,
+          bio: '',
+          avatar: null
+        });
+      }
+
+      if (!isMine){
+        gotNew = true;
+        const isActive = State.activeChat && String(State.activeChat.id) === chatId
+                       && document.getElementById('chatOverlay').classList.contains('open');
+        const chat = DB.getChat(chatId);
+        if (chat && !isActive){
+          chat.unread = (chat.unread || 0) + 1;
+        }
+      }
+    }
+
+    State.lastSeenMsgId = maxId;
+    localStorage.setItem('vexa.lastMsgId', String(maxId));
+    DB.persist();
+
+    // Обновляем активный чат если открыт
+    if (State.activeChat){
+      await syncMessagesFromServer(State.activeChat.id);
+    }
+    renderChats();
+
+    if (gotNew){
+      const last = data.messages[data.messages.length - 1];
+      // Только если это не наш чат
+      const chat = DB.getChat(last.chat_id);
+      const sender = DB.findUserById(last.sender_id);
+      if (sender && chat && (!State.activeChat || String(State.activeChat.id) !== String(last.chat_id))){
+        toast(displayName(sender) + ': ' + (last.text || '').slice(0, 40), 'ok');
+      }
+    }
+  } catch (e) { console.error('checkNew', e); }
 }
 
 /* ============================================================
@@ -1296,7 +1498,7 @@ function chatTitle(chat){
   if (!chat) return '—';
   if (chat.type === 'saved') return LANG === 'ru' ? 'Избранное' : 'Saved messages';
   if (chat.type === 'personal'){
-    const other = (chat.members||[]).find(id => id !== State.me.id);
+    const other = (chat.members||[]).find(id => String(id) !== String(State.me.id));
     const u = DB.findUserById(other);
     return u ? displayName(u) : '—';
   }
@@ -1305,14 +1507,14 @@ function chatTitle(chat){
 function chatAvatarUser(chat){
   if (!chat) return null;
   if (chat.type === 'personal'){
-    const other = (chat.members||[]).find(id => id !== State.me.id);
+    const other = (chat.members||[]).find(id => String(id) !== String(State.me.id));
     return DB.findUserById(other);
   }
   return null;
 }
 function chatPreview(chat){
   const msgs = DB.getMessages(chat.id);
-  if (!msgs.length) return chat.type === 'saved' ? t('saved.empty_sub') : '';
+  if (!msgs.length) return '';
   const last = msgs[msgs.length-1];
   if (last.deleted) return t('msg.deleted');
   const sender = DB.findUserById(last.senderId);
@@ -1465,6 +1667,7 @@ document.querySelectorAll('#meMenu button').forEach(b => {
       case 'help':     openHelpPage(); break;
       case 'about':    openAboutPage(); break;
       case 'logout':   doLogout(); break;
+      case 'delete':   doDeleteAccount(); break;
     }
   };
 });
@@ -1474,7 +1677,7 @@ document.querySelectorAll('#meMenu button').forEach(b => {
    ============================================================ */
 function openProfilePage(){
   const u = State.me;
-  const page = openPage({
+  openPage({
     title: t('profile.edit'),
     bodyHtml: `
       <div class="profile-hero">
@@ -1520,7 +1723,7 @@ function openProfilePage(){
         if (!first){ toast(t('toast.fill_name'), 'err'); return; }
         if (un){
           const ex = DB.findUserByUsername(un);
-          if (ex && ex.id !== State.me.id){ toast(t('toast.username_taken'), 'err'); return; }
+          if (ex && String(ex.id) !== String(State.me.id)){ toast(t('toast.username_taken'), 'err'); return; }
         }
         DB.updateUser(State.me.id, {firstName:first, lastName:last, username:un, bio, birthday});
         State.me = DB.findUserById(State.me.id);
@@ -1639,7 +1842,6 @@ function openPrivacyPage(){
         const key = FIELDS[i].key;
         row.onclick = () => {
           openPrivacyChoice(key, () => {
-            // refresh page in-place
             closeTopPage();
             openPrivacyPage();
           });
@@ -1688,12 +1890,12 @@ function openInvitePage(){
         <div class="info-row" style="font-family:ui-monospace,Menlo,monospace;font-size:13px;word-break:break-all">${esc(link)}</div>
       </div>
       <div style="padding:0 16px 30px">
-        <button class="btn" id="ivCopy">${esc(t('invite.copy'))}</button>
+        <button class="btn" id="ivCopy">Копировать</button>
       </div>`,
     onMount: p => {
       p.querySelector('#ivCopy').onclick = () => {
         navigator.clipboard?.writeText(link);
-        toast(t('invite.copied'), 'ok');
+        toast(t('toast.copied'), 'ok');
       };
     }
   });
@@ -1801,11 +2003,27 @@ function openUserProfile(userId){
       </div>
       <div style="height:20px"></div>`,
     onMount: p => {
-      p.querySelector('#upSend').onclick = () => {
+      // ОТПРАВИТЬ СООБЩЕНИЕ — создаёт/находит чат на сервере
+      p.querySelector('#upSend').onclick = async () => {
         closeAllPages();
-        let chat = DB.chatsOf(State.me.id).find(c => c.type === 'personal' && c.members.includes(u.id));
-        if (!chat) chat = DB.createChat({type:'personal', ownerId:State.me.id, members:[State.me.id, u.id]});
-        setTimeout(() => openChat(chat.id), 250);
+        try {
+          const r = await fetch(API + '/api/chats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'personal',
+              ownerId: State.me.id,
+              members: [String(State.me.id), String(u.id)]
+            })
+          });
+          const data = await r.json();
+          if (!data.ok){ toast(t('toast.server_error'), 'err'); return; }
+          await syncChatsFromServer();
+          setTimeout(() => openChat(String(data.chat.id)), 250);
+        } catch (e) {
+          console.error(e);
+          toast(t('toast.no_connection'), 'err');
+        }
       };
       p.querySelector('#upContact').onclick = () => {
         if (DB.isContact(State.me.id, u.id)){
@@ -1874,7 +2092,7 @@ document.getElementById('sheetBd').addEventListener('click', e => {
 /* ============================================================
    CHAT — open/close with slide
    ============================================================ */
-function openChat(chatId){
+async function openChat(chatId){
   const chat = DB.getChat(chatId);
   if (!chat) return;
   State.activeChat = chat;
@@ -1888,6 +2106,8 @@ function openChat(chatId){
   renderMessages();
   renderChats();
   setTimeout(() => { const mi = document.getElementById('msgInput'); if (mi) mi.focus(); }, 80);
+  // Загружаем сообщения с сервера
+  await syncMessagesFromServer(chatId);
 }
 function closeChat(){
   const ov = document.getElementById('chatOverlay');
@@ -1951,7 +2171,7 @@ function renderChatTop(){
   document.getElementById('chatMoreBtn').onclick = e => {
     const r = e.currentTarget.getBoundingClientRect();
     openContext(r.left - 180, r.bottom + 6, [
-      { label: t('profile.edit') === 'Edit' ? 'Info' : 'Информация', fn: openChatInfoPage },
+      { label: 'Информация', fn: openChatInfoPage },
       { sep: true },
       { label: 'Удалить чат', danger: true, fn: () => confirmDialog(t('confirm.delete_chat'), () => {
         DB.deleteChat(State.activeChat.id);
@@ -1978,20 +2198,20 @@ function openChatInfoPage(){
         ${members.map(u => `
           <div class="set-row" data-uid="${u.id}">
             <div class="avatar av-40">${esc(initials(u))}</div>
-            <span>${esc(displayName(u))}${u.id===State.me.id ? ' ('+esc(t('msg.you'))+')' : ''}</span>
+            <span>${esc(displayName(u))}${String(u.id)===String(State.me.id) ? ' ('+esc(t('msg.you'))+')' : ''}</span>
           </div>`).join('')}
       </div>
       ${c.type !== 'saved' ? `
         <div style="padding:16px">
-          <button class="btn btn-danger" id="ciLeave">${LANG==='ru'?'Покинуть чат':'Leave chat'}</button>
+          <button class="btn btn-danger" id="ciLeave">Покинуть чат</button>
         </div>` : ''}`,
     onMount: p => {
       p.querySelectorAll('.set-row').forEach(r => {
-        r.onclick = () => { const id = r.dataset.uid; if (id !== State.me.id) openUserProfile(id); };
+        r.onclick = () => { const id = r.dataset.uid; if (String(id) !== String(State.me.id)) openUserProfile(id); };
       });
       const lv = p.querySelector('#ciLeave');
-      if (lv) lv.onclick = () => confirmDialog(LANG==='ru'?'Покинуть чат?':'Leave?', () => {
-        c.members = (c.members||[]).filter(id => id !== State.me.id);
+      if (lv) lv.onclick = () => confirmDialog('Покинуть чат?', () => {
+        c.members = (c.members||[]).filter(id => String(id) !== String(State.me.id));
         if (!c.members.length) DB.deleteChat(c.id);
         else DB.persist();
         closeAllPages();
@@ -2029,7 +2249,7 @@ function renderMessages(){
 }
 
 function renderMessage(m){
-  const me = m.senderId === State.me.id;
+  const me = String(m.senderId) === String(State.me.id);
   const wrap = el(`<div class="msg-wrap${me ? ' me' : ''}">
     <div class="reply-hint">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg>
@@ -2067,12 +2287,10 @@ function renderMessage(m){
   inner += `<div class="meta">${m.edited && !m.deleted ? `<span class="edited">${esc(t('msg.edited'))}</span>` : ''}<span>${fmtTime(m.createdAt)}</span>${me ? '<span>✓</span>' : ''}</div>`;
   node.innerHTML = inner;
 
-  // image click → viewer
   node.querySelectorAll('img.attach').forEach(img => {
     img.onclick = e => { e.stopPropagation(); openViewer(img.src); };
   });
 
-  // reactions
   if (!m.deleted && m.reactions && Object.keys(m.reactions).length){
     const rbox = el(`<div class="reactions"></div>`);
     Object.entries(m.reactions).forEach(([emoji, users]) => {
@@ -2083,10 +2301,7 @@ function renderMessage(m){
     node.appendChild(rbox);
   }
 
-  // Long-press to open context menu (Telegram-style)
   attachLongPress(wrap, m.id);
-
-  // Swipe left → reply
   attachSwipeReply(wrap, m.id);
 
   node.oncontextmenu = e => { e.preventDefault(); openMessageActions(m.id); };
@@ -2105,10 +2320,8 @@ function toggleReaction(msgId, emoji){
   DB.persist(); renderMessages();
 }
 
-/* SWIPE-REPLY */
 function attachSwipeReply(wrap, msgId){
   let startX = 0, startY = 0, dx = 0, active = false, pulled = false, triggered = false;
-  const MSGS = wrap.closest('.msgs');
   wrap.addEventListener('touchstart', e => {
     if (e.touches.length !== 1) return;
     startX = e.touches[0].clientX;
@@ -2124,14 +2337,12 @@ function attachSwipeReply(wrap, msgId){
     if (Math.abs(my) > Math.abs(mx) + 6 && !pulled){ active = false; return; }
     dx = mx;
     if (dx > 0 && !pulled){
-      // allow vertical scroll pass-through when swiping down
       if (Math.abs(my) > 20){ active = false; return; }
     }
     if (dx > 0){
       e.preventDefault();
       wrap.classList.add('dragging');
       const capped = Math.min(80, dx);
-      // rubber band
       const eased = dx < 60 ? dx * 0.9 : 54 + (capped - 60) * 0.3;
       wrap.style.transform = `translateX(${eased}px)`;
       if (!pulled) { pulled = true; wrap.classList.add('pulled'); }
@@ -2143,7 +2354,6 @@ function attachSwipeReply(wrap, msgId){
     if (!active) return;
     wrap.classList.remove('dragging');
     if (triggered){
-      // Animate back and set reply
       wrap.style.transition = 'transform .3s cubic-bezier(.2,.9,.3,1)';
       wrap.style.transform = 'translateX(0)';
       wrap.classList.remove('pulled','triggered');
@@ -2162,7 +2372,6 @@ function attachSwipeReply(wrap, msgId){
   wrap.addEventListener('touchcancel', end);
 }
 
-/* LONG PRESS */
 function attachLongPress(node, msgId){
   let timer = null;
   let moved = false;
@@ -2199,10 +2408,9 @@ function attachLongPress(node, msgId){
   node.addEventListener('mouseleave', end);
 }
 
-/* MESSAGE ACTIONS SHEET */
 function openMessageActions(msgId){
   const m = DB.getMessage(msgId); if (!m) return;
-  const mine = m.senderId === State.me.id;
+  const mine = String(m.senderId) === String(State.me.id);
   const bd = document.getElementById('sheetBd');
   const body = document.getElementById('sheetBody');
   const items = [];
@@ -2210,47 +2418,24 @@ function openMessageActions(msgId){
   items.push(`
     <button class="sheet-item" data-a="reply">
       <div class="sheet-ico i-reply"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l-5-5 5-5M4 9h10a6 6 0 016 6v6"/></svg></div>
-      <span>${esc(t('ctx.reply'))}</span>
+      <span>Ответить</span>
     </button>`);
-
-  items.push(`
-    <button class="sheet-item" data-a="react">
-      <div class="sheet-ico" style="background:linear-gradient(135deg,#F59E0B,#F97316)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
-      <span>Реакция</span>
-    </button>`);
-
   items.push(`
     <button class="sheet-item" data-a="copy">
       <div class="sheet-ico i-copy"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div>
-      <span>${esc(t('ctx.copy'))}</span>
+      <span>Копировать</span>
     </button>`);
 
   if (mine && !m.deleted){
     items.push(`
-      <button class="sheet-item" data-a="edit">
-        <div class="sheet-ico i-edit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></div>
-        <span>${esc(t('ctx.edit'))}</span>
-      </button>`);
-  }
-
-  if (mine && !m.deleted){
-    items.push(`
-      <button class="sheet-item danger" data-a="delall">
-        <div class="sheet-ico i-trash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/></svg></div>
-        <span>Удалить у всех</span>
-      </button>`);
-  }
-
-  if (!m.deleted){
-    items.push(`
       <button class="sheet-item danger" data-a="delme">
         <div class="sheet-ico i-trash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/></svg></div>
-        <span>Удалить у себя</span>
+        <span>Удалить</span>
       </button>`);
   }
 
   body.innerHTML = `
-    <div class="sheet-title">${esc(LANG==='ru'?'Действия':'Actions')}</div>
+    <div class="sheet-title">Действия</div>
     ${items.join('')}
     <button class="sheet-cancel" data-a="cancel">${esc(t('sheet.cancel'))}</button>`;
   bd.classList.add('open');
@@ -2262,22 +2447,6 @@ function openMessageActions(msgId){
       setTimeout(() => {
         if (a === 'reply') setReply(msgId);
         else if (a === 'copy'){ navigator.clipboard?.writeText(m.text || ''); toast(t('toast.copied'), 'ok'); }
-        else if (a === 'react') showReactionPicker(msgId);
-        else if (a === 'edit'){
-          State.editing = msgId;
-          msgInput.value = m.text || '';
-          msgInput.dispatchEvent(new Event('input'));
-          replyText.textContent = t('ctx.edit') + ': ' + (m.text||'').slice(0,60);
-          replyBar.classList.add('on');
-          msgInput.focus();
-        }
-        else if (a === 'delall'){
-          confirmDialog(t('confirm.delete_msg_all_text'), () => {
-            DB.deleteMessage(msgId, true);
-            renderMessages(); renderChats();
-            toast(t('toast.msg_deleted_all'), 'ok');
-          });
-        }
         else if (a === 'delme'){
           DB.deleteMessage(msgId, false);
           renderMessages(); renderChats();
@@ -2286,22 +2455,6 @@ function openMessageActions(msgId){
       }, 120);
     };
   });
-}
-function showReactionPicker(msgId){
-  const bd = document.getElementById('sheetBd');
-  const body = document.getElementById('sheetBody');
-  const emojis = ['👍','❤️','😂','🔥','😮','😢','🙏','🎉'];
-  body.innerHTML = `
-    <div class="sheet-title">Реакция</div>
-    <div style="display:flex;gap:6px;justify-content:center;padding:14px 16px 20px;flex-wrap:wrap">
-      ${emojis.map(e => `<button data-e="${e}" style="font-size:32px;width:56px;height:56px;border-radius:16px;background:var(--surface2);display:grid;place-items:center">${e}</button>`).join('')}
-    </div>
-    <button class="sheet-cancel" data-a="cancel">${esc(t('sheet.cancel'))}</button>`;
-  bd.classList.add('open');
-  body.querySelectorAll('button[data-e]').forEach(b => {
-    b.onclick = () => { closeActionSheet(); toggleReaction(msgId, b.dataset.e); };
-  });
-  body.querySelector('button[data-a="cancel"]').onclick = closeActionSheet;
 }
 
 /* ============================================================
@@ -2332,19 +2485,42 @@ document.getElementById('replyCancel').onclick = () => {
   State.replyTo = null; State.editing = null;
   replyBar.classList.remove('on');
 };
-function sendMessage(){
+
+async function sendMessage(){
   if (!State.activeChat) return;
   const text = msgInput.value.trim(); if (!text) return;
-  if (State.editing){
-    DB.updateMessage(State.editing, {text, edited:true});
-    State.editing = null; replyBar.classList.remove('on');
-  } else {
-    DB.createMessage({chatId:State.activeChat.id, senderId:State.me.id, text, replyTo:State.replyTo||null});
-    State.replyTo = null; replyBar.classList.remove('on');
-  }
+  const chatId = String(State.activeChat.id);
+  const replyTo = State.replyTo;
+
   msgInput.value = ''; msgInput.style.height = 'auto';
   btnSend.disabled = true;
-  renderMessages(); renderChats();
+  State.replyTo = null; replyBar.classList.remove('on');
+
+  try {
+    const r = await fetch(API + '/api/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chatId: chatId,
+        senderId: String(State.me.id),
+        text: text,
+        replyTo: replyTo
+      })
+    });
+    const data = await r.json();
+    if (!data.ok){ toast(t('toast.server_error'), 'err'); return; }
+
+    // Обновляем последний ID чтобы не получить своё сообщение
+    if (data.message && data.message.id > (State.lastSeenMsgId||0)){
+      State.lastSeenMsgId = data.message.id;
+      localStorage.setItem('vexa.lastMsgId', String(State.lastSeenMsgId));
+    }
+
+    await syncMessagesFromServer(chatId);
+  } catch (e) {
+    console.error(e);
+    toast(t('toast.no_connection'), 'err');
+  }
 }
 btnSend.onclick = sendMessage;
 
@@ -2381,15 +2557,14 @@ document.getElementById('btnEmoji').onclick = () => {
 };
 
 /* ============================================================
-   CONTEXT MENU (simple text menu)
+   CONTEXT MENU
    ============================================================ */
 function openChatContext(e, chatId){
   const c = DB.getChat(chatId); if (!c) return;
   openContext(e.clientX, e.clientY, [
-    { label: t('ctx.open') || 'Открыть', fn: () => openChat(chatId) },
+    { label: 'Открыть', fn: () => openChat(chatId) },
     { label: c.pinned ? 'Открепить' : 'Закрепить', fn: () => { DB.updateChat(chatId, {pinned: !c.pinned}); renderChats(); } },
     { label: c.unread ? 'Прочитано' : 'Непрочитано', fn: () => { DB.updateChat(chatId, {unread: c.unread ? 0 : 1}); renderChats(); } },
-    { label: c.muted ? 'Включить увед.' : 'Отключить увед.', fn: () => { DB.updateChat(chatId, {muted: !c.muted}); renderChats(); } },
     { sep: true },
     { label: 'Удалить чат', danger: true, fn: () => confirmDialog(t('confirm.delete_chat'), () => { DB.deleteChat(chatId); renderChats(); }) }
   ]);
@@ -2413,7 +2588,7 @@ function closeContext(){ document.getElementById('ctxMenu').classList.remove('op
 document.addEventListener('click', e => { if (!e.target.closest('#ctxMenu')) closeContext(); });
 
 /* ============================================================
-   MODALS (small)
+   MODALS
    ============================================================ */
 function openModal(html, setup){
   const bd = document.getElementById('modalBd');
@@ -2528,7 +2703,7 @@ function openFindByNumber(){
           res.appendChild(item);
         } catch (e) {
           console.error(e);
-          res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--danger);font-size:14px">Ошибка связи с сервером. Подожди 30 сек.</div>`;
+          res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--danger);font-size:14px">Ошибка связи</div>`;
         }
       };
       btn.onclick = search;
@@ -2556,10 +2731,10 @@ function openAddContactPage(){
         res.innerHTML = '';
         if (!q) return;
         const users = DB.data.users.filter(u =>
-          u.id !== State.me.id &&
+          String(u.id) !== String(State.me.id) &&
           ((u.username||'').toLowerCase().includes(q) || (u.firstName||'').toLowerCase().includes(q) || (u.lastName||'').toLowerCase().includes(q))
         );
-        if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">${esc(t('newchat.no_results')||'Не найдено')}</div>`; return; }
+        if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">Не найдено</div>`; return; }
         users.forEach(u => {
           const inContacts = DB.isContact(State.me.id, u.id);
           const r = el(`
@@ -2569,7 +2744,7 @@ function openAddContactPage(){
                 <div style="font-weight:600">${esc(displayName(u))}</div>
                 <div style="color:var(--text2);font-size:12.5px">${u.username ? '@'+esc(u.username) : ''}</div>
               </div>
-              <button class="btn btn-sm${inContacts ? ' btn-2' : ''}">${inContacts ? esc(t('contacts.remove')) : esc(t('contacts.add'))}</button>
+              <button class="btn btn-sm${inContacts ? ' btn-2' : ''}">${inContacts ? 'Удалить' : 'Добавить'}</button>
             </div>`);
           r.querySelector('button').onclick = e => {
             e.stopPropagation();
@@ -2596,7 +2771,7 @@ function openAddContactPage(){
 /* Create group / channel */
 function openCreateGroupModal(){
   const contacts = DB.contactsOf(State.me.id);
-  const allUsers = DB.data.users.filter(u => u.id !== State.me.id);
+  const allUsers = DB.data.users.filter(u => String(u.id) !== String(State.me.id));
   const pool = contacts.length ? contacts : allUsers;
   openModal(`
     <h2>${esc(t('group.title'))}</h2>
@@ -2614,7 +2789,7 @@ function openCreateGroupModal(){
       const list = b.querySelector('#grMembers');
       const selected = new Set();
       if (!pool.length){
-        list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:14px;text-align:center">${esc(t('group.no_contacts'))}</div>`;
+        list.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:14px;text-align:center">Нет пользователей</div>`;
       } else {
         pool.forEach(u => {
           const r = el(`
@@ -2627,26 +2802,36 @@ function openCreateGroupModal(){
               </div>
             </div>`);
           r.onclick = () => {
-            if (selected.has(u.id)) selected.delete(u.id); else selected.add(u.id);
-            r.querySelector('.switch').classList.toggle('on', selected.has(u.id));
+            if (selected.has(String(u.id))) selected.delete(String(u.id)); else selected.add(String(u.id));
+            r.querySelector('.switch').classList.toggle('on', selected.has(String(u.id)));
           };
           list.appendChild(r);
         });
       }
       b.querySelector('#grCancel').onclick = closeModal;
-      b.querySelector('#grCreate').onclick = () => {
+      b.querySelector('#grCreate').onclick = async () => {
         const name = b.querySelector('#grName').value.trim();
         const desc = b.querySelector('#grDesc').value.trim();
         if (!name){ toast(t('toast.fill_name'), 'err'); return; }
         if (!selected.size){ toast(t('toast.select_members'), 'err'); return; }
-        const chat = DB.createChat({type:'group', title:name, description:desc, ownerId:State.me.id, members:[State.me.id, ...selected]});
-        closeModal();
-        toast(t('toast.group_created'), 'ok');
-        State.activeTab = 'all';
-        document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
-        switchNav('chats');
-        renderChats();
-        openChat(chat.id);
+        try {
+          const r = await fetch(API + '/api/chats', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+              type: 'group', ownerId: State.me.id,
+              members: [String(State.me.id), ...selected],
+              title: name, description: desc
+            })
+          });
+          const d = await r.json();
+          if (!d.ok){ toast(t('toast.server_error'), 'err'); return; }
+          closeModal();
+          toast(t('toast.group_created'), 'ok');
+          await syncChatsFromServer();
+          switchNav('chats');
+          setTimeout(() => openChat(String(d.chat.id)), 250);
+        } catch(e){ toast(t('toast.no_connection'), 'err'); }
       };
     });
 }
@@ -2657,39 +2842,34 @@ function openCreateChannelModal(){
     <input class="field" id="chName" style="margin-bottom:10px"/>
     <label class="lbl">${esc(t('channel.desc'))}</label>
     <input class="field" id="chDesc" style="margin-bottom:10px"/>
-    <label class="lbl">${esc(t('channel.public'))}</label>
-    <div class="row" style="gap:10px;margin-bottom:16px">
-      <div class="seg" id="chSeg" style="flex:1">
-        <button data-pub="0" class="on" style="flex:1">—</button>
-        <button data-pub="1" style="flex:1">✓</button>
-      </div>
-    </div>
     <div class="row" style="gap:10px">
       <button class="btn btn-2" id="chCancel">${esc(t('confirm.cancel'))}</button>
       <button class="btn" id="chCreate">${esc(t('channel.create'))}</button>
     </div>`,
     b => {
-      let isPublic = false;
-      b.querySelectorAll('#chSeg button').forEach(btn => {
-        btn.onclick = () => {
-          b.querySelectorAll('#chSeg button').forEach(x => x.classList.remove('on'));
-          btn.classList.add('on');
-          isPublic = btn.dataset.pub === '1';
-        };
-      });
       b.querySelector('#chCancel').onclick = closeModal;
-      b.querySelector('#chCreate').onclick = () => {
+      b.querySelector('#chCreate').onclick = async () => {
         const name = b.querySelector('#chName').value.trim();
         const desc = b.querySelector('#chDesc').value.trim();
         if (!name){ toast(t('toast.fill_name'), 'err'); return; }
-        const chat = DB.createChat({type:'channel', title:name, description:desc, isPublic, ownerId:State.me.id, members:[State.me.id]});
-        closeModal();
-        toast(t('toast.channel_created'), 'ok');
-        State.activeTab = 'all';
-        document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
-        switchNav('chats');
-        renderChats();
-        openChat(chat.id);
+        try {
+          const r = await fetch(API + '/api/chats', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+              type: 'channel', ownerId: State.me.id,
+              members: [String(State.me.id)],
+              title: name, description: desc
+            })
+          });
+          const d = await r.json();
+          if (!d.ok){ toast(t('toast.server_error'), 'err'); return; }
+          closeModal();
+          toast(t('toast.channel_created'), 'ok');
+          await syncChatsFromServer();
+          switchNav('chats');
+          setTimeout(() => openChat(String(d.chat.id)), 250);
+        } catch(e){ toast(t('toast.no_connection'), 'err'); }
       };
     });
 }
@@ -2697,7 +2877,7 @@ function openCreateChannelModal(){
 /* Saved */
 function openSavedChat(){
   let chat = DB.chatsOf(State.me.id).find(c => c.type === 'saved');
-  if (!chat) chat = DB.createChat({type:'saved', ownerId:State.me.id, members:[State.me.id]});
+  if (!chat){ toast(LANG==='ru'?'Избранное ещё не создано':'Saved not ready'); return; }
   State.activeTab = 'all';
   document.querySelectorAll('#tabs .tab').forEach(x => x.classList.toggle('on', x.dataset.tab === 'all'));
   switchNav('chats');
@@ -2711,10 +2891,31 @@ function doLogout(){
     DB.updateUser(State.me.id, { lastSeen: Date.now() });
     DB.clearSession();
     State.me = null; State.activeChat = null;
+    clearInterval(window.__hb);
+    clearInterval(window.__pollUpdates);
+    clearInterval(window.__pollChats);
     document.getElementById('chatOverlay').classList.remove('open');
     closeAllPages();
     showScreen('welcome');
     toast(t('toast.logged_out'));
+  });
+}
+
+/* Delete account */
+function doDeleteAccount(){
+  confirmDialog(t('confirm.delete_account'), async () => {
+    try {
+      await fetch(API + '/api/users/' + State.me.id, { method: 'DELETE' });
+    } catch(e){}
+    clearInterval(window.__hb);
+    clearInterval(window.__pollUpdates);
+    clearInterval(window.__pollChats);
+    DB.wipeAll();
+    State.me = null; State.activeChat = null; State.lastSeenMsgId = 0;
+    document.getElementById('chatOverlay').classList.remove('open');
+    closeAllPages();
+    showScreen('welcome');
+    toast(t('toast.account_deleted'), 'ok');
   });
 }
 
@@ -2733,7 +2934,7 @@ document.getElementById('imgViewer').addEventListener('click', e => {
 });
 
 /* ============================================================
-   EDGE SWIPE TO GO BACK (iOS style)
+   EDGE SWIPE TO GO BACK
    ============================================================ */
 (function edgeBack(){
   const EDGE = 28;
@@ -2743,16 +2944,11 @@ document.getElementById('imgViewer').addEventListener('click', e => {
     if (e.touches.length !== 1) return;
     const t0 = e.touches[0];
     if (t0.clientX > EDGE) return;
-    // is there something to go back from?
     const overlay = document.getElementById('chatOverlay');
     const topPage = State.pageStack[State.pageStack.length-1];
-    if (topPage){
-      pageEl = topPage.el;
-    } else if (overlay.classList.contains('open')){
-      pageEl = overlay;
-    } else {
-      pageEl = null;
-    }
+    if (topPage) pageEl = topPage.el;
+    else if (overlay.classList.contains('open')) pageEl = overlay;
+    else pageEl = null;
     if (!pageEl) return;
     active = true;
     dragging = false;
@@ -2784,7 +2980,6 @@ document.getElementById('imgViewer').addEventListener('click', e => {
     const w = window.innerWidth;
     if (cur > w * 0.3){
       pageEl.style.transform = '';
-      // let CSS transition handle closure
       if (pageEl.id === 'chatOverlay') closeChat();
       else closeTopPage();
     } else {
@@ -2820,7 +3015,7 @@ function openNewChatModal(){
         const q = inp.value.trim().toLowerCase();
         res.innerHTML = '';
         const users = DB.data.users.filter(u =>
-          u.id !== State.me.id &&
+          String(u.id) !== String(State.me.id) &&
           (!q || (u.username||'').toLowerCase().includes(q) || (u.firstName||'').toLowerCase().includes(q) || (u.lastName||'').toLowerCase().includes(q))
         );
         if (!users.length){ res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:13px">Никого не найдено</div>`; return; }
