@@ -89,7 +89,6 @@ svg{display:block}
 .av-72{width:72px;height:72px;font-size:26px}
 .av-96{width:96px;height:96px;font-size:34px}
 
-/* Welcome */
 #welcome{align-items:center;justify-content:center;padding:32px;text-align:center}
 .logo{width:104px;height:104px;border-radius:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800;font-size:52px;box-shadow:0 24px 60px rgba(108,92,231,.5),0 0 0 6px rgba(255,255,255,.15) inset;animation:pop .7s cubic-bezier(.2,.9,.3,1.2)}
 @keyframes pop{from{opacity:0;transform:scale(.5) rotate(-8deg)}to{opacity:1;transform:none}}
@@ -102,7 +101,6 @@ svg{display:block}
 .lang-toggle button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .legal{color:var(--text2);font-size:12px;margin-top:20px;max-width:360px;line-height:1.5}
 
-/* Auth */
 .auth{padding:24px;padding-top:max(24px,env(safe-area-inset-top))}
 .auth .top{display:flex;justify-content:space-between;align-items:center;min-height:40px}
 .auth-title{font-size:28px;font-weight:700;margin:24px 0 8px;letter-spacing:-.3px}
@@ -120,7 +118,6 @@ svg{display:block}
 .code-banner{background:rgba(108,92,231,.08);border:1px dashed var(--accent);color:var(--text);padding:12px;border-radius:14px;margin-top:14px;font-size:13px;line-height:1.5}
 .code-banner strong{color:var(--accent);letter-spacing:2px;font-size:16px}
 
-/* App */
 #app{flex-direction:column;background:transparent}
 #app.active{display:flex}
 
@@ -141,8 +138,7 @@ svg{display:block}
 .panel.active{display:flex;animation:panelIn .3s cubic-bezier(.2,.9,.3,1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 
-/* Panel ME — прокручивается */
-#panel-me{overflow-y:auto !important;padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+#panel-me{overflow-y:auto !important;padding-bottom:calc(200px + env(safe-area-inset-bottom)) !important}
 #panel-me::-webkit-scrollbar{width:0}
 
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 8px}
@@ -179,12 +175,11 @@ svg{display:block}
 .p-item::after{content:"";position:absolute;left:82px;right:16px;bottom:0;height:1px;background:var(--divider);pointer-events:none}
 .p-item:last-child::after{display:none}
 
-/* ME panel */
 .me-hero{margin:12px;padding:24px;border-radius:28px;display:flex;flex-direction:column;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(108,92,231,.22),rgba(142,123,255,.12));-webkit-backdrop-filter:blur(32px) saturate(180%);backdrop-filter:blur(32px) saturate(180%);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);cursor:pointer;transition:transform .2s cubic-bezier(.2,.9,.3,1)}
 .me-hero:active{transform:scale(.98)}
 .me-name{font-size:22px;font-weight:700;letter-spacing:-.3px}
 .me-username{color:var(--text2);font-size:14px}
-.me-menu{margin:8px 12px 20px;border-radius:24px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+.me-menu{margin:8px 12px 20px;border-radius:24px;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);overflow:hidden}
 .me-menu button{display:flex;align-items:center;gap:14px;width:100%;padding:15px 18px;text-align:left;font-size:15px;transition:background .15s;position:relative}
 .me-menu button + button::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
 .me-menu button:active{background:rgba(120,120,140,.12)}
@@ -192,7 +187,6 @@ svg{display:block}
 .me-menu button.danger{color:var(--danger)}
 .me-menu button.danger svg{color:var(--danger)}
 
-/* Bottom nav with slider */
 .bottom-nav{
   position:fixed;left:50%;transform:translateX(-50%);
   bottom:calc(14px + env(safe-area-inset-bottom));
@@ -230,7 +224,6 @@ svg{display:block}
 .bottom-nav button.on{color:#fff}
 .bottom-nav button.on svg{transform:scale(1.08)}
 
-/* PAGE (slides from right) */
 .page{
   position:fixed;inset:0;z-index:70;
   background:var(--bg);
@@ -257,7 +250,6 @@ svg{display:block}
 .page-body{flex:1;overflow-y:auto;padding:16px 0 40px}
 .page-body::-webkit-scrollbar{width:0}
 
-/* Hero profile page */
 .profile-hero{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 .profile-hero .avatar{box-shadow:0 16px 40px rgba(108,92,231,.35)}
 .profile-hero .name{font-size:24px;font-weight:700;letter-spacing:-.4px}
@@ -270,7 +262,6 @@ svg{display:block}
 .info-row svg{color:var(--text2);flex-shrink:0}
 .info-row .val{margin-left:auto;color:var(--text2);font-size:14px}
 
-/* stories */
 .stories-strip{padding:0 16px 12px;display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
 .stories-strip::-webkit-scrollbar{display:none}
 .story-circle{width:72px;height:72px;border-radius:50%;padding:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));flex-shrink:0;cursor:pointer;transition:transform .2s}
@@ -278,7 +269,6 @@ svg{display:block}
 .story-circle>div{width:100%;height:100%;border-radius:50%;background:var(--surface2);border:2px solid var(--bg);display:grid;place-items:center;color:#fff;font-weight:700;overflow:hidden}
 .section-title{padding:16px 22px 6px;font-size:13px;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
 
-/* Settings list rows */
 .set-list{margin:12px;border-radius:20px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
 .set-row{display:flex;align-items:center;gap:14px;padding:14px 18px;font-size:15px;position:relative;cursor:pointer;transition:background .15s}
 .set-row:active{background:rgba(120,120,140,.10)}
@@ -286,7 +276,6 @@ svg{display:block}
 .set-row svg{color:var(--text2);flex-shrink:0}
 .set-row .val{margin-left:auto;color:var(--text2);font-size:13.5px;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* Chat overlay */
 .chat-overlay{
   position:fixed;inset:0;z-index:55;background:var(--bg);
   display:none;flex-direction:column;
@@ -304,7 +293,6 @@ svg{display:block}
 .msgs::-webkit-scrollbar{width:0}
 .day-sep{align-self:center;font-size:11px;color:var(--text2);background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);padding:4px 12px;border-radius:12px;margin:10px 0;text-transform:uppercase;letter-spacing:.5px;border:1px solid var(--glass-border)}
 
-/* message wrapper for swipe */
 .msg-wrap{position:relative;display:flex;align-self:flex-start;max-width:100%;transition:transform .3s cubic-bezier(.2,.9,.3,1)}
 .msg-wrap.me{align-self:flex-end}
 .msg-wrap.dragging{transition:none}
@@ -351,7 +339,6 @@ svg{display:block}
 .side-btn{width:44px;height:44px;border-radius:50%;background:var(--glass-bg-2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:grid;place-items:center;color:var(--text2);flex-shrink:0;border:1px solid var(--glass-border)}
 .side-btn:active{background:var(--glass-bg);color:var(--text)}
 
-/* Action Sheet */
 .sheet-bd{position:fixed;inset:0;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));animation:fs .2s ease}
 .sheet-bd.open{display:flex}
 .sheet{width:100%;max-width:480px;border-radius:28px;overflow:hidden;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.5) inset;animation:slideUp .35s cubic-bezier(.2,.9,.3,1);max-height:80vh;overflow-y:auto}
@@ -373,7 +360,6 @@ svg{display:block}
 .sheet-ico.i-pin{background:linear-gradient(135deg,#10B981,#059669)}
 .sheet button.sheet-cancel{display:block;width:100%;text-align:center;padding:16px;font-size:16px;font-weight:600;color:var(--accent);border-top:1px solid var(--glass-border);margin-top:8px}
 
-/* Modal */
 .modal-bd{position:fixed;inset:0;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:120;padding:18px}
 .modal-bd.open{display:flex;animation:fs .2s}
 .modal{width:100%;max-width:480px;max-height:86vh;overflow-y:auto;padding:22px;border-radius:28px;background:var(--glass-bg);-webkit-backdrop-filter:blur(34px) saturate(200%);backdrop-filter:blur(34px) saturate(200%);border:1px solid var(--glass-border);box-shadow:0 30px 80px rgba(0,0,0,.35);animation:slideUp .3s cubic-bezier(.2,.9,.3,1)}
@@ -392,26 +378,22 @@ svg{display:block}
 .result-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;cursor:pointer;transition:background .15s}
 .result-item:active{background:rgba(120,120,140,.12)}
 
-/* Context menu */
 .ctx{position:fixed;z-index:140;display:none;min-width:200px;padding:6px;border-radius:18px;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(0,0,0,.3);animation:fs .18s}
 .ctx.open{display:block}
 .ctx button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:10px;font-size:14px;text-align:left}
 .ctx button:hover{background:rgba(120,120,140,.12)}
 .ctx button.danger{color:var(--danger)}
 
-/* Toast */
 #toast{position:fixed;left:50%;bottom:calc(140px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);padding:12px 20px;border-radius:16px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1);z-index:200;max-width:88vw;text-align:center;background:var(--glass-bg);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--glass-border);color:var(--text);box-shadow:0 16px 40px rgba(0,0,0,.25)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;border-color:transparent}
 #toast.ok{background:linear-gradient(135deg,#22C55E,#16A34A);color:#fff;border-color:transparent}
 
-/* Fullscreen viewer */
 .viewer{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;animation:fs .2s}
 .viewer.open{display:flex}
 .viewer img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
 .viewer .close{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;display:grid;place-items:center}
 
-/* Edge back indicator */
 .edge-back-hint{position:fixed;left:0;top:0;bottom:0;width:22px;z-index:65;pointer-events:none}
 .edge-back-hint::after{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%) scaleY(0);width:4px;height:44px;border-radius:4px;background:var(--accent);transition:transform .2s}
 .edge-back-hint.active::after{transform:translateY(-50%) scaleY(1)}
@@ -419,7 +401,6 @@ svg{display:block}
 </head>
 <body>
 
-<!-- WELCOME -->
 <section id="welcome" class="screen active">
   <div class="logo">V</div>
   <div class="brand">VEXA</div>
@@ -434,7 +415,6 @@ svg{display:block}
   <div class="legal" data-i18n="welcome.legal">Продолжая, вы принимаете условия использования и политику конфиденциальности.</div>
 </section>
 
-<!-- AUTH -->
 <section id="auth" class="screen auth">
   <div class="top">
     <button class="icon-btn" id="authBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -452,7 +432,6 @@ svg{display:block}
   <button class="btn" id="btnSendCode" disabled style="margin-top:14px" data-i18n="auth.continue">Продолжить</button>
 </section>
 
-<!-- OTP -->
 <section id="otp" class="screen auth">
   <div class="top">
     <button class="icon-btn" id="otpBack"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -475,7 +454,6 @@ svg{display:block}
   <button class="btn" id="btnVerify" disabled style="margin-top:14px" data-i18n="otp.confirm">Подтвердить</button>
 </section>
 
-<!-- NAME -->
 <section id="nameScreen" class="screen auth">
   <h1 class="auth-title" data-i18n="name.title">Как вас зовут?</h1>
   <p class="auth-sub" data-i18n="name.sub">Это увидят другие пользователи VEXA</p>
@@ -489,7 +467,6 @@ svg{display:block}
   <button class="btn" id="btnCreate" disabled style="margin-top:14px" data-i18n="name.create">Создать аккаунт</button>
 </section>
 
-<!-- APP -->
 <section id="app" class="screen">
   <header class="app-header">
     <div class="logo-mini">V</div>
@@ -562,6 +539,10 @@ svg{display:block}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
           <span data-i18n="menu.about">О приложении</span>
         </button>
+        <button data-action="notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg>
+          <span data-i18n="menu.notifications">Уведомления</span>
+        </button>
         <button data-action="logout" class="danger">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
           <span data-i18n="menu.logout">Выйти</span>
@@ -621,7 +602,6 @@ svg{display:block}
   </div>
 </section>
 
-<!-- PAGES CONTAINER -->
 <div id="pagesContainer"></div>
 
 <div class="sheet-bd" id="sheetBd"><div class="sheet" id="sheetBody"></div></div>
@@ -754,7 +734,7 @@ const STR = {
     'chat.input_ph':'Сообщение...',
     'menu.saved':'Избранное','menu.settings':'Настройки','menu.privacy':'Приватность',
     'menu.invite':'Пригласить друзей','menu.help':'Помощь','menu.about':'О приложении','menu.logout':'Выйти',
-    'menu.delete_account':'Удалить аккаунт',
+    'menu.delete_account':'Удалить аккаунт','menu.notifications':'Уведомления',
     'contacts.empty':'Контактов пока нет','contacts.empty_sub':'Найдите пользователя.','contacts.add':'Добавить','contacts.remove':'Удалить','contacts.write':'Написать','contacts.search':'Поиск',
     'calls.empty':'Звонков пока нет','calls.empty_sub':'Здесь появится история звонков.','calls.unavailable':'Звонки требуют WebRTC-сервер.',
     'profile.edit':'Редактировать','profile.save':'Сохранить','profile.first':'Имя','profile.last':'Фамилия','profile.user':'Username','profile.bio':'О себе','profile.phone':'Телефон','profile.birthday':'Дата рождения','profile.close':'Закрыть','profile.delete':'Удалить чат',
@@ -793,7 +773,7 @@ const STR = {
     'empty.chats':'No chats yet','empty.chats_sub':'Start a conversation.','empty.cat':'Nothing here','empty.cat_sub':'Chats will appear here.','empty.start':'New chat',
     'chat.no_msgs':'No messages yet','chat.no_msgs_sub':'Send the first message.','chat.input_ph':'Message...',
     'menu.saved':'Saved','menu.settings':'Settings','menu.privacy':'Privacy','menu.invite':'Invite friends',
-    'menu.help':'Help','menu.about':'About','menu.logout':'Log out','menu.delete_account':'Delete account',
+    'menu.help':'Help','menu.about':'About','menu.logout':'Log out','menu.delete_account':'Delete account','menu.notifications':'Notifications',
     'contacts.empty':'No contacts yet','contacts.empty_sub':'Find a user.','contacts.add':'Add','contacts.remove':'Remove','contacts.write':'Message','contacts.search':'Search',
     'calls.empty':'No calls yet','calls.empty_sub':'Call history appears here.','calls.unavailable':'Calls require a WebRTC server.',
     'profile.edit':'Edit','profile.save':'Save','profile.first':'First name','profile.last':'Last name','profile.user':'Username','profile.bio':'About','profile.phone':'Phone','profile.birthday':'Birthday','profile.close':'Close','profile.delete':'Delete chat',
@@ -832,7 +812,6 @@ function setLang(l){
   if (State.me){ renderChats(); renderContactsList(); renderCallsList(); updateMePanel(); }
 }
 
-/* phone helpers */
 function digitsOf(s){ return (s||'').replace(/\D/g,''); }
 function normalizePhone(raw){
   let d = digitsOf(raw); if (!d) return '';
@@ -852,7 +831,6 @@ function formatPhone(raw){
 }
 function phoneValid(v){ return digitsOf(v).length === 11; }
 
-/* helpers */
 let toastTimer;
 function toast(msg, kind){
   const el = document.getElementById('toast');
@@ -881,7 +859,6 @@ function fmtDate(ts){
   return d.toLocaleDateString(LANG==='ru'?'ru-RU':'en-GB',{day:'2-digit',month:'long',year:'numeric'});
 }
 
-/* privacy check */
 function canSee(viewerId, ownerId, field){
   if (String(viewerId) === String(ownerId)) return true;
   const owner = DB.findUserById(ownerId);
@@ -893,7 +870,6 @@ function canSee(viewerId, ownerId, field){
   return true;
 }
 
-/* last seen text */
 function lastSeenText(u){
   if (!u) return '';
   const now = Date.now();
@@ -912,7 +888,6 @@ function lastSeenText(u){
   return `${t('status.was_at')} ${d.toLocaleDateString(LANG==='ru'?'ru-RU':'en-GB',{day:'2-digit',month:'short'})} ${fmtTime(u.lastSeen)}`;
 }
 
-/* theme */
 function applyTheme(mode){
   let th = mode;
   if (mode === 'system') th = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -923,18 +898,12 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   if (DB.getSettings(sid).theme === 'system') applyTheme('system');
 });
 
-/* ============================================================
-   STATE
-   ============================================================ */
 const State = {
   me: null, activeChat: null, activeTab: 'all', activeNav: 'chats',
   replyTo: null, editing: null, tempOtp: null, tempPhone: null,
   pageStack: [], lastSeenMsgId: null
 };
 
-/* ============================================================
-   PAGES
-   ============================================================ */
 function openPage({ title, bodyHtml, onMount, onClose, backBtn = true }){
   const container = document.getElementById('pagesContainer');
   const page = el(`
@@ -962,9 +931,6 @@ function closeTopPage(){
 }
 function closeAllPages(){ while (State.pageStack.length) closeTopPage(); }
 
-/* ============================================================
-   BOTTOM NAV
-   ============================================================ */
 const bottomNav = document.getElementById('bottomNav');
 const navIndicator = document.getElementById('navIndicator');
 const navButtons = [...bottomNav.querySelectorAll('button')];
@@ -1040,9 +1006,6 @@ navButtons.forEach(b => {
 });
 window.addEventListener('resize', () => positionIndicator(currentNavBtn(), false));
 
-/* ============================================================
-   WELCOME / AUTH
-   ============================================================ */
 document.getElementById('btnStart').onclick = () => {
   const sid = DB.getSession();
   if (sid && DB.findUserById(sid)) { bootUser(sid); return; }
@@ -1147,7 +1110,6 @@ otpResend.onclick = () => {
 btnVerify.onclick = async () => {
   if (otpValue() !== State.tempOtp){ toast(t('err.otp'), 'err'); return; }
   const phone = State.tempPhone;
-  // Проверяем есть ли такой на сервере
   try {
     const r = await fetch(API + '/api/find-by-phone', {
       method: 'POST',
@@ -1262,9 +1224,6 @@ btnCreate.onclick = async () => {
   }
 };
 
-/* ============================================================
-   BOOT
-   ============================================================ */
 async function bootUser(userId){
   const u = DB.findUserById(userId);
   if (!u){ showScreen('welcome'); return; }
@@ -1283,30 +1242,24 @@ async function bootUser(userId){
   showScreen('app');
   setTimeout(() => positionIndicator(currentNavBtn(), false), 60);
 
-  // Синхронизируем чаты с сервером
   await syncChatsFromServer();
 
-  // Инициализация lastSeenMsgId
   if (!State.lastSeenMsgId){
     State.lastSeenMsgId = parseInt(localStorage.getItem('vexa.lastMsgId') || '0', 10) || 0;
   }
 
-  // Heartbeat каждые 20 сек
   clearInterval(window.__hb);
   window.__hb = setInterval(() => {
     const me = DB.findUserById(State.me.id);
     if (me){ me.lastSeen = Date.now(); DB.persist(); }
   }, 20_000);
 
-  // Polling новых сообщений каждые 3 сек
   clearInterval(window.__pollUpdates);
   window.__pollUpdates = setInterval(checkNewMessages, 3000);
 
-  // Обновление списка чатов каждые 8 сек
   clearInterval(window.__pollChats);
   window.__pollChats = setInterval(syncChatsFromServer, 8000);
 
-  // Проверяем новые сообщения сразу
   setTimeout(checkNewMessages, 800);
 }
 
@@ -1321,9 +1274,6 @@ function updateMePanel(){
   document.getElementById('meUsername').textContent = u.username ? '@'+u.username : '@—';
 }
 
-/* ============================================================
-   СИНХРОНИЗАЦИЯ С СЕРВЕРОМ
-   ============================================================ */
 async function syncChatsFromServer(){
   if (!State.me) return;
   try {
@@ -1331,7 +1281,6 @@ async function syncChatsFromServer(){
     const data = await r.json();
     if (!data.ok) return;
     const d = DB.data;
-    // Убираем чаты, где я участник (они придут с сервера заново)
     d.chats = d.chats.filter(c => !(c.members||[]).map(String).includes(String(State.me.id)));
     data.chats.forEach(c => {
       const localChat = {
@@ -1349,7 +1298,6 @@ async function syncChatsFromServer(){
         createdAt: new Date(c.created_at).getTime()
       };
       d.chats.push(localChat);
-      // Кэшируем участников
       (c.members||[]).forEach(m => {
         if (!DB.findUserById(m.id)){
           DB.createUser({
@@ -1415,7 +1363,6 @@ async function checkNewMessages(){
       const chatId = String(m.chat_id);
       const isMine = String(m.sender_id) === String(State.me.id);
 
-      // Сохраняем сообщение локально
       const exists = DB.data.messages.find(x => String(x.id) === String(m.id));
       if (!exists){
         DB.data.messages.push({
@@ -1432,14 +1379,7 @@ async function checkNewMessages(){
         });
       }
 
-      // Кэшируем отправителя
       if (!DB.findUserById(m.sender_id)){
-        const ur = await fetch(API + '/api/find-by-phone', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ phone: '' })
-        }).catch(() => null);
-        // если нет — просто заглушка
         DB.createUser({
           id: String(m.sender_id),
           phone: null,
@@ -1466,7 +1406,6 @@ async function checkNewMessages(){
     localStorage.setItem('vexa.lastMsgId', String(maxId));
     DB.persist();
 
-    // Обновляем активный чат если открыт
     if (State.activeChat){
       await syncMessagesFromServer(State.activeChat.id);
     }
@@ -1474,7 +1413,6 @@ async function checkNewMessages(){
 
     if (gotNew){
       const last = data.messages[data.messages.length - 1];
-      // Только если это не наш чат
       const chat = DB.getChat(last.chat_id);
       const sender = DB.findUserById(last.sender_id);
       if (sender && chat && (!State.activeChat || String(State.activeChat.id) !== String(last.chat_id))){
@@ -1484,9 +1422,6 @@ async function checkNewMessages(){
   } catch (e) { console.error('checkNew', e); }
 }
 
-/* ============================================================
-   CHAT LIST
-   ============================================================ */
 function chatsForTab(tab){
   const all = DB.chatsOf(State.me.id);
   switch(tab){
@@ -1592,9 +1527,6 @@ document.querySelectorAll('#tabs .tab').forEach(tb => {
   };
 });
 
-/* ============================================================
-   CONTACTS / CALLS
-   ============================================================ */
 function renderContactsList(){
   if (!State.me) return;
   const box = document.getElementById('contactsList');
@@ -1657,9 +1589,6 @@ function renderCallsList(){
   });
 }
 
-/* ============================================================
-   ME panel actions → pages
-   ============================================================ */
 document.getElementById('meHero').onclick = () => openProfilePage();
 document.querySelectorAll('#meMenu button').forEach(b => {
   b.onclick = () => {
@@ -1670,15 +1599,19 @@ document.querySelectorAll('#meMenu button').forEach(b => {
       case 'invite':   openInvitePage(); break;
       case 'help':     openHelpPage(); break;
       case 'about':    openAboutPage(); break;
+      case 'notifications':
+        (async () => {
+          const ok = await subscribeToPush();
+          if (ok) toast('Уведомления включены', 'ok');
+          else toast('Разреши уведомления в настройках iPhone', 'err');
+        })();
+        break;
       case 'logout':   doLogout(); break;
       case 'delete':   doDeleteAccount(); break;
     }
   };
 });
 
-/* ============================================================
-   PAGES: MY PROFILE
-   ============================================================ */
 function openProfilePage(){
   const u = State.me;
   openPage({
@@ -1739,9 +1672,6 @@ function openProfilePage(){
   });
 }
 
-/* ============================================================
-   PAGES: SETTINGS
-   ============================================================ */
 function openSettingsPage(){
   const s = DB.getSettings(State.me.id);
   openPage({
@@ -1814,9 +1744,6 @@ function openSettingsPage(){
   });
 }
 
-/* ============================================================
-   PAGES: PRIVACY
-   ============================================================ */
 function openPrivacyPage(){
   const me = DB.findUserById(State.me.id);
   const pv = me.privacy;
@@ -1882,9 +1809,6 @@ function openPrivacyChoice(key, onDone){
   });
 }
 
-/* ============================================================
-   PAGES: INVITE / HELP / ABOUT
-   ============================================================ */
 function openInvitePage(){
   const link = location.href.split('#')[0] + '?invite=' + State.me.id;
   openPage({
@@ -1933,9 +1857,6 @@ function openAboutPage(){
   });
 }
 
-/* ============================================================
-   PAGES: USER PROFILE
-   ============================================================ */
 function openUserProfile(userId){
   if (String(userId) === String(State.me.id)){ openProfilePage(); return; }
   const u = DB.findUserById(userId);
@@ -2007,7 +1928,6 @@ function openUserProfile(userId){
       </div>
       <div style="height:20px"></div>`,
     onMount: p => {
-      // ОТПРАВИТЬ СООБЩЕНИЕ — создаёт/находит чат на сервере
       p.querySelector('#upSend').onclick = async () => {
         closeAllPages();
         try {
@@ -2053,9 +1973,6 @@ function openUserProfile(userId){
   });
 }
 
-/* ============================================================
-   ACTION SHEET (+)
-   ============================================================ */
 document.getElementById('btnPlus').onclick = openActionSheet;
 function openActionSheet(){
   const bd = document.getElementById('sheetBd');
@@ -2093,9 +2010,6 @@ document.getElementById('sheetBd').addEventListener('click', e => {
   if (e.target.id === 'sheetBd') closeActionSheet();
 });
 
-/* ============================================================
-   CHAT — open/close with slide
-   ============================================================ */
 async function openChat(chatId){
   const chat = DB.getChat(chatId);
   if (!chat) return;
@@ -2110,7 +2024,6 @@ async function openChat(chatId){
   renderMessages();
   renderChats();
   setTimeout(() => { const mi = document.getElementById('msgInput'); if (mi) mi.focus(); }, 80);
-  // Загружаем сообщения с сервера
   await syncMessagesFromServer(chatId);
 }
 function closeChat(){
@@ -2225,9 +2138,6 @@ function openChatInfoPage(){
   });
 }
 
-/* ============================================================
-   MESSAGES
-   ============================================================ */
 function renderMessages(){
   const box = document.getElementById('msgs');
   if (!box) return;
@@ -2461,9 +2371,6 @@ function openMessageActions(msgId){
   });
 }
 
-/* ============================================================
-   COMPOSER
-   ============================================================ */
 const msgInput = document.getElementById('msgInput');
 const btnSend = document.getElementById('btnSend');
 const replyBar = document.getElementById('replyBar');
@@ -2514,7 +2421,6 @@ async function sendMessage(){
     const data = await r.json();
     if (!data.ok){ toast(t('toast.server_error'), 'err'); return; }
 
-    // Обновляем последний ID чтобы не получить своё сообщение
     if (data.message && data.message.id > (State.lastSeenMsgId||0)){
       State.lastSeenMsgId = data.message.id;
       localStorage.setItem('vexa.lastMsgId', String(State.lastSeenMsgId));
@@ -2560,9 +2466,6 @@ document.getElementById('btnEmoji').onclick = () => {
   })));
 };
 
-/* ============================================================
-   CONTEXT MENU
-   ============================================================ */
 function openChatContext(e, chatId){
   const c = DB.getChat(chatId); if (!c) return;
   openContext(e.clientX, e.clientY, [
@@ -2591,9 +2494,6 @@ function openContext(x, y, items){
 function closeContext(){ document.getElementById('ctxMenu').classList.remove('open'); }
 document.addEventListener('click', e => { if (!e.target.closest('#ctxMenu')) closeContext(); });
 
-/* ============================================================
-   MODALS
-   ============================================================ */
 function openModal(html, setup){
   const bd = document.getElementById('modalBd');
   const body = document.getElementById('modalBody');
@@ -2618,7 +2518,6 @@ function confirmDialog(text, onYes){
     });
 }
 
-/* Find by number */
 function openFindByNumber(){
   openModal(`
     <h2>${esc(t('find.title'))}</h2>
@@ -2715,7 +2614,6 @@ function openFindByNumber(){
     });
 }
 
-/* Add contact */
 function openAddContactPage(){
   openPage({
     title: t('contacts.add'),
@@ -2772,7 +2670,6 @@ function openAddContactPage(){
   });
 }
 
-/* Create group / channel */
 function openCreateGroupModal(){
   const contacts = DB.contactsOf(State.me.id);
   const allUsers = DB.data.users.filter(u => String(u.id) !== String(State.me.id));
@@ -2878,7 +2775,6 @@ function openCreateChannelModal(){
     });
 }
 
-/* Saved */
 function openSavedChat(){
   let chat = DB.chatsOf(State.me.id).find(c => c.type === 'saved');
   if (!chat){ toast(LANG==='ru'?'Избранное ещё не создано':'Saved not ready'); return; }
@@ -2889,7 +2785,6 @@ function openSavedChat(){
   openChat(chat.id);
 }
 
-/* Logout */
 function doLogout(){
   confirmDialog(t('confirm.logout'), () => {
     DB.updateUser(State.me.id, { lastSeen: Date.now() });
@@ -2905,7 +2800,6 @@ function doLogout(){
   });
 }
 
-/* Delete account */
 function doDeleteAccount(){
   confirmDialog(t('confirm.delete_account'), async () => {
     try {
@@ -2923,7 +2817,6 @@ function doDeleteAccount(){
   });
 }
 
-/* image viewer */
 function openViewer(src){
   const v = document.getElementById('imgViewer');
   v.querySelectorAll('img').forEach(i => i.remove());
@@ -2937,9 +2830,6 @@ document.getElementById('imgViewer').addEventListener('click', e => {
   if (e.target.id === 'imgViewer') document.getElementById('imgViewer').classList.remove('open');
 });
 
-/* ============================================================
-   EDGE SWIPE TO GO BACK
-   ============================================================ */
 (function edgeBack(){
   const EDGE = 28;
   let startX = 0, startY = 0, active = null, dragging = false, pageEl = null;
@@ -2995,9 +2885,6 @@ document.getElementById('imgViewer').addEventListener('click', e => {
   });
 })();
 
-/* ============================================================
-   HEADER
-   ============================================================ */
 document.getElementById('btnSearch').onclick = () => {
   openNewChatModal();
 };
@@ -3046,12 +2933,91 @@ function openNewChatModal(){
   });
 }
 
-/* ESC */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){
     closeContext(); closeModal(); closeActionSheet();
     if (State.pageStack.length) closeTopPage();
     else if (document.getElementById('chatOverlay').classList.contains('open')) closeChat();
+  }
+});
+
+/* ============================================================
+   PUSH ПОДПИСКА
+   ============================================================ */
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+  return outputArray;
+}
+
+async function subscribeToPush(){
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    console.log('Push не поддерживается');
+    return false;
+  }
+  if (!State.me) return false;
+
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted'){
+      console.log('Push разрешение не дано');
+      return false;
+    }
+
+    const reg = await navigator.serviceWorker.ready;
+
+    const keyRes = await fetch(API + '/api/vapid-public-key');
+    const keyData = await keyRes.json();
+    if (!keyData.publicKey){
+      console.warn('VAPID key не получен');
+      return false;
+    }
+
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub){
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
+      });
+    }
+
+    await fetch(API + '/api/push-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: String(State.me.id),
+        subscription: sub.toJSON()
+      })
+    });
+
+    localStorage.setItem('vexa.push.enabled', '1');
+    console.log('Push подписка активна');
+    return true;
+  } catch (e) {
+    console.error('subscribe push error', e);
+    return false;
+  }
+}
+
+/* ============================================================
+   SERVICE WORKER
+   ============================================================ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => {
+      console.log('SW registration failed:', err);
+    });
+  });
+}
+
+window.addEventListener('load', () => {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+  if (isStandalone) {
+    document.documentElement.setAttribute('data-pwa', 'true');
   }
 });
 
