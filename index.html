@@ -138,7 +138,6 @@ svg{display:block}
 .panel.active{display:flex;animation:panelIn .3s cubic-bezier(.2,.9,.3,1)}
 @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
 
-/* ФИКС: запрещаем сжатие детей, разрешаем прокрутку */
 #panel-me{
   overflow-y:auto !important;
   overflow-x:hidden !important;
@@ -281,7 +280,7 @@ svg{display:block}
 .set-row:active{background:rgba(120,120,140,.10)}
 .set-row + .set-row::before{content:"";position:absolute;top:0;left:60px;right:0;height:1px;background:var(--glass-border)}
 .set-row svg{color:var(--text2);flex-shrink:0}
-.set-row .val{margin-left:auto;color:var(--text2);font-size:13.5%;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.set-row .val{margin-left:auto;color:var(--text2);font-size:13.5px;max-width:55%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .chat-overlay{
   position:fixed;inset:0;z-index:55;background:var(--bg);
@@ -1598,7 +1597,7 @@ function renderCallsList(){
 
 document.getElementById('meHero').onclick = () => openProfilePage();
 document.querySelectorAll('#meMenu button').forEach(b => {
-  b.onclick = () => {
+  b.onclick = async () => {
     switch(b.dataset.action){
       case 'saved':    openSavedChat(); break;
       case 'settings': openSettingsPage(); break;
@@ -1607,11 +1606,7 @@ document.querySelectorAll('#meMenu button').forEach(b => {
       case 'help':     openHelpPage(); break;
       case 'about':    openAboutPage(); break;
       case 'notifications':
-        (async () => {
-          const ok = await subscribeToPush();
-          if (ok) toast('Уведомления включены', 'ok');
-          else toast('Разреши уведомления в настройках iPhone', 'err');
-        })();
+        await subscribeToPush();
         break;
       case 'logout':   doLogout(); break;
       case 'delete':   doDeleteAccount(); break;
@@ -2949,7 +2944,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ============================================================
-   PUSH ПОДПИСКА
+   PUSH ПОДПИСКА (ДИАГНОСТИЧЕСКАЯ ВЕРСИЯ)
    ============================================================ */
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -2961,37 +2956,65 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 async function subscribeToPush(){
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-    console.log('Push не поддерживается');
-    return false;
+  if (!('serviceWorker' in navigator)) {
+    toast('❌ Нет Service Worker', 'err'); return false;
   }
-  if (!State.me) return false;
+  if (!('PushManager' in window)) {
+    toast('❌ Нет PushManager (iOS < 16.4?)', 'err'); return false;
+  }
+  if (!('Notification' in window)) {
+    toast('❌ Нет Notification API', 'err'); return false;
+  }
+  if (!State.me) {
+    toast('❌ Не авторизован', 'err'); return false;
+  }
 
+  let perm;
   try {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted'){
-      console.log('Push разрешение не дано');
-      return false;
-    }
+    perm = await Notification.requestPermission();
+  } catch(e) {
+    toast('❌ requestPermission: ' + e.message, 'err'); return false;
+  }
+  if (perm !== 'granted'){
+    toast('❌ Разрешение: ' + perm, 'err'); return false;
+  }
 
-    const reg = await navigator.serviceWorker.ready;
+  let reg;
+  try {
+    reg = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise((_, rej) => setTimeout(() => rej(new Error('SW timeout 5s')), 5000))
+    ]);
+  } catch(e) {
+    toast('❌ SW: ' + e.message, 'err'); return false;
+  }
 
+  let keyData;
+  try {
     const keyRes = await fetch(API + '/api/vapid-public-key');
-    const keyData = await keyRes.json();
-    if (!keyData.publicKey){
-      console.warn('VAPID key не получен');
-      return false;
-    }
+    keyData = await keyRes.json();
+  } catch(e) {
+    toast('❌ VAPID: ' + e.message, 'err'); return false;
+  }
+  if (!keyData.publicKey){
+    toast('❌ VAPID пустой', 'err'); return false;
+  }
 
-    let sub = await reg.pushManager.getSubscription();
+  let sub;
+  try {
+    sub = await reg.pushManager.getSubscription();
     if (!sub){
       sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(keyData.publicKey)
       });
     }
+  } catch(e) {
+    toast('❌ Subscribe: ' + e.message, 'err'); return false;
+  }
 
-    await fetch(API + '/api/push-subscribe', {
+  try {
+    const r = await fetch(API + '/api/push-subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -2999,14 +3022,17 @@ async function subscribeToPush(){
         subscription: sub.toJSON()
       })
     });
-
-    localStorage.setItem('vexa.push.enabled', '1');
-    console.log('Push подписка активна');
-    return true;
-  } catch (e) {
-    console.error('subscribe push error', e);
-    return false;
+    const d = await r.json();
+    if (!d.ok) {
+      toast('❌ Сервер: ' + JSON.stringify(d), 'err'); return false;
+    }
+  } catch(e) {
+    toast('❌ Запрос: ' + e.message, 'err'); return false;
   }
+
+  localStorage.setItem('vexa.push.enabled', '1');
+  toast('✅ Подписка активна!', 'ok');
+  return true;
 }
 
 /* ============================================================
