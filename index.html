@@ -623,6 +623,8 @@ svg{display:block}
    VEXA — v2 with swipe, drag nav, privacy, pages
    ============================================================ */
 
+const API = 'https://vexam.onrender.com';
+
 (function preventZoom(){
   ['gesturestart','gesturechange','gestureend'].forEach(ev => document.addEventListener(ev, e => e.preventDefault(), {passive:false}));
   let lastTouchEnd = 0;
@@ -688,7 +690,7 @@ const DB = (() => {
     createUser(d){ const u={id:uid(),createdAt:Date.now(),lastSeen:Date.now(),privacy:{...DEFAULT_PRIVACY},stories:[],birthday:null,...d}; load().users.push(u); save(); return u; },
     findUserByPhone(p){ return load().users.find(u => u.phone === p); },
     findUserByUsername(u){ if(!u) return null; u=u.toLowerCase(); return load().users.find(x => (x.username||'').toLowerCase()===u); },
-    findUserById(id){ return load().users.find(u => u.id === id); },
+    findUserById(id){ return load().users.find(u => String(u.id) === String(id)); },
     updateUser(id, patch){ const u=this.findUserById(id); if(!u) return; Object.assign(u, patch); save(); return u; },
     setSession(id){ load().session=id; save(); },
     getSession(){ return load().session; },
@@ -1161,27 +1163,75 @@ inpUsername.addEventListener('input', () => {
   usernameHint.textContent = ''; usernameHint.style.color = '';
   if (!v) return;
   if (v.length < 3){ usernameHint.textContent = t('toast.username_short'); usernameHint.style.color='var(--danger)'; return; }
-  unameTimer = setTimeout(() => {
-    if (DB.findUserByUsername(v)){ usernameHint.textContent = t('toast.username_taken'); usernameHint.style.color='var(--danger)'; }
-    else { usernameHint.textContent = t('toast.username_free'); usernameHint.style.color='var(--ok)'; }
+  unameTimer = setTimeout(async () => {
+    try {
+      const r = await fetch(API + '/api/check-username/' + encodeURIComponent(v));
+      const d = await r.json();
+      if (d.taken){ usernameHint.textContent = t('toast.username_taken'); usernameHint.style.color='var(--danger)'; }
+      else { usernameHint.textContent = t('toast.username_free'); usernameHint.style.color='var(--ok)'; }
+    } catch {
+      usernameHint.textContent = 'Ошибка проверки';
+      usernameHint.style.color = 'var(--danger)';
+    }
   }, 300);
 });
-btnCreate.onclick = () => {
+btnCreate.onclick = async () => {
   const name = inpName.value.trim();
   if (!name){ toast(t('toast.fill_name'), 'err'); return; }
   const uname = inpUsername.value.trim() || null;
-  if (uname && DB.findUserByUsername(uname)){ toast(t('toast.username_taken'), 'err'); return; }
-  const user = DB.createUser({
-    phone: State.tempPhone, firstName: name,
-    lastName: inpSurname.value.trim() || null,
-    username: uname, bio: '', avatar: null
-  });
-  DB.setSession(user.id);
-  DB.createChat({ type:'saved', ownerId:user.id, members:[user.id] });
-  inpName.value = inpSurname.value = inpUsername.value = '';
-  refreshCreate();
-  bootUser(user.id);
-  toast(t('toast.welcome'), 'ok');
+
+  btnCreate.disabled = true;
+  try {
+    const res = await fetch(API + '/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: State.tempPhone,
+        firstName: name,
+        lastName: inpSurname.value.trim() || null,
+        username: uname
+      })
+    });
+    const data = await res.json();
+
+    if (data.error === 'username_taken'){
+      toast(t('toast.username_taken'), 'err');
+      btnCreate.disabled = false;
+      return;
+    }
+    if (!data.ok){
+      toast('Ошибка сервера', 'err');
+      btnCreate.disabled = false;
+      return;
+    }
+
+    const srv = data.user;
+    const uidStr = String(srv.id);
+    let localUser = DB.findUserById(uidStr);
+    if (!localUser){
+      localUser = DB.createUser({
+        id: uidStr,
+        phone: srv.phone,
+        firstName: srv.first_name,
+        lastName: srv.last_name,
+        username: srv.username,
+        bio: srv.bio || '',
+        avatar: srv.avatar || null
+      });
+    }
+    DB.setSession(localUser.id);
+    if (!DB.chatsOf(localUser.id).find(c => c.type === 'saved')){
+      DB.createChat({ type:'saved', ownerId:localUser.id, members:[localUser.id] });
+    }
+    inpName.value = inpSurname.value = inpUsername.value = '';
+    refreshCreate();
+    bootUser(localUser.id);
+    toast(t('toast.welcome'), 'ok');
+  } catch (e) {
+    console.error(e);
+    toast('Нет связи с сервером. Подожди 30 сек и попробуй снова', 'err');
+    btnCreate.disabled = false;
+  }
 };
 
 /* ============================================================
@@ -1681,7 +1731,7 @@ function openAboutPage(){
    PAGES: USER PROFILE
    ============================================================ */
 function openUserProfile(userId){
-  if (userId === State.me.id){ openProfilePage(); return; }
+  if (String(userId) === String(State.me.id)){ openProfilePage(); return; }
   const u = DB.findUserById(userId);
   if (!u) return;
   const phoneAllowed = canSee(State.me.id, u.id, 'phone');
@@ -2424,37 +2474,62 @@ function openFindByNumber(){
       });
       inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && digitsOf(inp.value).length <= 1) e.preventDefault(); });
 
-      const search = () => {
+      const search = async () => {
         if (!phoneValid(inp.value)) return;
         const e164 = '+' + digitsOf(inp.value);
-        res.innerHTML = '';
+        res.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">Поиск...</div>';
+
         if (e164 === State.me.phone){
           res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">${esc(t('find.self'))}</div>`;
           return;
         }
-        const user = DB.findUserByPhone(e164);
-        if (!user){
-          res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">${esc(t('find.notfound'))}</div>`;
-          return;
+
+        try {
+          const r = await fetch(API + '/api/find-by-phone', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: e164 })
+          });
+          const data = await r.json();
+
+          if (!data.found){
+            res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">${esc(t('find.notfound'))}</div>`;
+            return;
+          }
+
+          const srv = data.user;
+          const uidStr = String(srv.id);
+          let user = DB.findUserById(uidStr);
+          if (!user){
+            user = DB.createUser({
+              id: uidStr,
+              phone: srv.phone,
+              firstName: srv.first_name,
+              lastName: srv.last_name,
+              username: srv.username,
+              bio: srv.bio || '',
+              avatar: srv.avatar || null
+            });
+          }
+
+          const item = el(`
+            <div class="result-item">
+              <div class="avatar av-54">${esc(initials(user))}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600">${esc(displayName(user))}</div>
+                <div style="color:var(--text2);font-size:12.5px">${user.username ? '@'+esc(user.username) : ''}</div>
+              </div>
+            </div>`);
+          res.innerHTML = '';
+          item.onclick = () => {
+            closeModal();
+            openUserProfile(user.id);
+          };
+          res.appendChild(item);
+        } catch (e) {
+          console.error(e);
+          res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--danger);font-size:14px">Ошибка связи с сервером. Подожди 30 сек.</div>`;
         }
-        // check user's privacy for find
-        if (!canSee(State.me.id, user.id, 'find') && !DB.isContact(State.me.id, user.id)){
-          res.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text2);font-size:14px">${esc(t('find.notfound'))}</div>`;
-          return;
-        }
-        const r = el(`
-          <div class="result-item">
-            <div class="avatar av-54">${esc(initials(user))}</div>
-            <div style="flex:1;min-width:0">
-              <div style="font-weight:600">${esc(displayName(user))}</div>
-              <div style="color:var(--text2);font-size:12.5px">${user.username ? '@'+esc(user.username) : ''}</div>
-            </div>
-          </div>`);
-        r.onclick = () => {
-          closeModal();
-          openUserProfile(user.id);
-        };
-        res.appendChild(r);
       };
       btn.onclick = search;
       inp.addEventListener('keydown', e => { if (e.key === 'Enter' && phoneValid(inp.value)) search(); });
