@@ -1,0 +1,18 @@
+# зависимости
+node_modules/
+server/node_modules/
+
+# секреты — НИКОГДА не коммитить
+.env
+server/.env
+*.env.local
+
+# системное
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# логи
+*.log
+npm-debug.log*
