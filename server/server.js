@@ -1,6 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
+const webpush = require('web-push');
 
 const app = express();
 app.use(cors());
@@ -14,6 +15,18 @@ const pool = new Pool({
 pool.query('SELECT 1')
   .then(() => console.log('BD connected'))
   .catch(e => console.error('BD error:', e.message));
+
+// ================= VAPID =================
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT || 'mailto:example@example.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+  console.log('VAPID configured');
+} else {
+  console.warn('VAPID keys missing');
+}
 
 // ================= USERS =================
 
@@ -78,9 +91,19 @@ app.get('/api/check-username/:username', async (req, res) => {
   }
 });
 
+// Удалить аккаунт
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM users WHERE id=$1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'db_error' });
+  }
+});
+
 // ================= CHATS =================
 
-// Список чатов пользователя
 app.get('/api/chats/:userId', async (req, res) => {
   const uid = req.params.userId;
   try {
@@ -105,11 +128,9 @@ app.get('/api/chats/:userId', async (req, res) => {
   }
 });
 
-// Создать чат (personal / group / channel)
 app.post('/api/chats', async (req, res) => {
   const { type, ownerId, members, title, description, isPublic } = req.body;
   try {
-    // для personal — проверяем существующий
     if (type === 'personal') {
       const existing = await pool.query(
         `SELECT c.id FROM chats c
@@ -164,7 +185,6 @@ async function loadChat(chatId) {
 
 // ================= MESSAGES =================
 
-// Все сообщения чата
 app.get('/api/messages/:chatId', async (req, res) => {
   try {
     const r = await pool.query(
@@ -179,7 +199,6 @@ app.get('/api/messages/:chatId', async (req, res) => {
   }
 });
 
-// Отправить сообщение
 app.post('/api/messages', async (req, res) => {
   const { chatId, senderId, text, replyTo } = req.body;
   try {
@@ -189,13 +208,15 @@ app.post('/api/messages', async (req, res) => {
       [chatId, senderId, text || '', replyTo || null]
     );
     res.json({ ok: true, message: r.rows[0] });
+
+    // Отправляем push-уведомления (не блокируем ответ)
+    sendPushToChatMembers(chatId, senderId, text).catch(e => console.error('push async', e));
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'db_error' });
   }
 });
 
-// Новые сообщения после определённого id (для polling)
 app.get('/api/updates/:userId', async (req, res) => {
   const sinceId = parseInt(req.query.since || '0', 10) || 0;
   try {
@@ -214,6 +235,85 @@ app.get('/api/updates/:userId', async (req, res) => {
     res.status(500).json({ error: 'db_error' });
   }
 });
+
+// ================= PUSH =================
+
+app.get('/api/vapid-public-key', (req, res) => {
+  res.json({ publicKey: process.env.VAPID_PUBLIC_KEY || '' });
+});
+
+app.post('/api/push-subscribe', async (req, res) => {
+  const { userId, subscription } = req.body;
+  if (!userId || !subscription || !subscription.endpoint) {
+    return res.status(400).json({ ok: false });
+  }
+  try {
+    await pool.query(
+      `INSERT INTO push_subscriptions (user_id, endpoint, keys_p256dh, keys_auth)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (endpoint) DO UPDATE SET
+         user_id = EXCLUDED.user_id,
+         keys_p256dh = EXCLUDED.keys_p256dh,
+         keys_auth = EXCLUDED.keys_auth`,
+      [userId, subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth]
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('push-subscribe', e);
+    res.status(500).json({ ok: false });
+  }
+});
+
+async function sendPushToChatMembers(chatId, senderId, text) {
+  try {
+    const members = await pool.query(
+      `SELECT user_id FROM chat_members WHERE chat_id=$1 AND user_id<>$2`,
+      [chatId, senderId]
+    );
+    if (!members.rows.length) return;
+
+    const sender = await pool.query(
+      'SELECT first_name, last_name, username FROM users WHERE id=$1',
+      [senderId]
+    );
+    const senderName = sender.rows.length
+      ? ([sender.rows[0].first_name, sender.rows[0].last_name].filter(Boolean).join(' ')
+         || sender.rows[0].username || 'Кто-то')
+      : 'Кто-то';
+
+    const userIds = members.rows.map(r => r.user_id);
+
+    const subs = await pool.query(
+      'SELECT id, endpoint, keys_p256dh, keys_auth FROM push_subscriptions WHERE user_id = ANY($1::int[])',
+      [userIds]
+    );
+
+    const payload = JSON.stringify({
+      title: senderName,
+      body: text || '📎 Сообщение',
+      chatId: String(chatId),
+      url: './'
+    });
+
+    for (const sub of subs.rows) {
+      const pushSub = {
+        endpoint: sub.endpoint,
+        keys: { p256dh: sub.keys_p256dh, auth: sub.keys_auth }
+      };
+      try {
+        await webpush.sendNotification(pushSub, payload);
+      } catch (err) {
+        if (err.statusCode === 404 || err.statusCode === 410) {
+          await pool.query('DELETE FROM push_subscriptions WHERE id=$1', [sub.id]);
+        } else {
+          console.error('push send error', err.statusCode, err.message);
+        }
+      }
+    }
+  } catch (e) {
+    console.error('sendPushToChatMembers', e);
+  }
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('Server started on port ' + PORT));
